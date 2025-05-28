@@ -1,0 +1,3480 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Financial Needs Analysis Wizard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #000000;
+        color: #ffffff;
+        margin: 0;
+        padding: 0;
+      }
+
+      .wizard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        text-align: center;
+        padding: 20px;
+        background-color: #1a1a1a;
+        border-bottom: 2px solid #bdb76b;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 2em;
+      }
+
+      .header p {
+        margin: 10px 0;
+        font-size: 1.1em;
+      }
+
+      .wizard-tabs {
+        display: flex;
+        justify-content: space-around;
+        background-color: #bdb76b;
+        padding: 10px 0;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .wizard-tabs a {
+        color: #000000;
+        text-decoration: none;
+        padding: 10px 20px;
+        font-weight: bold;
+      }
+
+      .wizard-tabs a.active {
+        background-color: #a9a357;
+        border-radius: 4px;
+      }
+
+      .wizard-tabs a:hover {
+        background-color: #a9a357;
+        border-radius: 4px;
+      }
+
+      .step {
+        display: none;
+        padding: 20px;
+        background: #000000;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 0 10px rgba(189, 183, 107, 0.3);
+      }
+
+      .step.active {
+        display: block;
+      }
+
+      .sub-step {
+        display: none;
+      }
+
+      .sub-step.active {
+        display: block;
+      }
+
+      h2 {
+        color: #bdb76b;
+        margin-bottom: 15px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #bdb76b;
+      }
+
+      th {
+        background-color: #bdb76b;
+        color: #000000;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #bdb76b;
+        border-radius: 4px;
+        background-color: #000000;
+        color: #ffffff;
+      }
+
+      input[type="text"]::placeholder,
+      input[type="number"]::placeholder {
+        color: #cccccc;
+      }
+
+      .projected-value,
+      .future-value,
+      .total-value {
+        font-weight: bold;
+        color: #bdb76b;
+      }
+
+      .buttons {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #bdb76b;
+        color: #000000;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        margin: 0 10px;
+      }
+
+      button:hover {
+        background-color: #a9a357;
+      }
+
+      #resultsPage {
+        padding: 20px;
+      }
+
+      #resultsPage h2 {
+        text-align: center;
+      }
+
+      #assetResults,
+      #goalResults {
+        margin-bottom: 20px;
+      }
+
+      .spouse-section,
+      .dependents-section {
+        margin-top: 20px;
+      }
+
+      .calculated-age {
+        color: #bdb76b;
+        font-weight: bold;
+      }
+
+      .error-message {
+        color: #ff5555;
+        font-size: 0.9em;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .spouse-column {
+        display: none;
+      }
+
+      .spouse-column.visible {
+        display: table-cell;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wizard-container">
+      <!-- Header -->
+      <div class="header">
+        <h1>Financial Needs Analysis Wizard</h1>
+        <p>
+          Strategic Diversification based on Suitability, Affordability, and
+          Long-Term Planning
+        </p>
+      </div>
+      <!-- Wizard Tabs -->
+      <div class="wizard-tabs">
+        <a class="active" href="#" onclick="navigateToStep(1); return false;"
+          >Information</a
+        >
+        <a href="#" onclick="navigateToStep(2); return false;">Cash Flow</a>
+        <a href="#" onclick="navigateToStep(3); return false;">Debt</a>
+        <a href="#" onclick="navigateToStep(4); return false;">Assets</a>
+        <a href="#" onclick="navigateToStep(5); return false;">Goals</a>
+        <a href="#" onclick="navigateToStep(6); return false;">Results</a>
+      </div>
+      <!-- Step 1: Personal Info -->
+      <div class="step" id="step1">
+        <h2>Step 1: Tell Us About Yourself</h2>
+        <table id="personalInfoTable">
+          <tr>
+            <th>Field</th>
+            <th>User</th>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>
+              <input id="userName" placeholder="Enter your name" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>Date of Birth (mm/yyyy)</td>
+            <td>
+              <input
+                id="userDOB"
+                oninput="calculateAge('user')"
+                placeholder="mm/yyyy"
+                type="text"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Current Age</td>
+            <td><span class="calculated-age" id="userAge">0</span></td>
+          </tr>
+          <tr>
+            <td>Retirement Age</td>
+            <td>
+              <input
+                id="userRetirementAge"
+                min="0"
+                oninput="updateAllProjectedValues()"
+                placeholder="Enter retirement age"
+                step="1"
+                type="number"
+                value="65"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Marital Status</td>
+            <td>
+              <select id="maritalStatus" onchange="toggleSpouseSection()">
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Immigration Status</td>
+            <td>
+              <select id="userImmigrationStatus">
+                <option value="Citizen">Citizen</option>
+                <option value="GC">Green Card (GC)</option>
+                <option value="Immigrant Visa">Immigrant Visa</option>
+                <option value="EAD">EAD</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Employment Status</td>
+            <td>
+              <select id="userEmploymentStatus">
+                <option value="Employee">Employee</option>
+                <option value="Business/Self-Employment">
+                  Business/Self-Employment
+                </option>
+                <option value="Unemployed">Unemployed</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td>
+              <input id="email" placeholder="example@email.com" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>City &amp; State</td>
+            <td>
+              <input id="cityState" placeholder="Seattle, WA" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>Number of Dependents</td>
+            <td>
+              <input
+                id="dependents"
+                min="0"
+                oninput="updateDependentsSection()"
+                placeholder="Enter number of dependents"
+                step="1"
+                type="number"
+              />
+            </td>
+          </tr>
+        </table>
+        <!-- Spouse Section (Hidden by Default) -->
+        <div class="spouse-section" id="spouseSection" style="display: none">
+          <h3>Spouse Information</h3>
+          <table>
+            <tr>
+              <th>Field</th>
+              <th>Spouse</th>
+            </tr>
+            <tr>
+              <td>Name</td>
+              <td>
+                <input
+                  id="spouseName"
+                  placeholder="Enter spouse's name"
+                  type="text"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Date of Birth (mm/yyyy)</td>
+              <td>
+                <input
+                  id="spouseDOB"
+                  oninput="calculateAge('spouse')"
+                  placeholder="mm/yyyy"
+                  type="text"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Current Age</td>
+              <td><span class="calculated-age" id="spouseAge">0</span></td>
+            </tr>
+            <tr>
+              <td>Employment Status</td>
+              <td>
+                <select id="spouseEmploymentStatus">
+                  <option value="Employee">Employee</option>
+                  <option value="Business/Self-Employment">
+                    Business/Self-Employment
+                  </option>
+                  <option value="Unemployed">Unemployed</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Retirement Age</td>
+              <td>
+                <input
+                  id="spouseRetirementAge"
+                  min="0"
+                  oninput="updateAllProjectedValues()"
+                  placeholder="Enter retirement age"
+                  step="1"
+                  type="number"
+                  value="65"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Immigration Status</td>
+              <td>
+                <select id="spouseImmigrationStatus">
+                  <option value="Citizen">Citizen</option>
+                  <option value="GC">Green Card (GC)</option>
+                  <option value="Immigrant Visa">Immigrant Visa</option>
+                  <option value="EAD">EAD</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- Dependents Section (Dynamically Generated) -->
+        <div class="dependents-section" id="dependentsSection"></div>
+        <p style="font-size: 0.9em; text-align: center">
+          The system will estimate education costs based on the average for a
+          4-year college degree.
+        </p>
+        <div class="buttons">
+          <button onclick="nextStep(2)">Next</button>
+        </div>
+      </div>
+      <!-- Step 2: Cash Flow -->
+      <div class="step" id="step2">
+        <h2>Step 2: Cash Flow Analysis</h2>
+        <!-- Sub-Step 2.1: Monthly Income & Expenses -->
+        <div class="sub-step active" id="subStep2-1">
+          <h3>Step 2.1: Monthly Income & Expenses</h3>
+          <table id="cashFlowTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse present Value ($)</th>
+                <th>Inflation Rate (%)</th>
+                <th>Projected Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Monthly Income (Wages)</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-income"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-income"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-income"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-income"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Income - Business</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-business"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-business"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-business"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-business"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Income - Rental</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-rental"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-rental"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-rental"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-rental"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Expenses w/o Mortgage</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-expenses"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-expenses"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-expenses"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="3"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-expenses"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Mortgage Expense</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-mortgage"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-mortgage"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevStep(1)">Previous</button>
+            <button onclick="nextStep(3)">Next</button>
+          </div>
+        </div>
+      </div>
+      <!-- Step 3: Debt -->
+      <div class="step" id="step3">
+        <h2>Step 3: Your Debt</h2>
+        <!-- Sub-Step 3.1: Debt Analysis -->
+        <div class="sub-step" id="subStep3-1">
+          <h3>Step 3.1: Debt Analysis</h3>
+          <table id="debtAnalysisTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mortgage Debt (Sum)</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="mortgage-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Credit Card Debt</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="credit-card-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Car Loan Debt</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="car-loan-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Student Loan Debt</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="student-loan-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Any other Debt (Sum)</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="other-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevStep(2)">Previous</button>
+            <button onclick="nextStep(4)">Next</button>
+          </div>
+        </div>
+      </div>
+      <!-- Step 4: Assets -->
+      <div class="step" id="step4">
+        <h2>Step 4: Your Assets</h2>
+        <div class="error-message" id="retirementError" style="display: none">
+          Please complete Step 1 with a valid Date of Birth to calculate
+          projected values.
+        </div>
+        <!-- Sub-Step 4.1: Retirement Planning -->
+        <div class="sub-step" id="subStep4-1">
+          <h3>Step 4.1: Retirement Planning (USA)</h3>
+          <p
+            id="retirementAgeMessage"
+            style="color: #bdb76b; font-weight: bold"
+          ></p>
+          <script>
+            function updateRetirementAgeMessage() {
+              const userRetirementAge = parseInt(
+                document.getElementById("userRetirementAge")?.value || "65"
+              );
+              const userAge = parseInt(
+                document.getElementById("userAge")?.textContent || "0"
+              );
+              const yearsLeft = userRetirementAge - userAge;
+
+              let message =
+                `Your retirement age is ${userRetirementAge}, remaining years till retirement: ${
+                  yearsLeft >= 0 ? yearsLeft : 0
+                }` +
+                " " +
+                "(" +
+                "add up spouse's retirement values in present and annual contributions " +
+                ")";
+
+              const msgEl = document.getElementById("retirementAgeMessage");
+              if (msgEl) msgEl.textContent = message;
+            }
+
+            // Run the function initially and whenever related inputs change
+            document.addEventListener(
+              "DOMContentLoaded",
+              updateRetirementAgeMessage
+            );
+            document
+              .getElementById("userRetirementAge")
+              ?.addEventListener("input", updateRetirementAgeMessage);
+            document
+              .getElementById("userDOB")
+              ?.addEventListener("input", () => {
+                setTimeout(updateRetirementAgeMessage, 300); // allow age to update
+              });
+          </script>
+          <table id="retirementTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Present Value ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Annual Contribution ($)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Current 401K | 403B</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="401k">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Previous 401K | Rollover 401K</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="rollover"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Traditional IRA | SEP-IRA</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="traditional"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Roth IRA | Roth 401K</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="roth">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Pension | ESPP | Annuities</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="pension"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(1, 2)">Previous</button>
+            <button onclick="nextSubStep(2, 2)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.2: Real Estate Investments -->
+        <div class="sub-step" id="subStep4-2">
+          <h3>Step 4.2: Real Estate Investments (USA)</h3>
+          <table id="realEstateTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Present Value ($)</th>
+                <th>Remaining Mortgage ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primary Home</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="primaryHome"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="primaryHome"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="primaryHome"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="primaryHome"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Real Estate Properties | Rentals</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="rentals"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="rentals"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="rentals"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="rentals"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Real Estate Land Parcels</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="land"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="land"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="land"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="land">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Inheritance in the USA</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="inheritance"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="inheritance"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="inheritance"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="inheritance"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(1, 2)">Previous</button>
+            <button onclick="nextSubStep(3, 2)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.3: Stocks | Business | Income -->
+        <div class="sub-step" id="subStep4-3">
+          <h3>Step 4.3: Stocks | Business | Income (USA)</h3>
+          <table id="stocksBusinessIncomeTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse Present Value ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Annual Contribution ($)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Stocks | MFs | Bonds | ETFs</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="7"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="stocks">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Income from Business per annum</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="business"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="business"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="business"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="7"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="business"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="business"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Alternative Investments</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="7"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="alternatives"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Certificate of Deposits (CDs)</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="cds">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Cash in Bank + Emergency Fund</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="0.1"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="cash">0.00</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(2, 2)">Previous</button>
+            <button onclick="nextSubStep(4, 2)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.4: Family Protection & Insurance -->
+        <div class="sub-step" id="subStep4-4">
+          <h3>Step 4.4: Family Protection & Insurance</h3>
+          <table id="familyProtectionTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Present Cash Value ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Annual Contribution ($)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Life Insurance at Work</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="lifeWork"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Life Insurance Outside Work</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="lifeOutside"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Cash Value Life Insurance</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    placeholder="6.65"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="future-value" data-metric="cashValue">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Disability at Work</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="disability"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Long Term Care Outside Work</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="longTermCare"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Health Savings Account (HSA)</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    placeholder="4"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="annual-contribution"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="future-value" data-metric="hsa">0.00</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(2, 2)">Previous</button>
+            <button onclick="nextSubStep(4, 2)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.5: College Planning / Estate Planning -->
+        <div class="sub-step" id="subStep4-5">
+          <h3>Step 4.5: College Planning / Estate Planning</h3>
+          <style>
+            #collegeEstateTable input {
+              width: 100%;
+              box-sizing: border-box;
+            }
+            #collegeEstateTable .projected-value {
+              display: block;
+              text-align: right;
+              padding-right: 10px;
+            }
+            #collegeEstateTable th:last-child {
+              text-align: right;
+              padding-right: 10px;
+            }
+          </style>
+          <table id="collegeEstateTable">
+            <thead>
+              <tr>
+                <th>Dependent Name</th>
+                <th>Years Until College</th>
+                <th>Present Value ($)</th>
+                <th>Annual Contribution ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value ($)</th>
+              </tr>
+            </thead>
+            <tbody id="collegePlanningBody">
+              <!-- Rows will be inserted dynamically -->
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(3, 2)">Previous</button>
+            <button onclick="nextSubStep(5, 2)">Next</button>
+          </div>
+          <script>
+            function renderCollegePlanningRows() {
+              const count =
+                parseInt(document.getElementById("dependents").value) || 0;
+              const tbody = document.getElementById("collegePlanningBody");
+              if (!tbody) return;
+
+              tbody.innerHTML = "";
+
+              for (let i = 1; i <= count; i++) {
+                const name =
+                  document.getElementById(`dependentName${i}`)?.value ||
+                  `Child ${i}`;
+                const yearsUntilCollege = calculateYearsUntilCollege(i);
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                  <td>${name}</td>
+                  <td style="text-align: center;">${yearsUntilCollege}</td>
+                  <td>
+                    <input type="number" 
+                           class="present-value" 
+                           data-metric="529-child${i}" 
+                           data-child="${i}" 
+                           min="0" 
+                           step="0.01" 
+                           oninput="updateCollegeProjectedValue(this)">
+                  </td>
+                  <td>
+                    <input type="number" 
+                           class="annual-contribution" 
+                           data-metric="529-child${i}" 
+                           data-child="${i}" 
+                           min="0" 
+                           step="0.01" 
+                           oninput="updateCollegeProjectedValue(this)">
+                  </td>
+                  <td>
+                    <input type="number" 
+                           class="rate-of-return" 
+                           data-metric="529-child${i}" 
+                           data-child="${i}" 
+                           min="0" 
+                           step="0.01" 
+                           placeholder="4"
+                           oninput="updateCollegeProjectedValue(this)">
+                  </td>
+                  <td>
+                    <span class="projected-value" 
+                          data-metric="529-child${i}" 
+                          data-child="${i}">0.00</span>
+                  </td>
+                `;
+                tbody.appendChild(tr);
+              }
+            }
+
+            function calculateYearsUntilCollege(childIndex) {
+              const dobInput = document.getElementById(
+                `dependentDOB${childIndex}`
+              )?.value;
+              if (!dobInput) return 18;
+
+              const [month, year] = dobInput.split("/").map(Number);
+              if (!month || !year || month < 1 || month > 12) return 18;
+
+              const currentDate = new Date(2025, 2, 26); // March 26, 2025
+              const birthDate = new Date(year, month - 1);
+              let age = currentDate.getFullYear() - birthDate.getFullYear();
+
+              if (
+                currentDate.getMonth() < birthDate.getMonth() ||
+                (currentDate.getMonth() === birthDate.getMonth() &&
+                  currentDate.getDate() < birthDate.getDate())
+              ) {
+                age--;
+              }
+
+              return Math.max(0, 18 - age);
+            }
+
+            function updateCollegeProjectedValue(childIndex) {
+              const metric = `529-child${childIndex}`;
+              const presentValue =
+                parseFloat(
+                  document.querySelector(
+                    `.present-value[data-metric="${metric}"]`
+                  )?.value
+                ) || 0;
+              const annualContribution =
+                parseFloat(
+                  document.querySelector(
+                    `.annual-contribution[data-metric="${metric}"]`
+                  )?.value
+                ) || 0;
+              const rateOfReturn =
+                parseFloat(
+                  document.querySelector(
+                    `.rate-of-return[data-metric="${metric}"]`
+                  )?.value
+                ) || 4;
+              const yearsUntilCollege = calculateYearsUntilCollege(childIndex);
+
+              const rate = rateOfReturn / 100;
+              const projectedValue = calculateProjectedCollegeValue(
+                presentValue,
+                annualContribution,
+                rate,
+                yearsUntilCollege
+              );
+
+              const projectedSpan = document.querySelector(
+                `.projected-value[data-metric="${metric}"]`
+              );
+              if (projectedSpan) {
+                projectedSpan.textContent = projectedValue.toFixed(2);
+              }
+            }
+
+            function calculateProjectedCollegeValue(
+              presentValue,
+              annualContribution,
+              rate,
+              years
+            ) {
+              if (years <= 0) return presentValue;
+              if (rate <= 0) return presentValue + annualContribution * years;
+
+              const futureValuePrincipal =
+                presentValue * Math.pow(1 + rate, years);
+              const futureValueContributions =
+                annualContribution *
+                ((Math.pow(1 + rate, years) - 1) / rate) *
+                (1 + rate);
+              return futureValuePrincipal + futureValueContributions;
+            }
+
+            // Event Listeners
+            document.addEventListener("DOMContentLoaded", function () {
+              // Initial render
+              renderCollegePlanningRows();
+
+              // Listen for changes in dependents
+              document
+                .getElementById("dependents")
+                ?.addEventListener("input", renderCollegePlanningRows);
+
+              // Listen for changes in DOB
+              document.addEventListener("input", function (e) {
+                if (e.target.id?.startsWith("dependentDOB")) {
+                  renderCollegePlanningRows();
+                }
+              });
+            });
+          </script>
+        </div>
+        <!-- Sub-Step 4.6: Foreign Assets -->
+        <div class="sub-step" id="subStep4-6">
+          <h3>Step 4.6: Foreign Assets (Outside USA)</h3>
+          <table id="foreignAssetsTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Present Value ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Real Estate Assets</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="realEstateForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="realEstateForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="realEstateForeign"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Non-Real Estate Assets</td>
+                <td>
+                  <input
+                    class="present-value"
+                    data-metric="nonRealEstateForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="nonRealEstateForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span
+                    class="projected-value"
+                    data-metric="nonRealEstateForeign"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(4, 2)">Previous</button>
+            <button onclick="nextStep(4)">Next</button>
+          </div>
+        </div>
+      </div>
+      <!-- Step 5: Goals -->
+      <div class="step" id="step5">
+        <h2>Step 5: Your Financial Goals</h2>
+        <!-- Sub-Step 5.1: Kids College Planning -->
+        <div class="sub-step" id="subStep5-1">
+          <h3>Step 5.1: Kids College Planning</h3>
+          <table id="collegePlanningTable">
+            <thead>
+              <tr>
+                <th>Child</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody id="collegePlanningTableBody">
+              <!-- Rows will be added dynamically -->
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(1, 5)">Previous</button>
+            <button onclick="nextSubStep(2, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.2: Kids Wedding Planning -->
+        <div class="sub-step" id="subStep5-2">
+          <h3>Step 5.2: Kids Wedding Planning</h3>
+          <table id="weddingPlanningTable">
+            <thead>
+              <tr>
+                <th>Child</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody id="weddingPlanningTableBody">
+              <!-- Rows will be added dynamically -->
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(1, 5)">Previous</button>
+            <button onclick="nextSubStep(3, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.3: Retirement Planning -->
+        <div class="sub-step" id="subStep5-3">
+          <h3>Step 5.3: Retirement Planning</h3>
+          <table id="retirementGoalsTable">
+            <thead>
+              <tr>
+                <th>
+                  MONTHLY INCOME NEEDED IN TODAY'S DOLLARS (PRE-TAX) (INCLUDE
+                  LIVING EXPENSES + PROPERTY TAXES + CARS + INSURANCES + FOOD +
+                  UTILITIES + CLOTHING + HOME REPAIRS ETC.,)
+                </th>
+                <th>Amount ($)</th>
+                <th>Retirement Plan Until</th>
+                <th>Projected Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Monthly Income Needed</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="retirement-income"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <select
+                    id="retirementPlanUntil"
+                    onchange="updateRetirementProjectedValue()"
+                  >
+                    <option value="85">85</option>
+                    <option value="90">90</option>
+                    <option value="95">95</option>
+                  </select>
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="retirement-income"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(2, 5)">Previous</button>
+            <button onclick="nextSubStep(4, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.4: Health Care and Long Term Care -->
+        <div class="sub-step" id="subStep5-4">
+          <h3>Step 5.4: Health Care and Long Term Care @ Age of Retirement</h3>
+          <table id="healthCareTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Health Care Out-of-Pocket</td>
+                <td colspan="3">
+                  <span id="healthCareOutOfPocketAmount">$160,000</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Long Term Care | Disability
+                  <a href="https://www.carescout.com/cost-of-care"
+                    >Refer to this link for more details
+                  </a>
+                </td>
+                <td><span id="longTermCareAmount">$0.00</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(3, 5)">Previous</button>
+            <button onclick="nextSubStep(5, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.5: Life Goals Planning -->
+        <div class="sub-step" id="subStep5-5">
+          <h3>Step 5.5: Life Goals Planning</h3>
+          <table id="lifeGoalsTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Travel Budget</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="travel"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Vacation Home | Farm House</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="vacationHome"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Charity Foundation</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="charity"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Other Life Goals</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="otherGoals"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(4, 5)">Previous</button>
+            <button onclick="nextSubStep(6, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.6: Legacy Planning -->
+        <div class="sub-step" id="subStep5-6">
+          <h3>Step 5.6: Legacy Planning</h3>
+          <table id="legacyPlanningTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Fund for Kids Home/Business</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="kidsFund"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Legacy Asset for Kids</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="legacyAssets"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Family Support</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="familySupport"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(5, 5)">Previous</button>
+            <button type="button" onclick="calculateResults();">
+              Submit &amp; View Results
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Results Page -->
+      <div class="step" id="step6">
+        <h2>Your Financial Analysis Results</h2>
+        <div id="assetResults">
+          <h3>Assets Summary</h3>
+          <table>
+            <tr>
+              <td>Total Present Value ($):</td>
+              <td><span class="total-value" id="totalPresent">0.00</span></td>
+            </tr>
+            <tr>
+              <td>Total Projected Value ($):</td>
+              <td><span class="total-value" id="totalProjected">0.00</span></td>
+            </tr>
+          </table>
+        </div>
+        <div id="goalResults">
+          <h3>Goals Summary</h3>
+          <table>
+            <tr>
+              <td>Total Goal Amount ($):</td>
+              <td>
+                <span class="total-value" id="totalGoalAmount">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Total Projected Goal Amount ($):</td>
+              <td>
+                <span class="total-value" id="totalGoalProjected">0.00</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <p style="text-align: center; font-size: 0.9em">
+          FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
+        </p>
+        <div class="buttons">
+          <button onclick="resetWizard()">Start Over</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      let currentStep = 1;
+      let currentSubStep2 = 1; // Track the sub-step within Step 2 (Cash Flow)
+      let currentSubStep3 = 1; // Track the sub-step within Step 3 (Debt)
+      let currentSubStep4 = 1; // Track the sub-step within Step 4 (Assets)
+      let currentSubStep5 = 1; // Track the sub-step within Step 5 (Goals)
+
+      const totalSubSteps2 = 1; // Cash Flow has 1 sub-step
+      const totalSubSteps3 = 1; // Debt has 1 sub-step
+      const totalSubSteps4 = 6; // Assets has 6 sub-steps
+      const totalSubSteps5 = 6; // Goals has 6 sub-steps
+
+      // Initialize the wizard
+      document.addEventListener("DOMContentLoaded", function () {
+        showStep(1);
+        toggleSpouseSection();
+        updateAllProjectedValues();
+      });
+
+      function navigateToStep(step) {
+        updateAllProjectedValues();
+        currentStep = step;
+
+        // Reset sub-step counters when navigating to a new step
+        if (step === 2) {
+          currentSubStep2 = 1;
+        } else if (step === 3) {
+          currentSubStep3 = 1;
+        } else if (step === 4) {
+          currentSubStep4 = 1;
+        } else if (step === 5) {
+          currentSubStep5 = 1;
+        }
+
+        showStep(step);
+      }
+
+      function showStep(step) {
+        // Hide all steps first
+        document
+          .querySelectorAll(".step")
+          .forEach((el) => el.classList.remove("active"));
+
+        // Show the current step
+        const currentStepEl = document.getElementById(`step${step}`);
+        if (currentStepEl) {
+          currentStepEl.classList.add("active");
+
+          // Update tab highlighting
+          document
+            .querySelectorAll(".wizard-tabs a")
+            .forEach((tab) => tab.classList.remove("active"));
+          const tabs = document.querySelectorAll(".wizard-tabs a");
+          if (tabs[step - 1]) {
+            tabs[step - 1].classList.add("active");
+          }
+
+          // Show appropriate sub-step
+          if (step === 2) {
+            showSubStep(currentSubStep2, 2);
+          } else if (step === 3) {
+            showSubStep(currentSubStep3, 3);
+          } else if (step === 4) {
+            showSubStep(currentSubStep4, 4);
+          } else if (step === 5) {
+            showSubStep(currentSubStep5, 5);
+          }
+        }
+
+        updateAllProjectedValues();
+      }
+
+      function showSubStep(subStep, step) {
+        const stepElement = document.getElementById(`step${step}`);
+        if (!stepElement) return;
+
+        // Hide all sub-steps in the current step
+        stepElement
+          .querySelectorAll(".sub-step")
+          .forEach((el) => el.classList.remove("active"));
+
+        // Show the target sub-step
+        const subStepElement = document.getElementById(
+          `subStep${step}-${subStep}`
+        );
+        if (subStepElement) {
+          subStepElement.classList.add("active");
+
+          // Update the current sub-step counter
+          if (step === 2) {
+            currentSubStep2 = subStep;
+          } else if (step === 3) {
+            currentSubStep3 = subStep;
+          } else if (step === 4) {
+            currentSubStep4 = subStep;
+          } else if (step === 5) {
+            currentSubStep5 = subStep;
+          }
+        }
+
+        updateAllProjectedValues();
+      }
+
+      function nextStep(step) {
+        updateAllProjectedValues();
+        if (step === 2) {
+          currentSubStep2 = 1; // Reset to first sub-step of Cash Flow
+        } else if (step === 3) {
+          currentSubStep3 = 1; // Reset to first sub-step of Debt
+        } else if (step === 4) {
+          currentSubStep4 = 1; // Reset to first sub-step of Assets
+        } else if (step === 5) {
+          currentSubStep5 = 1; // Reset to first sub-step of Goals
+        }
+        showStep(step);
+      }
+
+      function prevStep(step) {
+        updateAllProjectedValues();
+        if (step === 2) {
+          currentSubStep2 = totalSubSteps2;
+        } else if (step === 3) {
+          currentSubStep3 = totalSubSteps3;
+        } else if (step === 4) {
+          currentSubStep4 = totalSubSteps4;
+        } else if (step === 5) {
+          currentSubStep5 = totalSubSteps5;
+        }
+        showStep(step);
+      }
+
+      function nextSubStep(nextSubStep, step) {
+        updateAllProjectedValues();
+        if (step === 2 && nextSubStep <= totalSubSteps2) {
+          showSubStep(nextSubStep, 2);
+        } else if (step === 3 && nextSubStep <= totalSubSteps3) {
+          showSubStep(nextSubStep, 3);
+        } else if (step === 4 && nextSubStep <= totalSubSteps4) {
+          showSubStep(nextSubStep, 4);
+        } else if (step === 5 && nextSubStep <= totalSubSteps5) {
+          showSubStep(nextSubStep, 5);
+        }
+      }
+
+      function prevSubStep(prevSubStep, step) {
+        updateAllProjectedValues();
+        if (step === 2) {
+          if (prevSubStep >= 1) {
+            showSubStep(prevSubStep, 2);
+          } else {
+            prevStep(1); // Go back to Step 1 if at the first sub-step
+          }
+        } else if (step === 3) {
+          if (prevSubStep >= 1) {
+            showSubStep(prevSubStep, 3);
+          } else {
+            prevStep(2); // Go back to Step 2 if at the first sub-step
+          }
+        } else if (step === 4) {
+          if (prevSubStep >= 1) {
+            showSubStep(prevSubStep, 4);
+          } else {
+            prevStep(3); // Go back to Step 3 if at the first sub-step
+          }
+        } else if (step === 5) {
+          if (prevSubStep >= 1) {
+            showSubStep(prevSubStep, 5);
+          } else {
+            prevStep(4); // Go back to Step 4 if at the first sub-step
+          }
+        }
+      }
+
+      function calculateAge(person) {
+        const dobInput = document.getElementById(`${person}DOB`).value;
+        const ageSpan = document.getElementById(`${person}Age`);
+        if (!dobInput) {
+          ageSpan.textContent = "0";
+          return 0;
+        }
+
+        // Parse mm/yyyy format
+        const [month, year] = dobInput.split("/").map(Number);
+        if (
+          !month ||
+          !year ||
+          month < 1 ||
+          month > 12 ||
+          year < 1900 ||
+          year > new Date().getFullYear()
+        ) {
+          ageSpan.textContent = "Invalid";
+          return 0;
+        }
+
+        // Calculate age based on current date (March 26, 2025)
+        const currentDate = new Date(2025, 2, 26); // March 26, 2025
+        const birthDate = new Date(year, month - 1, 1); // First day of the birth month
+        let age = currentDate.getFullYear() - birthDate.getFullYear();
+        const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+        ageSpan.textContent = age;
+        return age;
+      }
+
+      function calculateDependentAge(index) {
+        const dobInput = document.getElementById(`dependentDOB${index}`).value;
+        const ageSpan = document.getElementById(`dependentAge${index}`);
+        if (!dobInput) {
+          ageSpan.textContent = "0";
+          return 0;
+        }
+
+        // Parse mm/yyyy format
+        const [month, year] = dobInput.split("/").map(Number);
+        if (
+          !month ||
+          !year ||
+          month < 1 ||
+          month > 12 ||
+          year < 1900 ||
+          year > new Date().getFullYear()
+        ) {
+          ageSpan.textContent = "Invalid";
+          return 0;
+        }
+
+        // Calculate age based on current date (March 26, 2025)
+        const currentDate = new Date(2025, 2, 26); // March 26, 2025
+        const birthDate = new Date(year, month - 1, 1); // First day of the birth month
+        let age = currentDate.getFullYear() - birthDate.getFullYear();
+        const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+        if (
+          monthDiff < 0 ||
+          (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+        ageSpan.textContent = age;
+        return age;
+      }
+
+      function toggleSpouseSection() {
+        const maritalStatus = document.getElementById("maritalStatus").value;
+        const spouseSection = document.getElementById("spouseSection");
+        const spouseColumns = document.querySelectorAll(".spouse-column");
+        spouseSection.style.display =
+          maritalStatus === "Married" ? "block" : "none";
+        spouseColumns.forEach((column) => {
+          if (maritalStatus === "Married") {
+            column.classList.add("visible");
+          } else {
+            column.classList.remove("visible");
+            // Clear spouse present values when not married
+            const spouseInputs = document.querySelectorAll(
+              ".spouse-present-value"
+            );
+            spouseInputs.forEach((input) => (input.value = ""));
+          }
+        });
+        if (maritalStatus !== "Married") {
+          document.getElementById("spouseName").value = "";
+          document.getElementById("spouseDOB").value = "";
+          document.getElementById("spouseAge").textContent = "0";
+          document.getElementById("spouseRetirementAge").value = "65";
+          document.getElementById("spouseImmigrationStatus").value = "Citizen";
+        }
+        updateAllProjectedValues(); // Update projected values when marital status changes
+      }
+
+      function updateDependentsSection() {
+        const dependentsCount =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const dependentsSection = document.getElementById("dependentsSection");
+        dependentsSection.innerHTML = "";
+
+        if (dependentsCount > 0) {
+          let html =
+            "<h3>Dependents Information</h3><table><tr><th>Dependent</th><th>Name</th><th>Date of Birth (mm/yyyy)</th><th>Current Age</th></tr>";
+          for (let i = 1; i <= dependentsCount; i++) {
+            html += `
+                        <tr>
+                            <td>Dependent ${i}</td>
+                            <td><input type="text" id="dependentName${i}" placeholder="Enter name"></td>
+                            <td><input type="text" id="dependentDOB${i}" placeholder="mm/yyyy" oninput="calculateDependentAge(${i})"></td>
+                            <td><span id="dependentAge${i}" class="calculated-age">0</span></td>
+                        </tr>
+                    `;
+          }
+          html += "</table>";
+          dependentsSection.innerHTML = html;
+        }
+      }
+
+      function getYearsToRetirement() {
+        const userAge = calculateAge("user");
+        const userRetirementAge =
+          parseFloat(document.getElementById("userRetirementAge").value) || 65;
+
+        const userYearsToRetirement = Math.max(0, userRetirementAge - userAge);
+
+        // Show error message if years is 0
+        const retirementError = document.getElementById("retirementError");
+        if (userYearsToRetirement === 0 && currentStep === 2) {
+          retirementError.style.display = "block";
+        } else {
+          retirementError.style.display = "none";
+        }
+
+        return userYearsToRetirement;
+      }
+
+      function calculateForeignAssetProjectedValue(presentValue, rate, years) {
+        // Formula: PV * (1 + r) * (1 + r)^n
+        return presentValue * (1 + rate) * Math.pow(1 + rate, years);
+      }
+
+      function updateProjectedValue(input, type) {
+        const metric = input.getAttribute("data-metric");
+        const child = input.getAttribute("data-child");
+        const years = getYearsToRetirement();
+
+        let projectedSpan;
+        if (child) {
+          projectedSpan = document.querySelector(
+            `.projected-value[data-metric="${metric}"][data-child="${child}"]`
+          );
+        } else if (type === "future") {
+          projectedSpan = document.querySelector(
+            `.future-value[data-metric="${metric}"]`
+          );
+        } else {
+          projectedSpan = document.querySelector(
+            `.projected-value[data-metric="${metric}"]`
+          );
+        }
+
+        if (!projectedSpan) {
+          console.error(
+            `Projected span not found for metric: ${metric}, child: ${child}`
+          );
+          return;
+        }
+
+        // For Retirement Goals table
+        if (
+          input.closest("table") &&
+          input.closest("table").id === "retirementGoalsTable"
+        ) {
+          const monthlyAmount = parseFloat(input.value) || 0;
+          const planUntil =
+            parseInt(document.getElementById("retirementPlanUntil").value) ||
+            85;
+          const retirementAge =
+            parseInt(document.getElementById("userRetirementAge").value) || 65;
+          const years = Math.max(0, planUntil - retirementAge);
+          const total = monthlyAmount * 12 * years;
+
+          projectedSpan.textContent = total.toFixed(2);
+
+          // Store values for persistence
+          localStorage.setItem("retirement-monthly-amount", monthlyAmount);
+          localStorage.setItem("retirement-plan-until", planUntil);
+          return;
+        }
+
+        // For College Planning table
+        if (
+          input.closest("table") &&
+          input.closest("table").id === "collegeEstateTable"
+        ) {
+          updateCollegeProjectedValue(input);
+          return;
+        }
+
+        // For Retirement Planning table
+        if (
+          input.closest("table") &&
+          input.closest("table").id === "retirementTable"
+        ) {
+          const presentValueInput = document.querySelector(
+            `#retirementTable .present-value[data-metric="${metric}"]`
+          );
+          const rateInput = document.querySelector(
+            `#retirementTable .rate-of-return[data-metric="${metric}"]`
+          );
+          const contributionInput = document.querySelector(
+            `#retirementTable .annual-contribution[data-metric="${metric}"]`
+          );
+
+          const presentValue = parseFloat(presentValueInput.value) || 0;
+          const rateOfReturn = parseFloat(rateInput.value) || 6; // Default to 6% if not provided
+          const annualContribution = parseFloat(contributionInput.value) || 0;
+
+          const rate = rateOfReturn / 100;
+          let projectedValue = calculateRetirementProjectedValue(
+            presentValue,
+            rate,
+            years,
+            annualContribution
+          );
+
+          /*if (metric === "pension") {
+            const maritalStatus =
+              document.getElementById("maritalStatus").value;
+            const ssaAmount = maritalStatus === "Married" ? 48000 : 24000;
+            projectedValue += ssaAmount;
+          }*/
+
+          projectedSpan.textContent = projectedValue.toFixed(2);
+        }
+        // For Real Estate Investments table
+        else if (
+          input.closest("table") &&
+          input.closest("table").id === "realEstateTable"
+        ) {
+          const presentValueInput = document.querySelector(
+            `#realEstateTable .present-value[data-metric="${metric}"]`
+          );
+          const mortgageBalanceInput = document.querySelector(
+            `#realEstateTable .mortgage-balance[data-metric="${metric}"]`
+          );
+          const rateOfReturnInput = document.querySelector(
+            `#realEstateTable .rate-of-return[data-metric="${metric}"]`
+          );
+
+          const presentValue = parseFloat(presentValueInput?.value) || 0;
+          const mortgageBalance = parseFloat(mortgageBalanceInput?.value) || 0;
+          const rateOfReturn = parseFloat(rateOfReturnInput?.value) || 2.5;
+          const rate = rateOfReturn / 100;
+
+          const years = getYearsToRetirement();
+          const netValue = Math.max(0, presentValue - mortgageBalance);
+          const futureValue = netValue * Math.pow(1 + rate, years);
+
+          projectedSpan.textContent = futureValue.toFixed(2);
+        }
+        // For Foreign Assets table
+        else if (
+          input.closest("table") &&
+          input.closest("table").id === "foreignAssetsTable"
+        ) {
+          const presentValueInput = document.querySelector(
+            `#foreignAssetsTable .present-value[data-metric="${metric}"]`
+          );
+          const rateInput = document.querySelector(
+            `#foreignAssetsTable .rate-of-return[data-metric="${metric}"]`
+          );
+
+          const presentValue = parseFloat(presentValueInput?.value) || 0;
+          const rateOfReturn =
+            parseFloat(rateInput?.value) ||
+            (metric === "realEstateForeign" ? 2.5 : 0);
+          const rate = rateOfReturn / 100;
+
+          const projectedValue = calculateForeignAssetProjectedValue(
+            presentValue,
+            rate,
+            years
+          );
+
+          projectedSpan.textContent = projectedValue.toFixed(2);
+        }
+        // For Stocks | Business | Income table
+        else if (
+          input.closest("table") &&
+          input.closest("table").id === "stocksBusinessIncomeTable"
+        ) {
+          const userPresentValueInput = document.querySelector(
+            `#stocksBusinessIncomeTable .user-present-value[data-metric="${metric}"]`
+          );
+          const spousePresentValueInput = document.querySelector(
+            `#stocksBusinessIncomeTable .spouse-present-value[data-metric="${metric}"]`
+          );
+          const rateInput = document.querySelector(
+            `#stocksBusinessIncomeTable .rate-of-return[data-metric="${metric}"]`
+          );
+          const contributionInput = document.querySelector(
+            `#stocksBusinessIncomeTable .annual-contribution[data-metric="${metric}"]`
+          );
+
+          const userPresentValue = parseFloat(userPresentValueInput.value) || 0;
+          const spousePresentValue =
+            parseFloat(spousePresentValueInput.value) || 0;
+          const maritalStatus = document.getElementById("maritalStatus").value;
+          const totalPresentValue =
+            maritalStatus === "Married"
+              ? userPresentValue + spousePresentValue
+              : userPresentValue;
+
+          let defaultRate;
+          if (
+            metric === "stocks" ||
+            metric === "business" ||
+            metric === "alternatives"
+          ) {
+            defaultRate = 7;
+          } else if (metric === "cds") {
+            defaultRate = 2;
+          } else if (metric === "cash") {
+            defaultRate = 0.1;
+          }
+          const rateOfReturn = parseFloat(rateInput.value) || defaultRate;
+          const annualContribution = parseFloat(contributionInput.value) || 0;
+
+          const rate = rateOfReturn / 100;
+          const projectedValue = calculateRetirementProjectedValue(
+            totalPresentValue,
+            rate,
+            years,
+            annualContribution
+          );
+          projectedSpan.textContent = projectedValue.toFixed(2);
+        }
+        // For Family Protection & Insurance table
+        else if (
+          input.closest("table") &&
+          input.closest("table").id === "familyProtectionTable"
+        ) {
+          // Skip projection for Life Insurance at Work and Outside Work
+          if (
+            metric === "lifeWork" ||
+            metric === "lifeOutside" ||
+            metric === "disability" ||
+            metric === "longTermCare"
+          ) {
+            return; // No projection needed; already set to "-"
+          }
+
+          const presentValueInput = document.querySelector(
+            `#familyProtectionTable .present-value[data-metric="${metric}"]`
+          );
+          const rateInput = document.querySelector(
+            `#familyProtectionTable .rate-of-return[data-metric="${metric}"]`
+          );
+          const contributionInput = document.querySelector(
+            `#familyProtectionTable .annual-contribution[data-metric="${metric}"]`
+          );
+
+          const presentValue = parseFloat(presentValueInput.value) || 0;
+          let defaultRate;
+          if (metric === "cashValue") {
+            defaultRate = 6.65; // 6.65% for Cash Value Life Insurance
+          } else if (metric === "hsa") {
+            defaultRate = 4; // 4% for HSA
+          }
+          const rateOfReturn = parseFloat(rateInput.value) || defaultRate;
+          const annualContribution = parseFloat(contributionInput.value) || 0;
+
+          const rate = rateOfReturn / 100;
+          const projectedValue = calculateRetirementProjectedValue(
+            presentValue,
+            rate,
+            years,
+            annualContribution
+          );
+          projectedSpan.textContent = projectedValue.toFixed(2);
+        }
+        // For other tables
+        else {
+          const presentValue = parseFloat(input.value) || 0;
+          const projectedValue = calculateProjectedValue(
+            presentValue,
+            type,
+            years
+          );
+          projectedSpan.textContent = projectedValue.toFixed(2);
+        }
+      }
+
+      function calculateRetirementProjectedValue(
+        presentValue,
+        rate,
+        years,
+        annualContribution
+      ) {
+        //  P(1+i)^n + A((1+i)^n - 1)/i
+        const compoundPrincipal = presentValue * Math.pow(1 + rate, years);
+        const compoundContribution =
+          ((annualContribution * (Math.pow(1 + rate, years) - 1)) / rate) *
+          (1 + rate);
+        return compoundPrincipal + compoundContribution;
+      }
+      function calculateProjectedValue(presentValue, type, years) {
+        const rate = 0.05; // 5% growth rate (placeholder for non-retirement tables)
+        if (type === "projected") {
+          return presentValue * (1 + rate) * Math.pow(1 + rate, years); // Added (1 + rate) for start-of-year compounding
+        } else if (type === "future") {
+          return presentValue; // Placeholder until specific formula provided
+        }
+        return presentValue; // Default
+      }
+
+      function updateGoalProjectedValue(input) {
+        const amount = parseFloat(input.value) || 0;
+        const metric = input.getAttribute("data-metric");
+        const years = getYearsToRetirement();
+
+        const projectedSpan = document.querySelector(
+          `.projected-value[data-metric="${metric}"]`
+        );
+        if (!projectedSpan) {
+          console.error(`Projected span not found for metric: ${metric}`);
+          return;
+        }
+
+        const projectedAmount = calculateGoalValue(amount, years);
+        projectedSpan.textContent = projectedAmount.toFixed(2);
+      }
+
+      function calculateGoalValue(amount, years) {
+        const inflationRate = 0.03; // 3% inflation rate (placeholder)
+        return amount * Math.pow(1 + inflationRate, years);
+      }
+
+      function updateAllProjectedValues() {
+        document
+          .querySelectorAll(
+            ".present-value, .user-present-value, .spouse-present-value"
+          )
+          .forEach((input) => {
+            const type =
+              input.closest("table").id === "familyProtectionTable"
+                ? "future"
+                : "projected";
+            updateProjectedValue(input, type);
+          });
+
+        document.querySelectorAll(".goal-amount").forEach((input) => {
+          updateGoalProjectedValue(input);
+        });
+
+        document
+          .querySelectorAll(
+            ".rate-of-return, .mortgage-balance, .mortgage-years, .mortgage-rate, .annual-contribution"
+          )
+          .forEach((input) => {
+            const type =
+              input.closest("table").id === "familyProtectionTable"
+                ? "future"
+                : "projected";
+            updateProjectedValue(input, type);
+          });
+      }
+
+      function calculateResults() {
+        try {
+          // Initialize totals
+          let totalPresent = 0;
+          let totalProjected = 0;
+          let totalGoalAmount = 0;
+          let totalGoalProjected = 0;
+
+          // Validate required fields first
+          if (!validateRequiredFields()) {
+            alert("Please fill in all required fields before submitting.");
+            return;
+          }
+
+          const assetTables = [
+            "retirementTable",
+            "realEstateTable",
+            "stocksBusinessIncomeTable",
+            "foreignAssetsTable",
+          ];
+
+          // Calculate asset totals with error checking
+          assetTables.forEach((tableId) => {
+            const table = document.getElementById(tableId);
+            if (!table) {
+              console.warn(`Table ${tableId} not found`);
+              return;
+            }
+
+            if (tableId === "stocksBusinessIncomeTable") {
+              const userPresentValues = table.querySelectorAll(
+                ".user-present-value"
+              );
+              const spousePresentValues = table.querySelectorAll(
+                ".spouse-present-value"
+              );
+              const maritalStatus =
+                document.getElementById("maritalStatus").value;
+
+              userPresentValues.forEach((input, index) => {
+                const userPresentValue = parseFloat(input.value) || 0;
+                const spousePresentValue =
+                  maritalStatus === "Married"
+                    ? parseFloat(spousePresentValues[index]?.value) || 0
+                    : 0;
+
+                const totalPresentValue = userPresentValue + spousePresentValue;
+                const metric = input.getAttribute("data-metric");
+                const projectedElement = table.querySelector(
+                  `.projected-value[data-metric="${metric}"]`
+                );
+                const projectedValue =
+                  parseFloat(projectedElement?.textContent) || 0;
+
+                if (!isNaN(totalPresentValue))
+                  totalPresent += totalPresentValue;
+                if (!isNaN(projectedValue)) totalProjected += projectedValue;
+              });
+            } else {
+              const presentValues = table.querySelectorAll(".present-value");
+              presentValues.forEach((input) => {
+                const presentValue = parseFloat(input.value) || 0;
+                const metric = input.getAttribute("data-metric");
+                const projectedElement = table.querySelector(
+                  `.projected-value[data-metric="${metric}"]`
+                );
+                const projectedValue =
+                  parseFloat(projectedElement?.textContent) || 0;
+
+                if (!isNaN(presentValue)) totalPresent += presentValue;
+                if (!isNaN(projectedValue)) totalProjected += projectedValue;
+              });
+            }
+          });
+
+          // Calculate goals with error checking
+          const goalTables = [
+            "collegePlanningTable",
+            "weddingPlanningTable",
+            "retirementGoalsTable",
+            "healthCareTable",
+            "lifeGoalsTable",
+            "legacyPlanningTable",
+          ];
+
+          goalTables.forEach((tableId) => {
+            const table = document.getElementById(tableId);
+            if (!table) {
+              console.warn(`Table ${tableId} not found`);
+              return;
+            }
+
+            const amounts = table.querySelectorAll(".goal-amount");
+            amounts.forEach((input) => {
+              const amount = parseFloat(input.value) || 0;
+              const metric = input.getAttribute("data-metric");
+              const projectedElement = table.querySelector(
+                `.projected-value[data-metric="${metric}"]`
+              );
+              const projectedAmount =
+                parseFloat(projectedElement?.textContent) || 0;
+
+              if (!isNaN(amount)) totalGoalAmount += amount;
+              if (!isNaN(projectedAmount))
+                totalGoalProjected += projectedAmount;
+            });
+          });
+
+          // Update results with formatting
+          const formatNumber = (num) =>
+            new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(num);
+
+          document.getElementById("totalPresent").textContent =
+            formatNumber(totalPresent);
+          document.getElementById("totalProjected").textContent =
+            formatNumber(totalProjected);
+          document.getElementById("totalGoalAmount").textContent =
+            formatNumber(totalGoalAmount);
+          document.getElementById("totalGoalProjected").textContent =
+            formatNumber(totalGoalProjected);
+
+          // Only show results if calculations were successful
+          showStep(6);
+        } catch (error) {
+          console.error("Error calculating results:", error);
+          alert(
+            "An error occurred while calculating results. Please check your inputs and try again."
+          );
+        }
+      }
+
+      // Add validation function
+      function validateRequiredFields() {
+        // Basic personal information validation
+        const requiredFields = ["userName", "userDOB", "userRetirementAge"];
+
+        for (const fieldId of requiredFields) {
+          const field = document.getElementById(fieldId);
+          if (!field || !field.value.trim()) {
+            return false;
+          }
+        }
+
+        // Validate age calculation
+        const userAge = parseInt(
+          document.getElementById("userAge").textContent
+        );
+        if (isNaN(userAge) || userAge <= 0) {
+          return false;
+        }
+
+        return true;
+      }
+
+      function resetWizard() {
+        document
+          .querySelectorAll("input, select")
+          .forEach((input) => (input.value = ""));
+        document
+          .querySelectorAll(
+            ".projected-value, .future-value, .total-value, .calculated-age"
+          )
+          .forEach((span) => (span.textContent = "0"));
+        document.querySelectorAll(".debt-amount").forEach((input) => {
+          input.value = "";
+          const metric = input.getAttribute("data-metric");
+          localStorage.removeItem(`debt-${metric}`);
+        });
+        document.getElementById("maritalStatus").value = "Single";
+        toggleSpouseSection();
+        document.getElementById("dependents").value = "0";
+        updateDependentsSection();
+        document.getElementById("userRetirementAge").value = "65";
+        document.getElementById("spouseRetirementAge").value = "65";
+        showStep(1);
+      }
+
+      // Initialize the wizard on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        toggleSpouseSection();
+        updateAllProjectedValues();
+      });
+
+      function generateCollegePlanningRows() {
+        const dependentsCount =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const collegeTableBody = document.querySelector("#collegePlanningBody");
+        if (!collegeTableBody) return;
+
+        collegeTableBody.innerHTML = "";
+
+        for (let i = 1; i <= dependentsCount; i++) {
+          const name =
+            document.getElementById(`dependentName${i}`)?.value || `Child ${i}`;
+          const row = document.createElement("tr");
+          row.innerHTML = `
+      <td class="dependent-label">${name}</td>
+      <td><input type="number" class="present-value" data-metric="529-child${i}" data-child="${i}" step="0.01" oninput="updateCollegeProjectedValue(this)"></td>
+      <td><input type="number" class="annual-contribution" data-metric="529-child${i}" data-child="${i}" step="0.01" oninput="updateCollegeProjectedValue(this)"></td>
+      <td><input type="number" class="rate-of-return" data-metric="529-child${i}" data-child="${i}" min="0" step="0.01" value="1.58" oninput="updateCollegeProjectedValue(this)"></td>
+      <td><span class="projected-value" data-metric="529-child${i}" data-child="${i}">0.00</span></td>
+    `;
+          collegeTableBody.appendChild(row);
+        }
+      }
+
+      // Ensure the table rows update if dependent names change
+      document
+        .getElementById("dependentsSection")
+        ?.addEventListener("input", function (e) {
+          if (e.target && e.target.id.startsWith("dependentName")) {
+            generateCollegePlanningRows();
+          }
+        });
+    </script>
+    <script>
+      function renderCollege529Rows() {
+        const dependentsCount =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const tbody = document.getElementById("college529Body");
+        tbody.innerHTML = "";
+        for (let i = 1; i <= dependentsCount; i++) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+      <td>529 Plan - Child ${i}</td>
+      <td><input type="number" class="present-value" data-metric="529-child${i}" data-child="${i}" min="0" step="0.01" oninput="updateCollegeProjectedValue(this)"></td>
+      <td><input type="number" class="annual-contribution" data-metric="529-child${i}" data-child="${i}" min="0" step="0.01" oninput="updateCollegeProjectedValue(this)"></td>
+      <td><input type="number" class="rate-of-return" data-metric="529-child${i}" data-child="${i}" min="0" step="0.01" placeholder="1.58" oninput="updateCollegeProjectedValue(this)"></td>
+      <td><span class="projected-value" data-metric="529-child${i}" data-child="${i}">0.00</span></td>
+    `;
+          tbody.appendChild(row);
+        }
+      }
+
+      function updateCollegeProjectedValue(input) {
+        const metric = input.getAttribute("data-metric");
+        const child = input.getAttribute("data-child");
+        const row = input.closest("tr");
+
+        const presentValue =
+          parseFloat(row.querySelector(".present-value")?.value) || 0;
+        const contribution =
+          parseFloat(row.querySelector(".annual-contribution")?.value) || 0;
+        const rateInput =
+          parseFloat(row.querySelector(".rate-of-return")?.value) || 4;
+        const projectedSpan = row.querySelector(".projected-value");
+        const dobInput = document.getElementById(`dependentDOB${child}`)?.value;
+
+        let age = 0;
+        if (dobInput) {
+          const [month, year] = dobInput.split("/").map(Number);
+          const currentDate = new Date(2025, 2, 26);
+          const birthDate = new Date(year, month - 1);
+          age = currentDate.getFullYear() - birthDate.getFullYear();
+          if (
+            currentDate.getMonth() < birthDate.getMonth() ||
+            (currentDate.getMonth() === birthDate.getMonth() &&
+              currentDate.getDate() < birthDate.getDate())
+          ) {
+            age--;
+          }
+        }
+
+        const yearsToCollege = Math.max(0, 18 - age);
+        const rate = rateInput / 100;
+
+        // Updated formula with start-of-year compounding
+        const futureValuePrincipal =
+          presentValue * (1 + rate) * Math.pow(1 + rate, yearsToCollege - 1);
+        const futureValueContributions =
+          contribution *
+          ((Math.pow(1 + rate, yearsToCollege) - 1) / rate) *
+          (1 + rate);
+        const projectedValue = futureValuePrincipal + futureValueContributions;
+
+        projectedSpan.textContent = projectedValue.toFixed(2);
+      }
+
+      // Hook render function to updateDependentsSection
+      const originalUpdateDependents = updateDependentsSection;
+      updateDependentsSection = function () {
+        originalUpdateDependents();
+        renderCollege529Rows();
+      };
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        function updateCollegeTable() {
+          const tableBody = document.querySelector("#collegePlanningBody");
+          tableBody.innerHTML = "";
+          const dependentsCount =
+            parseInt(document.getElementById("dependents").value) || 0;
+
+          for (let i = 1; i <= dependentsCount; i++) {
+            const name =
+              document.getElementById(`dependentName${i}`)?.value ||
+              `Child ${i}`;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td>${name}</td>
+        <td><input type="number" class="present-value" data-child="${i}" oninput="updateCollegeProjectedValue(${i})" /></td>
+        <td><input type="number" class="annual-contribution" data-child="${i}" oninput="updateCollegeProjectedValue(${i})" /></td>
+        <td><input type="number" class="rate-of-return" data-child="${i}" value="1.58" oninput="updateCollegeProjectedValue(${i})" /></td>
+        <td><span class="projected-value" data-child="${i}">0.00</span></td>
+      `;
+            tableBody.appendChild(row);
+          }
+        }
+
+        document
+          .getElementById("dependents")
+          .addEventListener("input", updateCollegeTable);
+        document
+          .querySelectorAll("[id^='dependentName']")
+          .forEach((input) =>
+            input.addEventListener("input", updateCollegeTable)
+          );
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const retirementAge = parseInt(
+          localStorage.getItem("retirementAge") || "65"
+        );
+        const rows = document.querySelectorAll("#step3_3 tbody tr");
+
+        rows.forEach((row) => {
+          const amountInput = row.querySelector("input");
+          const retirementDropdown = row.querySelector(
+            "select.retirement-until"
+          );
+          const projectedCell = row.querySelector("td:last-child");
+
+          function calculate() {
+            const monthlyAmount = parseFloat(amountInput.value) || 0;
+            const untilAge = parseInt(retirementDropdown.value) || 85;
+            const years = untilAge - retirementAge;
+            const projected = monthlyAmount * 12 * years;
+            projectedCell.textContent = projected.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+          }
+
+          amountInput.addEventListener("input", calculate);
+          retirementDropdown.addEventListener("change", calculate);
+        });
+      });
+    </script>
+    <script>
+      function updateRetirementProjectedValue() {
+        const monthlyExpensesSpan = document.querySelector(
+          '.projected-value[data-metric="monthly-expenses"]'
+        );
+        const retirementIncomeInput = document.querySelector(
+          '.goal-amount[data-metric="retirement-income"]'
+        );
+        const projectedSpan = document.querySelector(
+          '.projected-value[data-metric="retirement-income"]'
+        );
+        const planUntil =
+          parseInt(document.getElementById("retirementPlanUntil").value) || 85;
+        const retirementAge =
+          parseInt(document.getElementById("userRetirementAge").value) || 65;
+
+        if (monthlyExpensesSpan && retirementIncomeInput && projectedSpan) {
+          const monthlyAmount =
+            parseFloat(monthlyExpensesSpan.textContent) || 0;
+          retirementIncomeInput.value = monthlyAmount.toFixed(2);
+          const years = Math.max(0, planUntil - retirementAge);
+          const total = monthlyAmount * 12 * years;
+          projectedSpan.textContent = total.toFixed(2);
+        }
+      }
+      document
+        .querySelector('.goal-amount[data-metric="retirement-income"]')
+        .addEventListener("input", updateRetirementProjectedValue);
+    </script>
+    <script>
+      function updateLongTermCareAmount() {
+        const maritalStatus = document.getElementById("maritalStatus").value;
+        const span = document.getElementById("longTermCareAmount");
+        if (span) {
+          if (maritalStatus === "Married") {
+            span.textContent = "$480,000";
+          } else {
+            span.textContent = "$240,000";
+          }
+        }
+      }
+
+      // Call this function on page load and whenever marital status changes
+      document.addEventListener("DOMContentLoaded", updateLongTermCareAmount);
+      document
+        .getElementById("maritalStatus")
+        .addEventListener("change", updateLongTermCareAmount);
+    </script>
+
+    <script>
+      function updateHealthCareOutOfPocketAmount() {
+        const maritalStatus = document.getElementById("maritalStatus").value;
+        const span = document.getElementById("healthCareOutOfPocketAmount");
+        if (span) {
+          if (maritalStatus === "Married") {
+            span.textContent = "$320,000";
+          } else {
+            span.textContent = "$160,000";
+          }
+        }
+      }
+
+      document.addEventListener(
+        "DOMContentLoaded",
+        updateHealthCareOutOfPocketAmount
+      );
+      document
+        .getElementById("maritalStatus")
+        .addEventListener("change", updateHealthCareOutOfPocketAmount);
+    </script>
+
+    <script>
+      const dependentNames = [];
+
+      function updateDependentsSection() {
+        const dependentsCount =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const dependentsSection = document.getElementById("dependentsSection");
+        dependentsSection.innerHTML = "";
+        dependentNames.length = 0; // Clear previous entries
+
+        if (dependentsCount > 0) {
+          let html =
+            "<h3>Dependents Information</h3><table><tr><th>Dependent</th><th>Name</th><th>Date of Birth (mm/yyyy)</th><th>Current Age</th></tr>";
+          for (let i = 1; i <= dependentsCount; i++) {
+            html += `
+          <tr>
+            <td>Dependent ${i}</td>
+            <td><input type="text" id="dependentName${i}" placeholder="Enter name" oninput="saveDependentName(${i}, this.value)"></td>
+            <td><input type="text" id="dependentDOB${i}" placeholder="mm/yyyy" oninput="calculateDependentAge(${i})"></td>
+            <td><span id="dependentAge${i}" class="calculated-age">0</span></td>
+          </tr>
+        `;
+            dependentNames.push(""); // Reserve space
+          }
+          html += "</table>";
+          dependentsSection.innerHTML = html;
+        }
+      }
+
+      function saveDependentName(index, name) {
+        dependentNames[index - 1] = name;
+      }
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initial setup
+        updateDependentsSection();
+
+        // Add event listener for dependents count changes
+        document
+          .getElementById("dependents")
+          .addEventListener("input", function () {
+            updateDependentsSection();
+            updateDependentTables();
+          });
+      });
+
+      function updateDependentTables() {
+        const dependentsCount =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const collegePlanningTableBody = document.getElementById(
+          "collegePlanningTableBody"
+        );
+        const weddingPlanningTableBody = document.getElementById(
+          "weddingPlanningTableBody"
+        );
+
+        if (!collegePlanningTableBody || !weddingPlanningTableBody) {
+          console.error("Table bodies not found");
+          return;
+        }
+
+        // Clear existing rows
+        collegePlanningTableBody.innerHTML = "";
+        weddingPlanningTableBody.innerHTML = "";
+
+        // Add new rows for each dependent
+        for (let i = 1; i <= dependentsCount; i++) {
+          const name =
+            document.getElementById(`dependentName${i}`)?.value || `Child ${i}`;
+
+          // Add row to college planning table
+          const collegeRow = document.createElement("tr");
+          collegeRow.innerHTML = `
+            <td>${name}</td>
+            <td>
+              <input
+                class="goal-amount"
+                data-metric="college-child${i}"
+                min="0"
+                oninput="updateGoalProjectedValue(this)"
+                placeholder="Enter goal amount"
+                step="0.01"
+                style="width: 200px"
+                type="number"
+              />
+            </td>
+          `;
+          collegePlanningTableBody.appendChild(collegeRow);
+
+          // Add row to wedding planning table
+          const weddingRow = document.createElement("tr");
+          weddingRow.innerHTML = `
+            <td>${name}</td>
+            <td>
+              <input
+                class="goal-amount"
+                data-metric="wedding-child${i}"
+                min="0"
+                oninput="updateGoalProjectedValue(this)"
+                placeholder="Enter goal amount"
+                step="0.01"
+                style="width: 200px"
+                type="number"
+              />
+            </td>
+          `;
+          weddingPlanningTableBody.appendChild(weddingRow);
+        }
+      }
+
+      function updateDependentsSection() {
+        const dependentsCount =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const dependentsSection = document.getElementById("dependentsSection");
+
+        if (!dependentsSection) {
+          console.error("Dependents section not found");
+          return;
+        }
+
+        dependentsSection.innerHTML = "";
+
+        if (dependentsCount > 0) {
+          let html =
+            "<h3>Dependents Information</h3><table><tr><th>Dependent</th><th>Name</th><th>Date of Birth (mm/yyyy)</th><th>Current Age</th></tr>";
+          for (let i = 1; i <= dependentsCount; i++) {
+            html += `
+              <tr>
+                <td>Dependent ${i}</td>
+                <td><input type="text" id="dependentName${i}" placeholder="Enter name" oninput="handleDependentNameChange(${i})"></td>
+                <td><input type="text" id="dependentDOB${i}" placeholder="mm/yyyy" oninput="calculateDependentAge(${i})"></td>
+                <td><span id="dependentAge${i}" class="calculated-age">0</span></td>
+              </tr>
+            `;
+          }
+          html += "</table>";
+          dependentsSection.innerHTML = html;
+        }
+
+        // Update the college and wedding planning tables
+        updateDependentTables();
+      }
+
+      function handleDependentNameChange(index) {
+        // Update tables when a dependent's name changes
+        updateDependentTables();
+      }
+
+      // Add this to your existing event listeners
+      document.addEventListener("DOMContentLoaded", function () {
+        const dependentsInput = document.getElementById("dependents");
+        if (dependentsInput) {
+          dependentsInput.addEventListener("input", function () {
+            updateDependentsSection();
+            updateDependentTables();
+          });
+        }
+      });
+    </script>
+    <script>
+      // Function to restore and manage retirement values
+      function restoreRetirementValues() {
+        // Get the input elements
+        const monthlyInput = document.querySelector(
+          '.goal-amount[data-metric="retirement-income"]'
+        );
+        const planUntilSelect = document.getElementById("retirementPlanUntil");
+
+        // Get saved values from localStorage
+        const savedAmount = localStorage.getItem("retirement-monthly-amount");
+        const savedPlanUntil = localStorage.getItem("retirement-plan-until");
+
+        // Restore saved values if they exist
+        if (savedAmount && monthlyInput) {
+          monthlyInput.value = savedAmount;
+        }
+        if (savedPlanUntil && planUntilSelect) {
+          planUntilSelect.value = savedPlanUntil;
+        }
+
+        // Update projected values
+        if (monthlyInput) {
+          updateProjectedValue(monthlyInput, "projected");
+        }
+      }
+      // Set up event listeners when document loads
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initial restoration of values
+        restoreRetirementValues();
+
+        // Get input elements
+        const monthlyInput = document.querySelector(
+          '.goal-amount[data-metric="retirement-income"]'
+        );
+        const planUntilSelect = document.getElementById("retirementPlanUntil");
+
+        // Add listener for monthly input changes
+        if (monthlyInput) {
+          monthlyInput.addEventListener("input", function () {
+            // Save to localStorage
+            localStorage.setItem("retirement-monthly-amount", this.value);
+            // Update projections
+            updateProjectedValue(this, "projected");
+          });
+        }
+
+        // Add listener for retirement age selection changes
+        if (planUntilSelect) {
+          planUntilSelect.addEventListener("change", function () {
+            // Save to localStorage
+            localStorage.setItem("retirement-plan-until", this.value);
+            // Update projections for monthly input
+            const monthlyInput = document.querySelector(
+              '.goal-amount[data-metric="retirement-income"]'
+            );
+            if (monthlyInput) {
+              updateProjectedValue(monthlyInput, "projected");
+            }
+          });
+        }
+      });
+
+      // Add restoration to navigation buttons
+      document.querySelectorAll("button").forEach((button) => {
+        if (
+          button.onclick?.toString().includes("nextSubStep") ||
+          button.onclick?.toString().includes("prevSubStep")
+        ) {
+          button.addEventListener("click", restoreRetirementValues);
+        }
+      });
+    </script>
+    <script>
+      function updateCashFlowProjectedValue(input) {
+        const metric = input.getAttribute("data-metric");
+        const row = input.closest("tr");
+        const userPresentValue =
+          parseFloat(row.querySelector(".user-present-value")?.value) || 0;
+        const spousePresentValue =
+          parseFloat(row.querySelector(".spouse-present-value")?.value) || 0;
+        const maritalStatus = document.getElementById("maritalStatus").value;
+        const projectedSpan = row.querySelector(".projected-value");
+        const inflationInput = row.querySelector(".inflation-rate");
+
+        if (!projectedSpan || metric === "monthly-mortgage") {
+          return; // Skip for mortgage row or if projected span not found
+        }
+
+        const totalPresentValue =
+          maritalStatus === "Married"
+            ? userPresentValue + spousePresentValue
+            : userPresentValue;
+        const inflationRate = (parseFloat(inflationInput?.value) || 0) / 100;
+
+        const years = getYearsToRetirement();
+        const projectedValue =
+          totalPresentValue * Math.pow(1 + inflationRate, years);
+        projectedSpan.textContent = projectedValue.toFixed(2);
+
+        // If this is monthly expenses, update the retirement planning monthly income
+        if (metric === "monthly-expenses") {
+          const retirementIncomeInput = document.querySelector(
+            '.goal-amount[data-metric="retirement-income"]'
+          );
+          if (retirementIncomeInput) {
+            retirementIncomeInput.value = projectedValue.toFixed(2);
+            updateRetirementProjectedValue();
+          }
+        }
+      }
+
+      // Update the step numbers in the wizard tabs
+      document.addEventListener("DOMContentLoaded", function () {
+        const wizardTabs = document.querySelector(".wizard-tabs");
+        if (wizardTabs) {
+          const tabs = wizardTabs.querySelectorAll("a");
+          tabs.forEach((tab, index) => {
+            tab.setAttribute(
+              "onclick",
+              `navigateToStep(${index + 1}); return false;`
+            );
+          });
+        }
+      });
+    </script>
+    <script>
+      // Add updateDebtAmount function
+      function updateDebtAmount(input) {
+        const metric = input.getAttribute("data-metric");
+        const amount = parseFloat(input.value) || 0;
+
+        // Store the debt amount in localStorage for persistence
+        localStorage.setItem(`debt-${metric}`, amount);
+      }
+    </script>
+  </body>
+</html>
