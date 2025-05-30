@@ -185,6 +185,110 @@
       .spouse-column.visible {
         display: table-cell;
       }
+
+      #personalOverview {
+        margin-bottom: 20px;
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #bdb76b;
+        font-size: 0.9em;
+      }
+
+      #personalOverview h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.1em;
+      }
+
+      #personalOverview table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      #personalOverview td {
+        padding: 4px 8px;
+        border: none;
+        line-height: 1.2;
+      }
+
+      #personalOverview strong {
+        color: #bdb76b;
+      }
+
+      #personalOverview table table {
+        margin: 5px 0;
+        background: rgba(189, 183, 107, 0.1);
+        border-radius: 4px;
+      }
+
+      #spouseInfoSection,
+      #dependentsInfoSection {
+        border-top: 1px solid rgba(189, 183, 107, 0.3);
+        margin-top: 5px;
+        padding-top: 5px;
+      }
+
+      #personalOverview table table td {
+        padding: 2px 8px;
+      }
+
+      #cashFlowTable {
+        font-size: 0.9em;
+        margin-bottom: 15px;
+      }
+
+      #cashFlowTable th,
+      #cashFlowTable td {
+        padding: 6px;
+      }
+
+      #cashFlowTable input {
+        padding: 4px;
+        font-size: 0.9em;
+      }
+
+      #step2 h2,
+      #step2 h3 {
+        margin-bottom: 10px;
+        font-size: 1.2em;
+      }
+
+      .debt-overview {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #bdb76b;
+        font-size: 0.9em;
+        margin-bottom: 20px;
+      }
+
+      .debt-overview h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.1em;
+      }
+
+      .debt-overview table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .debt-overview td {
+        padding: 4px 8px;
+        border: none;
+        line-height: 1.2;
+      }
+
+      .debt-overview .priority-high {
+        color: #ff5555;
+      }
+
+      .debt-overview .priority-medium {
+        color: #ffd700;
+      }
+
+      .debt-overview .priority-low {
+        color: #4caf50;
+      }
     </style>
   </head>
   <body>
@@ -685,6 +789,27 @@
             <button onclick="nextStep(4)">Next</button>
           </div>
         </div>
+        <!-- Add this inside the debt step, after the debtAnalysisTable -->
+        <div class="debt-overview">
+          <h3>Debt Overview & Recommendations</h3>
+          <table>
+            <tr>
+              <td><strong>Total Debt:</strong></td>
+              <td>
+                <span id="totalDebtAmount" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Priority Focus:</strong></td>
+              <td><span id="debtPriorityFocus">-</span></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <div id="debtRecommendations"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
       <!-- Step 4: Assets -->
       <div class="step" id="step4">
@@ -942,8 +1067,8 @@
             </tbody>
           </table>
           <div class="buttons">
-            <button onclick="prevSubStep(1, 2)">Previous</button>
-            <button onclick="nextSubStep(2, 2)">Next</button>
+            <button onclick="prevStep(3)">Previous</button>
+            <button onclick="nextSubStep(2, 4)">Next</button>
           </div>
         </div>
         <!-- Sub-Step 4.2: Real Estate Investments -->
@@ -1117,8 +1242,8 @@
             </tbody>
           </table>
           <div class="buttons">
-            <button onclick="prevSubStep(1, 2)">Previous</button>
-            <button onclick="nextSubStep(3, 2)">Next</button>
+            <button onclick="prevSubStep(1, 4)">Previous</button>
+            <button onclick="nextSubStep(3, 4)">Next</button>
           </div>
         </div>
         <!-- Sub-Step 4.3: Stocks | Business | Income -->
@@ -1378,8 +1503,8 @@
             </tbody>
           </table>
           <div class="buttons">
-            <button onclick="prevSubStep(2, 2)">Previous</button>
-            <button onclick="nextSubStep(4, 2)">Next</button>
+            <button onclick="prevSubStep(2, 4)">Previous</button>
+            <button onclick="nextSubStep(4, 4)">Next</button>
           </div>
         </div>
         <!-- Sub-Step 4.4: Family Protection & Insurance -->
@@ -1537,8 +1662,8 @@
             </tbody>
           </table>
           <div class="buttons">
-            <button onclick="prevSubStep(2, 2)">Previous</button>
-            <button onclick="nextSubStep(4, 2)">Next</button>
+            <button onclick="prevSubStep(3, 4)">Previous</button>
+            <button onclick="nextSubStep(5, 4)">Next</button>
           </div>
         </div>
         <!-- Sub-Step 4.5: College Planning / Estate Planning -->
@@ -1575,8 +1700,8 @@
             </tbody>
           </table>
           <div class="buttons">
-            <button onclick="prevSubStep(3, 2)">Previous</button>
-            <button onclick="nextSubStep(5, 2)">Next</button>
+            <button onclick="prevSubStep(4, 4)">Previous</button>
+            <button onclick="nextSubStep(6, 4)">Next</button>
           </div>
           <script>
             function renderCollegePlanningRows() {
@@ -1808,8 +1933,8 @@
             </tbody>
           </table>
           <div class="buttons">
-            <button onclick="prevSubStep(4, 2)">Previous</button>
-            <button onclick="nextStep(4)">Next</button>
+            <button onclick="prevSubStep(5, 4)">Previous</button>
+            <button onclick="nextStep(5)">Next</button>
           </div>
         </div>
       </div>
@@ -2069,6 +2194,247 @@
       <!-- Results Page -->
       <div class="step" id="step6">
         <h2>Your Financial Analysis Results</h2>
+
+        <!-- Personal Overview Section -->
+        <div id="personalOverview">
+          <h3>Personal Overview</h3>
+          <table>
+            <tr>
+              <td><strong>Name:</strong></td>
+              <td><span id="resultName">-</span></td>
+            </tr>
+            <tr>
+              <td><strong>Age:</strong></td>
+              <td><span id="resultAge">-</span> years</td>
+            </tr>
+            <tr>
+              <td><strong>Retirement Age:</strong></td>
+              <td><span id="resultRetirementAge">-</span> years</td>
+            </tr>
+            <tr>
+              <td><strong>Years Until Retirement:</strong></td>
+              <td><span id="resultYearsToRetirement">-</span> years</td>
+            </tr>
+            <tr>
+              <td><strong>Marital Status:</strong></td>
+              <td><span id="resultMaritalStatus">-</span></td>
+            </tr>
+            <tr>
+              <td><strong>City & State:</strong></td>
+              <td><span id="resultLocation">-</span></td>
+            </tr>
+            <tr id="spouseInfoSection" style="display: none">
+              <td colspan="2">
+                <strong>Spouse Information</strong>
+                <table style="margin-left: 20px">
+                  <tr>
+                    <td><strong>Name:</strong></td>
+                    <td><span id="resultSpouseName">-</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Age:</strong></td>
+                    <td><span id="resultSpouseAge">-</span> years</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Retirement Age:</strong></td>
+                    <td><span id="resultSpouseRetirementAge">-</span> years</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr id="dependentsInfoSection" style="display: none">
+              <td colspan="2">
+                <strong>Dependents Information</strong>
+                <table style="margin-left: 20px" id="resultDependentsTable">
+                  <!-- Dependent rows will be added dynamically -->
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Cash Flow Overview Section -->
+        <div
+          id="cashFlowOverview"
+          style="
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bdb76b;
+            font-size: 0.9em;
+          "
+        >
+          <h3>Cash Flow Overview</h3>
+          <table style="width: 100%; border-collapse: collapse">
+            <tr>
+              <td><strong>Monthly Income:</strong></td>
+              <td>
+                <span id="resultMonthlyIncome" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Monthly Expenses (without Mortgage):</strong></td>
+              <td>
+                <span id="resultMonthlyExpenses" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Monthly Mortgage:</strong></td>
+              <td>
+                <span id="resultMonthlyMortgage" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr style="border-top: 1px solid #bdb76b; margin-top: 10px">
+              <td><strong>Cash Flow Status:</strong></td>
+              <td>
+                <span id="resultCashFlowStatus" class="total-value">-</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Amount:</strong></td>
+              <td>
+                <span id="resultCashFlowAmount" class="total-value">0.00</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Emergency Fund Overview Section -->
+        <div
+          id="emergencyFundOverview"
+          style="
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bdb76b;
+            font-size: 0.9em;
+          "
+        >
+          <h3>Emergency Fund Overview</h3>
+          <table style="width: 100%; border-collapse: collapse">
+            <tr>
+              <td><strong>Recommended Emergency Fund (3 months):</strong></td>
+              <td>
+                <span id="resultEmergencyFund3" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Recommended Emergency Fund (6 months):</strong></td>
+              <td>
+                <span id="resultEmergencyFund6" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Current Emergency Fund:</strong></td>
+              <td>
+                <span id="resultCurrentEmergencyFund" class="total-value"
+                  >0.00</span
+                >
+              </td>
+            </tr>
+            <tr style="border-top: 1px solid #bdb76b; margin-top: 10px">
+              <td><strong>Status:</strong></td>
+              <td>
+                <span id="resultEmergencyFundStatus" class="total-value"
+                  >-</span
+                >
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Protection Overview -->
+        <div
+          class="protection-overview"
+          style="
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bdb76b;
+            font-size: 0.9em;
+          "
+        >
+          <h3>Protection Overview</h3>
+          <table style="width: 100%; border-collapse: collapse">
+            <tr>
+              <td><strong>Household Coverage Needed:</strong></td>
+              <td>
+                <span id="resultHouseholdCoverage" class="total-value"
+                  >0.00</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Current Life Insurance Coverage:</strong></td>
+              <td>
+                <span id="resultCurrentLifeInsurance" class="total-value"
+                  >0.00</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Coverage Gap:</strong></td>
+              <td>
+                <span id="resultCoverageGap" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr id="spouseCoverageSection" style="display: none">
+              <td colspan="2" style="padding-top: 10px">
+                <strong>Spouse Coverage</strong>
+                <table style="width: 100%; margin-top: 5px">
+                  <tr>
+                    <td><strong>Coverage Needed:</strong></td>
+                    <td>
+                      <span id="resultSpouseCoverageNeeded" class="total-value"
+                        >0.00</span
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Current Coverage:</strong></td>
+                    <td>
+                      <span id="resultSpouseCurrentCoverage" class="total-value"
+                        >0.00</span
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Coverage Gap:</strong></td>
+                    <td>
+                      <span id="resultSpouseCoverageGap" class="total-value"
+                        >0.00</span
+                      >
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Debt Summary -->
+        <div class="debt-overview">
+          <h3>Debt Summary</h3>
+          <table>
+            <tr>
+              <td><strong>Total Debt:</strong></td>
+              <td>
+                <span id="resultTotalDebt" class="total-value">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Priority Focus:</strong></td>
+              <td><span id="resultDebtAction">-</span></td>
+            </tr>
+          </table>
+          <div id="resultDebtRecommendations" style="margin-top: 10px">
+            <!-- Recommendations will be populated dynamically -->
+          </div>
+        </div>
+
         <div id="assetResults">
           <h3>Assets Summary</h3>
           <table>
@@ -2082,6 +2448,7 @@
             </tr>
           </table>
         </div>
+
         <div id="goalResults">
           <h3>Goals Summary</h3>
           <table>
@@ -2099,6 +2466,7 @@
             </tr>
           </table>
         </div>
+
         <p style="text-align: center; font-size: 0.9em">
           FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
         </p>
@@ -2205,6 +2573,9 @@
           } else if (step === 5) {
             currentSubStep5 = subStep;
           }
+
+          // Save current state
+          saveFinancialData();
         }
 
         updateAllProjectedValues();
@@ -2246,6 +2617,10 @@
           showSubStep(nextSubStep, 3);
         } else if (step === 4 && nextSubStep <= totalSubSteps4) {
           showSubStep(nextSubStep, 4);
+          // If we're at the last sub-step of assets and trying to go next
+          if (nextSubStep > totalSubSteps4) {
+            nextStep(5); // Move to the Goals section
+          }
         } else if (step === 5 && nextSubStep <= totalSubSteps5) {
           showSubStep(nextSubStep, 5);
         }
@@ -2257,25 +2632,25 @@
           if (prevSubStep >= 1) {
             showSubStep(prevSubStep, 2);
           } else {
-            prevStep(1); // Go back to Step 1 if at the first sub-step
+            prevStep(1);
           }
         } else if (step === 3) {
           if (prevSubStep >= 1) {
             showSubStep(prevSubStep, 3);
           } else {
-            prevStep(2); // Go back to Step 2 if at the first sub-step
+            prevStep(2);
           }
         } else if (step === 4) {
           if (prevSubStep >= 1) {
             showSubStep(prevSubStep, 4);
           } else {
-            prevStep(3); // Go back to Step 3 if at the first sub-step
+            prevStep(3);
           }
         } else if (step === 5) {
           if (prevSubStep >= 1) {
             showSubStep(prevSubStep, 5);
           } else {
-            prevStep(4); // Go back to Step 4 if at the first sub-step
+            prevStep(4);
           }
         }
       }
@@ -2472,9 +2847,15 @@
 
           projectedSpan.textContent = total.toFixed(2);
 
-          // Store values for persistence
-          localStorage.setItem("retirement-monthly-amount", monthlyAmount);
-          localStorage.setItem("retirement-plan-until", planUntil);
+          // Update financial data store
+          financialData.goals.retirement = {
+            monthlyIncome: monthlyAmount,
+            projectedAmount: total,
+            planUntil: planUntil,
+          };
+
+          calculateTotals();
+          saveFinancialData();
           return;
         }
 
@@ -2514,14 +2895,10 @@
             annualContribution
           );
 
-          /*if (metric === "pension") {
-            const maritalStatus =
-              document.getElementById("maritalStatus").value;
-            const ssaAmount = maritalStatus === "Married" ? 48000 : 24000;
-            projectedValue += ssaAmount;
-          }*/
-
           projectedSpan.textContent = projectedValue.toFixed(2);
+
+          // Update financial data store
+          updateFinancialDataStore(input);
         }
         // For Real Estate Investments table
         else if (
@@ -2548,6 +2925,9 @@
           const futureValue = netValue * Math.pow(1 + rate, years);
 
           projectedSpan.textContent = futureValue.toFixed(2);
+
+          // Update financial data store
+          updateFinancialDataStore(input);
         }
         // For Foreign Assets table
         else if (
@@ -2574,6 +2954,9 @@
           );
 
           projectedSpan.textContent = projectedValue.toFixed(2);
+
+          // Update financial data store
+          updateFinancialDataStore(input);
         }
         // For Stocks | Business | Income table
         else if (
@@ -2625,6 +3008,9 @@
             annualContribution
           );
           projectedSpan.textContent = projectedValue.toFixed(2);
+
+          // Update financial data store
+          updateFinancialDataStore(input);
         }
         // For Family Protection & Insurance table
         else if (
@@ -2638,7 +3024,9 @@
             metric === "disability" ||
             metric === "longTermCare"
           ) {
-            return; // No projection needed; already set to "-"
+            // Update financial data store with just present value
+            updateFinancialDataStore(input);
+            return;
           }
 
           const presentValueInput = document.querySelector(
@@ -2669,6 +3057,9 @@
             annualContribution
           );
           projectedSpan.textContent = projectedValue.toFixed(2);
+
+          // Update financial data store
+          updateFinancialDataStore(input);
         }
         // For other tables
         else {
@@ -2679,6 +3070,9 @@
             years
           );
           projectedSpan.textContent = projectedValue.toFixed(2);
+
+          // Update financial data store
+          updateFinancialDataStore(input);
         }
       }
 
@@ -2759,129 +3153,327 @@
 
       function calculateResults() {
         try {
-          // Initialize totals
-          let totalPresent = 0;
-          let totalProjected = 0;
-          let totalGoalAmount = 0;
-          let totalGoalProjected = 0;
-
           // Validate required fields first
           if (!validateRequiredFields()) {
             alert("Please fill in all required fields before submitting.");
             return;
           }
 
-          const assetTables = [
-            "retirementTable",
-            "realEstateTable",
-            "stocksBusinessIncomeTable",
-            "foreignAssetsTable",
-          ];
+          // Update Personal Overview
+          document.getElementById("resultName").textContent =
+            document.getElementById("userName").value || "-";
+          document.getElementById("resultAge").textContent =
+            document.getElementById("userAge").textContent || "-";
+          document.getElementById("resultRetirementAge").textContent =
+            document.getElementById("userRetirementAge").value || "-";
+          document.getElementById("resultYearsToRetirement").textContent =
+            getYearsToRetirement() || "-";
+          document.getElementById("resultMaritalStatus").textContent =
+            document.getElementById("maritalStatus").value || "-";
+          document.getElementById("resultLocation").textContent =
+            document.getElementById("cityState").value || "-";
 
-          // Calculate asset totals with error checking
-          assetTables.forEach((tableId) => {
-            const table = document.getElementById(tableId);
-            if (!table) {
-              console.warn(`Table ${tableId} not found`);
-              return;
+          // Handle spouse information
+          const maritalStatus = document.getElementById("maritalStatus").value;
+          const spouseInfoSection =
+            document.getElementById("spouseInfoSection");
+          if (maritalStatus === "Married") {
+            spouseInfoSection.style.display = "table-row";
+            document.getElementById("resultSpouseName").textContent =
+              document.getElementById("spouseName").value || "-";
+            document.getElementById("resultSpouseAge").textContent =
+              document.getElementById("spouseAge").textContent || "-";
+            document.getElementById("resultSpouseRetirementAge").textContent =
+              document.getElementById("spouseRetirementAge").value || "-";
+          } else {
+            spouseInfoSection.style.display = "none";
+          }
+
+          // Handle dependents information
+          const dependentsCount =
+            parseInt(document.getElementById("dependents").value) || 0;
+          const dependentsInfoSection = document.getElementById(
+            "dependentsInfoSection"
+          );
+          const resultDependentsTable = document.getElementById(
+            "resultDependentsTable"
+          );
+
+          if (dependentsCount > 0) {
+            dependentsInfoSection.style.display = "table-row";
+            resultDependentsTable.innerHTML = ""; // Clear existing rows
+
+            for (let i = 1; i <= dependentsCount; i++) {
+              const name =
+                document.getElementById(`dependentName${i}`)?.value ||
+                `Child ${i}`;
+              const age =
+                document.getElementById(`dependentAge${i}`)?.textContent || "-";
+
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td><strong>${name}:</strong></td>
+                <td>${age} years</td>
+              `;
+              resultDependentsTable.appendChild(row);
             }
+          } else {
+            dependentsInfoSection.style.display = "none";
+          }
 
-            if (tableId === "stocksBusinessIncomeTable") {
-              const userPresentValues = table.querySelectorAll(
-                ".user-present-value"
-              );
-              const spousePresentValues = table.querySelectorAll(
-                ".spouse-present-value"
-              );
-              const maritalStatus =
-                document.getElementById("maritalStatus").value;
+          // Calculate Cash Flow Overview
+          const userMonthlyIncome =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="monthly-income"]'
+              )?.value
+            ) || 0;
+          const userMonthlyBusiness =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="monthly-business"]'
+              )?.value
+            ) || 0;
+          const userMonthlyRental =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="monthly-rental"]'
+              )?.value
+            ) || 0;
 
-              userPresentValues.forEach((input, index) => {
-                const userPresentValue = parseFloat(input.value) || 0;
-                const spousePresentValue =
-                  maritalStatus === "Married"
-                    ? parseFloat(spousePresentValues[index]?.value) || 0
-                    : 0;
+          const spouseMonthlyIncome =
+            parseFloat(
+              document.querySelector(
+                '.spouse-present-value[data-metric="monthly-income"]'
+              )?.value
+            ) || 0;
+          const spouseMonthlyBusiness =
+            parseFloat(
+              document.querySelector(
+                '.spouse-present-value[data-metric="monthly-business"]'
+              )?.value
+            ) || 0;
+          const spouseMonthlyRental =
+            parseFloat(
+              document.querySelector(
+                '.spouse-present-value[data-metric="monthly-rental"]'
+              )?.value
+            ) || 0;
 
-                const totalPresentValue = userPresentValue + spousePresentValue;
-                const metric = input.getAttribute("data-metric");
-                const projectedElement = table.querySelector(
-                  `.projected-value[data-metric="${metric}"]`
-                );
-                const projectedValue =
-                  parseFloat(projectedElement?.textContent) || 0;
+          const totalMonthlyIncome =
+            userMonthlyIncome +
+            userMonthlyBusiness +
+            userMonthlyRental +
+            (maritalStatus === "Married"
+              ? spouseMonthlyIncome +
+                spouseMonthlyBusiness +
+                spouseMonthlyRental
+              : 0);
 
-                if (!isNaN(totalPresentValue))
-                  totalPresent += totalPresentValue;
-                if (!isNaN(projectedValue)) totalProjected += projectedValue;
-              });
-            } else {
-              const presentValues = table.querySelectorAll(".present-value");
-              presentValues.forEach((input) => {
-                const presentValue = parseFloat(input.value) || 0;
-                const metric = input.getAttribute("data-metric");
-                const projectedElement = table.querySelector(
-                  `.projected-value[data-metric="${metric}"]`
-                );
-                const projectedValue =
-                  parseFloat(projectedElement?.textContent) || 0;
+          const userMonthlyExpenses =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="monthly-expenses"]'
+              )?.value
+            ) || 0;
+          const spouseMonthlyExpenses =
+            parseFloat(
+              document.querySelector(
+                '.spouse-present-value[data-metric="monthly-expenses"]'
+              )?.value
+            ) || 0;
+          const totalMonthlyExpenses =
+            userMonthlyExpenses +
+            (maritalStatus === "Married" ? spouseMonthlyExpenses : 0);
 
-                if (!isNaN(presentValue)) totalPresent += presentValue;
-                if (!isNaN(projectedValue)) totalProjected += projectedValue;
-              });
-            }
-          });
+          const userMonthlyMortgage =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="monthly-mortgage"]'
+              )?.value
+            ) || 0;
+          const spouseMonthlyMortgage =
+            parseFloat(
+              document.querySelector(
+                '.spouse-present-value[data-metric="monthly-mortgage"]'
+              )?.value
+            ) || 0;
+          const totalMonthlyMortgage =
+            userMonthlyMortgage +
+            (maritalStatus === "Married" ? spouseMonthlyMortgage : 0);
 
-          // Calculate goals with error checking
-          const goalTables = [
-            "collegePlanningTable",
-            "weddingPlanningTable",
-            "retirementGoalsTable",
-            "healthCareTable",
-            "lifeGoalsTable",
-            "legacyPlanningTable",
-          ];
+          // Update Cash Flow Overview section
+          document.getElementById("resultMonthlyIncome").textContent =
+            totalMonthlyIncome.toFixed(2);
+          document.getElementById("resultMonthlyExpenses").textContent =
+            totalMonthlyExpenses.toFixed(2);
+          document.getElementById("resultMonthlyMortgage").textContent =
+            totalMonthlyMortgage.toFixed(2);
 
-          goalTables.forEach((tableId) => {
-            const table = document.getElementById(tableId);
-            if (!table) {
-              console.warn(`Table ${tableId} not found`);
-              return;
-            }
+          const totalExpensesWithMortgage =
+            totalMonthlyExpenses + totalMonthlyMortgage;
+          const cashFlowDifference =
+            totalMonthlyIncome - totalExpensesWithMortgage;
 
-            const amounts = table.querySelectorAll(".goal-amount");
-            amounts.forEach((input) => {
-              const amount = parseFloat(input.value) || 0;
-              const metric = input.getAttribute("data-metric");
-              const projectedElement = table.querySelector(
-                `.projected-value[data-metric="${metric}"]`
-              );
-              const projectedAmount =
-                parseFloat(projectedElement?.textContent) || 0;
+          if (totalExpensesWithMortgage > totalMonthlyIncome) {
+            document.getElementById("resultCashFlowStatus").textContent =
+              "Monthly Shortfall";
+            document.getElementById("resultCashFlowAmount").textContent =
+              Math.abs(cashFlowDifference).toFixed(2);
+            document.getElementById("resultCashFlowAmount").style.color =
+              "#ff5555";
+          } else {
+            document.getElementById("resultCashFlowStatus").textContent =
+              "Monthly Savings";
+            document.getElementById("resultCashFlowAmount").textContent =
+              cashFlowDifference.toFixed(2);
+            document.getElementById("resultCashFlowAmount").style.color =
+              "#4CAF50";
+          }
 
-              if (!isNaN(amount)) totalGoalAmount += amount;
-              if (!isNaN(projectedAmount))
-                totalGoalProjected += projectedAmount;
-            });
-          });
+          // Calculate Emergency Fund Overview
+          const monthlyTotal = totalExpensesWithMortgage;
+          const emergencyFund3 = monthlyTotal * 3;
+          const emergencyFund6 = monthlyTotal * 6;
 
-          // Update results with formatting
-          const formatNumber = (num) =>
-            new Intl.NumberFormat("en-US", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }).format(num);
+          // Get current emergency fund amount
+          const userEmergencyFund =
+            parseFloat(
+              document.querySelector('.user-present-value[data-metric="cash"]')
+                ?.value
+            ) || 0;
+          const spouseEmergencyFund =
+            parseFloat(
+              document.querySelector(
+                '.spouse-present-value[data-metric="cash"]'
+              )?.value
+            ) || 0;
+          const currentEmergencyFund =
+            maritalStatus === "Married"
+              ? userEmergencyFund + spouseEmergencyFund
+              : userEmergencyFund;
 
-          document.getElementById("totalPresent").textContent =
-            formatNumber(totalPresent);
-          document.getElementById("totalProjected").textContent =
-            formatNumber(totalProjected);
-          document.getElementById("totalGoalAmount").textContent =
-            formatNumber(totalGoalAmount);
-          document.getElementById("totalGoalProjected").textContent =
-            formatNumber(totalGoalProjected);
+          // Update Emergency Fund Overview section
+          document.getElementById("resultEmergencyFund3").textContent =
+            emergencyFund3.toFixed(2);
+          document.getElementById("resultEmergencyFund6").textContent =
+            emergencyFund6.toFixed(2);
+          document.getElementById("resultCurrentEmergencyFund").textContent =
+            currentEmergencyFund.toFixed(2);
 
-          // Only show results if calculations were successful
+          // Determine emergency fund status
+          let emergencyFundStatus;
+          let statusColor;
+          if (currentEmergencyFund >= emergencyFund6) {
+            emergencyFundStatus = "Excellent - Exceeds 6 months";
+            statusColor = "#4CAF50"; // Green
+          } else if (currentEmergencyFund >= emergencyFund3) {
+            emergencyFundStatus = "Good - Meets 3-6 months";
+            statusColor = "#bdb76b"; // Gold
+          } else if (currentEmergencyFund >= monthlyTotal) {
+            emergencyFundStatus = "Fair - Below 3 months";
+            statusColor = "#FFA500"; // Orange
+          } else {
+            emergencyFundStatus = "Needs Attention - Below 1 month";
+            statusColor = "#ff5555"; // Red
+          }
+
+          const statusElement = document.getElementById(
+            "resultEmergencyFundStatus"
+          );
+          statusElement.textContent = emergencyFundStatus;
+          statusElement.style.color = statusColor;
+
+          // Calculate final totals
+          calculateTotals();
+
+          // Calculate Protection Overview
+          const totalDebt =
+            parseFloat(
+              document.getElementById("resultTotalDebt").textContent
+            ) || 0;
+          const monthlyIncome = totalMonthlyIncome;
+          const kidsEducation = Array.from(
+            document.querySelectorAll('.goal-amount[data-metric^="education"]')
+          ).reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
+          const mortgageDebt =
+            parseFloat(
+              document.querySelector('[data-metric="mortgage-debt"]')?.value
+            ) || 0;
+
+          // Calculate household coverage needed
+          const householdCoverageNeeded =
+            totalDebt + monthlyIncome * 12 * 10 + mortgageDebt + kidsEducation;
+
+          // Get current life insurance coverage
+          const lifeWorkCoverage =
+            parseFloat(
+              document.querySelector('.present-value[data-metric="lifeWork"]')
+                ?.value
+            ) || 0;
+          const lifeOutsideCoverage =
+            parseFloat(
+              document.querySelector(
+                '.present-value[data-metric="lifeOutside"]'
+              )?.value
+            ) || 0;
+          const currentLifeInsurance = lifeWorkCoverage + lifeOutsideCoverage;
+
+          // Calculate coverage gap
+          const coverageGap = householdCoverageNeeded - currentLifeInsurance;
+
+          // Update household coverage section
+          document.getElementById("resultHouseholdCoverage").textContent =
+            householdCoverageNeeded.toFixed(2);
+          document.getElementById("resultCurrentLifeInsurance").textContent =
+            currentLifeInsurance.toFixed(2);
+          document.getElementById("resultCoverageGap").textContent =
+            coverageGap.toFixed(2);
+
+          // Handle spouse coverage if married
+          if (maritalStatus === "Married") {
+            document.getElementById("spouseCoverageSection").style.display =
+              "table-row";
+
+            // Calculate spouse coverage needed (monthly income * 12 * 10 or minimum $1000/month if no income)
+            const spouseMonthlyTotal =
+              spouseMonthlyIncome + spouseMonthlyBusiness + spouseMonthlyRental;
+            const spouseCoverageNeeded =
+              (spouseMonthlyTotal > 0 ? spouseMonthlyTotal : 1000) * 12 * 10;
+
+            // Get spouse's current coverage
+            const spouseLifeWorkCoverage =
+              parseFloat(
+                document.querySelector(
+                  '.spouse-present-value[data-metric="lifeWork"]'
+                )?.value
+              ) || 0;
+            const spouseLifeOutsideCoverage =
+              parseFloat(
+                document.querySelector(
+                  '.spouse-present-value[data-metric="lifeOutside"]'
+                )?.value
+              ) || 0;
+            const spouseCurrentCoverage =
+              spouseLifeWorkCoverage + spouseLifeOutsideCoverage;
+
+            // Calculate spouse coverage gap
+            const spouseCoverageGap =
+              spouseCoverageNeeded - spouseCurrentCoverage;
+
+            // Update spouse coverage section
+            document.getElementById("resultSpouseCoverageNeeded").textContent =
+              spouseCoverageNeeded.toFixed(2);
+            document.getElementById("resultSpouseCurrentCoverage").textContent =
+              spouseCurrentCoverage.toFixed(2);
+            document.getElementById("resultSpouseCoverageGap").textContent =
+              spouseCoverageGap.toFixed(2);
+          } else {
+            document.getElementById("spouseCoverageSection").style.display =
+              "none";
+          }
+
+          // Show results page
           showStep(6);
         } catch (error) {
           console.error("Error calculating results:", error);
@@ -2915,25 +3507,80 @@
       }
 
       function resetWizard() {
+        // Clear all input fields
         document
           .querySelectorAll("input, select")
           .forEach((input) => (input.value = ""));
+
+        // Clear all calculated values
         document
           .querySelectorAll(
             ".projected-value, .future-value, .total-value, .calculated-age"
           )
           .forEach((span) => (span.textContent = "0"));
-        document.querySelectorAll(".debt-amount").forEach((input) => {
-          input.value = "";
-          const metric = input.getAttribute("data-metric");
-          localStorage.removeItem(`debt-${metric}`);
-        });
+
+        // Reset form defaults
         document.getElementById("maritalStatus").value = "Single";
-        toggleSpouseSection();
         document.getElementById("dependents").value = "0";
-        updateDependentsSection();
         document.getElementById("userRetirementAge").value = "65";
         document.getElementById("spouseRetirementAge").value = "65";
+
+        // Reset UI state
+        toggleSpouseSection();
+        updateDependentsSection();
+
+        // Clear financial data store
+        Object.keys(financialData.assets).forEach((category) => {
+          Object.keys(financialData.assets[category]).forEach((subcategory) => {
+            financialData.assets[category][subcategory] = {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            };
+            if (category === "realEstate") {
+              financialData.assets[category][subcategory].mortgageBalance = 0;
+            }
+          });
+        });
+
+        // Reset goals
+        financialData.goals = {
+          college: {},
+          wedding: {},
+          retirement: {
+            monthlyIncome: 0,
+            projectedAmount: 0,
+            planUntil: 85,
+          },
+          healthcare: {
+            outOfPocket: 160000,
+            longTermCare: 240000,
+          },
+          lifeGoals: {
+            travel: { amount: 0 },
+            vacationHome: { amount: 0 },
+            charity: { amount: 0 },
+            other: { amount: 0 },
+          },
+          legacy: {
+            kidsFund: { amount: 0 },
+            legacyAssets: { amount: 0 },
+            familySupport: { amount: 0 },
+          },
+        };
+
+        // Reset totals
+        financialData.totals = {
+          presentValue: 0,
+          projectedValue: 0,
+          goalAmount: 0,
+          goalProjected: 0,
+        };
+
+        // Clear localStorage
+        localStorage.removeItem("financialData");
+
+        // Return to first step
         showStep(1);
       }
 
@@ -3474,7 +4121,447 @@
 
         // Store the debt amount in localStorage for persistence
         localStorage.setItem(`debt-${metric}`, amount);
+
+        // Update debt overview
+        updateDebtOverview();
       }
+
+      function updateDebtOverview() {
+        // Get all debt amounts
+        const creditCardDebt =
+          parseFloat(
+            document.querySelector('[data-metric="credit-card-debt"]')?.value
+          ) || 0;
+        const carLoanDebt =
+          parseFloat(
+            document.querySelector('[data-metric="car-loan-debt"]')?.value
+          ) || 0;
+        const mortgageDebt =
+          parseFloat(
+            document.querySelector('[data-metric="mortgage-debt"]')?.value
+          ) || 0;
+        const studentLoanDebt =
+          parseFloat(
+            document.querySelector('[data-metric="student-loan-debt"]')?.value
+          ) || 0;
+        const otherDebt =
+          parseFloat(
+            document.querySelector('[data-metric="other-debt"]')?.value
+          ) || 0;
+
+        // Calculate total debt
+        const totalDebt =
+          creditCardDebt +
+          carLoanDebt +
+          mortgageDebt +
+          studentLoanDebt +
+          otherDebt;
+
+        // Update total debt display
+        document.getElementById("totalDebtAmount").textContent =
+          totalDebt.toFixed(2);
+        document.getElementById("resultTotalDebt").textContent =
+          totalDebt.toFixed(2);
+
+        // Determine priority focus and recommendations
+        let priorityFocus = "";
+        let recommendations = [];
+
+        if (creditCardDebt > 0 && carLoanDebt > 0) {
+          priorityFocus =
+            '<span class="priority-high">Credit Card and Car Loan Debt</span>';
+          recommendations.push(
+            "Focus on paying off both credit card and car loan debt due to high interest rates."
+          );
+        } else if (creditCardDebt > 0) {
+          priorityFocus = '<span class="priority-high">Credit Card Debt</span>';
+          recommendations.push(
+            "Prioritize paying off credit card debt due to typically high interest rates."
+          );
+        } else if (carLoanDebt > 0) {
+          priorityFocus = '<span class="priority-medium">Car Loan Debt</span>';
+          recommendations.push("Focus on paying off car loan debt.");
+        }
+
+        if (creditCardDebt > 10000) {
+          recommendations.push(
+            "Consider debt consolidation or refinancing options for credit card debt."
+          );
+        }
+
+        if (mortgageDebt > 0) {
+          recommendations.push(
+            "Review mortgage terms for potential refinancing opportunities."
+          );
+        }
+
+        // Update displays
+        document.getElementById("debtPriorityFocus").innerHTML =
+          priorityFocus || "No high-priority debt identified";
+        document.getElementById("resultDebtAction").innerHTML =
+          priorityFocus || "No high-priority debt identified";
+
+        const recommendationsHtml =
+          recommendations.length > 0
+            ? '<ul style="margin: 5px 0; padding-left: 20px;"><li>' +
+              recommendations.join("</li><li>") +
+              "</li></ul>"
+            : "<p>No specific recommendations at this time.</p>";
+
+        document.getElementById("debtRecommendations").innerHTML =
+          recommendationsHtml;
+        document.getElementById("resultDebtRecommendations").innerHTML =
+          recommendationsHtml;
+      }
+
+      // Call updateDebtOverview when page loads
+      document.addEventListener("DOMContentLoaded", updateDebtOverview);
+    </script>
+    <!-- Add Financial Data Store -->
+    <script>
+      // Central Data Store
+      const financialData = {
+        assets: {
+          retirement: {
+            "401k": {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+            rollover: {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+            traditional: {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+            roth: { presentValue: 0, projectedValue: 0, annualContribution: 0 },
+            pension: {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+          },
+          realEstate: {
+            primaryHome: {
+              presentValue: 0,
+              projectedValue: 0,
+              mortgageBalance: 0,
+            },
+            rentals: { presentValue: 0, projectedValue: 0, mortgageBalance: 0 },
+            land: { presentValue: 0, projectedValue: 0, mortgageBalance: 0 },
+            inheritance: {
+              presentValue: 0,
+              projectedValue: 0,
+              mortgageBalance: 0,
+            },
+          },
+          investments: {
+            stocks: {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+            business: {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+            alternatives: {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+            cds: { presentValue: 0, projectedValue: 0, annualContribution: 0 },
+            cash: { presentValue: 0, projectedValue: 0, annualContribution: 0 },
+          },
+          foreignAssets: {
+            realEstateForeign: { presentValue: 0, projectedValue: 0 },
+            nonRealEstateForeign: { presentValue: 0, projectedValue: 0 },
+          },
+          insurance: {
+            lifeWork: { presentValue: 0 },
+            lifeOutside: { presentValue: 0 },
+            cashValue: {
+              presentValue: 0,
+              projectedValue: 0,
+              annualContribution: 0,
+            },
+            disability: { presentValue: 0 },
+            longTermCare: { presentValue: 0 },
+            hsa: { presentValue: 0, projectedValue: 0, annualContribution: 0 },
+          },
+        },
+        goals: {
+          college: {},
+          wedding: {},
+          retirement: {
+            monthlyIncome: 0,
+            projectedAmount: 0,
+            planUntil: 85,
+          },
+          healthcare: {
+            outOfPocket: 160000,
+            longTermCare: 240000,
+          },
+          lifeGoals: {
+            travel: { amount: 0 },
+            vacationHome: { amount: 0 },
+            charity: { amount: 0 },
+            other: { amount: 0 },
+          },
+          legacy: {
+            kidsFund: { amount: 0 },
+            legacyAssets: { amount: 0 },
+            familySupport: { amount: 0 },
+          },
+        },
+        totals: {
+          presentValue: 0,
+          projectedValue: 0,
+          goalAmount: 0,
+          goalProjected: 0,
+        },
+      };
+
+      // Helper Functions
+      function getCategoryFromMetric(metric) {
+        const metricMap = {
+          // Retirement
+          "401k": "retirement",
+          rollover: "retirement",
+          traditional: "retirement",
+          roth: "retirement",
+          pension: "retirement",
+
+          // Real Estate
+          primaryHome: "realEstate",
+          rentals: "realEstate",
+          land: "realEstate",
+          inheritance: "realEstate",
+
+          // Investments
+          stocks: "investments",
+          business: "investments",
+          alternatives: "investments",
+          cds: "investments",
+          cash: "investments",
+
+          // Foreign Assets
+          realEstateForeign: "foreignAssets",
+          nonRealEstateForeign: "foreignAssets",
+
+          // Insurance
+          lifeWork: "insurance",
+          lifeOutside: "insurance",
+          cashValue: "insurance",
+          disability: "insurance",
+          longTermCare: "insurance",
+          hsa: "insurance",
+        };
+
+        return metricMap[metric] || "other";
+      }
+
+      function getSubcategoryFromMetric(metric) {
+        return metric;
+      }
+
+      function getAnnualContribution(input) {
+        const row = input.closest("tr");
+        const contributionInput = row.querySelector(".annual-contribution");
+        return parseFloat(contributionInput?.value) || 0;
+      }
+
+      function updateFinancialDataStore(input, type) {
+        const metric = input.getAttribute("data-metric");
+        const category = getCategoryFromMetric(metric);
+        const subcategory = getSubcategoryFromMetric(metric);
+
+        if (!financialData.assets[category]) {
+          console.warn(
+            `Category ${category} not found in financial data store`
+          );
+          return;
+        }
+
+        if (!financialData.assets[category][subcategory]) {
+          console.warn(`Subcategory ${subcategory} not found in ${category}`);
+          return;
+        }
+
+        const presentValue = parseFloat(input.value) || 0;
+        const projectedSpan = input
+          .closest("tr")
+          .querySelector(".projected-value");
+        const projectedValue = projectedSpan
+          ? parseFloat(projectedSpan.textContent) || 0
+          : presentValue;
+        const annualContribution = getAnnualContribution(input);
+
+        // Special handling for insurance items that don't have projected values
+        if (
+          category === "insurance" &&
+          ["lifeWork", "lifeOutside", "disability", "longTermCare"].includes(
+            subcategory
+          )
+        ) {
+          financialData.assets[category][subcategory] = {
+            presentValue: presentValue,
+            projectedValue: presentValue, // Use present value as projected for these insurance types
+          };
+        } else {
+          financialData.assets[category][subcategory] = {
+            presentValue,
+            projectedValue,
+            annualContribution,
+          };
+        }
+
+        // If it's a real estate asset, add mortgage balance
+        if (category === "realEstate") {
+          const mortgageInput = input
+            .closest("tr")
+            .querySelector(".mortgage-balance");
+          if (mortgageInput) {
+            financialData.assets[category][subcategory].mortgageBalance =
+              parseFloat(mortgageInput.value) || 0;
+          }
+        }
+
+        calculateTotals();
+        saveFinancialData();
+      }
+
+      function calculateTotals() {
+        const totals = {
+          presentValue: 0,
+          projectedValue: 0,
+          goalAmount: 0,
+          goalProjected: 0,
+        };
+
+        // Calculate asset totals - ONLY from the assets section
+        const assetCategories = [
+          "retirement",
+          "realEstate",
+          "investments",
+          "foreignAssets",
+          "insurance",
+        ];
+        assetCategories.forEach((category) => {
+          Object.keys(financialData.assets[category]).forEach((subcategory) => {
+            const asset = financialData.assets[category][subcategory];
+            if (asset) {
+              totals.presentValue += asset.presentValue || 0;
+              totals.projectedValue += asset.projectedValue || 0;
+            }
+          });
+        });
+
+        // Calculate goal totals
+        Object.keys(financialData.goals).forEach((category) => {
+          if (category === "retirement") {
+            totals.goalAmount +=
+              financialData.goals.retirement.monthlyIncome * 12;
+            totals.goalProjected +=
+              financialData.goals.retirement.projectedAmount;
+          } else if (category === "healthcare") {
+            totals.goalAmount += financialData.goals.healthcare.outOfPocket;
+            totals.goalAmount += financialData.goals.healthcare.longTermCare;
+          } else {
+            Object.values(financialData.goals[category]).forEach((goal) => {
+              totals.goalAmount += goal.amount || 0;
+            });
+          }
+        });
+
+        // Update data store totals
+        financialData.totals = totals;
+
+        // Update UI
+        updateTotalsDisplay();
+      }
+
+      function updateTotalsDisplay() {
+        document.getElementById("totalPresent").textContent =
+          new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(financialData.totals.presentValue);
+
+        document.getElementById("totalProjected").textContent =
+          new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(financialData.totals.projectedValue);
+
+        document.getElementById("totalGoalAmount").textContent =
+          new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(financialData.totals.goalAmount);
+
+        document.getElementById("totalGoalProjected").textContent =
+          new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(financialData.totals.goalProjected);
+      }
+
+      function saveFinancialData() {
+        localStorage.setItem("financialData", JSON.stringify(financialData));
+      }
+
+      function loadFinancialData() {
+        const saved = localStorage.getItem("financialData");
+        if (saved) {
+          Object.assign(financialData, JSON.parse(saved));
+          updateAllUIValues();
+        }
+      }
+
+      function updateAllUIValues() {
+        // Update all input fields and projected values based on stored data
+        Object.keys(financialData.assets).forEach((category) => {
+          Object.keys(financialData.assets[category]).forEach((subcategory) => {
+            const asset = financialData.assets[category][subcategory];
+            const inputs = document.querySelectorAll(
+              `[data-metric="${subcategory}"]`
+            );
+            inputs.forEach((input) => {
+              if (input.classList.contains("present-value")) {
+                input.value = asset.presentValue;
+              } else if (input.classList.contains("projected-value")) {
+                input.textContent = asset.projectedValue.toFixed(2);
+              } else if (input.classList.contains("annual-contribution")) {
+                input.value = asset.annualContribution;
+              }
+            });
+          });
+        });
+
+        updateTotalsDisplay();
+      }
+
+      // Add event listeners for real-time updates
+      document.addEventListener("input", function (e) {
+        if (
+          e.target.matches(
+            ".present-value, .annual-contribution, .rate-of-return, .mortgage-balance"
+          )
+        ) {
+          updateFinancialDataStore(e.target);
+        }
+      });
+
+      // Load saved data when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        loadFinancialData();
+      });
     </script>
   </body>
 </html>
