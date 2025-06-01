@@ -2701,7 +2701,7 @@
           <h3>Protection Overview</h3>
           <table style="width: 100%; border-collapse: collapse">
             <tr>
-              <td><strong>Household Coverage Needed:</strong></td>
+              <td><strong>User Coverage Needed:</strong></td>
               <td>
                 <span id="resultHouseholdCoverage" class="total-value"
                   >0.00</span
@@ -2776,6 +2776,141 @@
           </div>
         </div>
 
+        <!-- College Planning Overview -->
+        <div
+          class="college-planning-overview"
+          style="
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bdb76b;
+            font-size: 0.9em;
+          "
+        >
+          <h3>College Planning Overview</h3>
+          <div id="collegePlanningOverview">
+            <!-- Will be populated dynamically -->
+          </div>
+        </div>
+
+        <script>
+          function updateCollegePlanningOverview() {
+            const dependentsCount =
+              parseInt(document.getElementById("dependents").value) || 0;
+            const overviewDiv = document.getElementById(
+              "collegePlanningOverview"
+            );
+
+            if (dependentsCount === 0) {
+              overviewDiv.innerHTML =
+                "<p>No dependents added for college planning.</p>";
+              return;
+            }
+
+            let html =
+              '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+            html += `
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Dependent</th>
+                        <th style="text-align: center;">Years Until College</th>
+                        <th style="text-align: right;">Goal Amount ($)</th>
+                        <th style="text-align: right;">Current Savings ($)</th>
+                        <th style="text-align: right;">Projected Amount ($)</th>
+                        <th style="text-align: right;">Gap Amount ($)</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            for (let i = 1; i <= dependentsCount; i++) {
+              const name =
+                document.getElementById(`dependentName${i}`)?.value ||
+                `Child ${i}`;
+              const collegeData =
+                financialData.assets.college[`child${i}`] || {};
+              const goalAmount =
+                parseFloat(
+                  document.querySelector(
+                    `.goal-amount[data-metric="college-child${i}"]`
+                  )?.value
+                ) || 0;
+
+              const presentValue = collegeData.presentValue || 0;
+              const projectedValue = collegeData.projectedValue || 0;
+              const yearsUntilCollege = collegeData.yearsToCollege || 0;
+
+              // Calculate gap
+              const gap = goalAmount - projectedValue;
+              const gapColor = gap > 0 ? "#ff5555" : "#4CAF50";
+
+              html += `
+                    <tr>
+                        <td style="text-align: left;">${name}</td>
+                        <td style="text-align: center;">${yearsUntilCollege}</td>
+                        <td style="text-align: right;">${goalAmount.toLocaleString(
+                          "en-US",
+                          { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                        )}</td>
+                        <td style="text-align: right;">${presentValue.toLocaleString(
+                          "en-US",
+                          { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                        )}</td>
+                        <td style="text-align: right;">${projectedValue.toLocaleString(
+                          "en-US",
+                          { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                        )}</td>
+                        <td style="text-align: right; color: ${gapColor};">${Math.abs(
+                gap
+              ).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}</td>
+                    </tr>
+                `;
+            }
+
+            html += "</tbody></table>";
+
+            // Add summary section
+            html += `
+                <div style="margin-top: 15px; padding: 10px; background: #2a2a2a; border-radius: 4px;">
+                    <h4 style="margin-top: 0;">Summary Notes:</h4>
+                    <ul style="list-style-type: none; padding-left: 10px;">
+                        <li>• Goal amounts should be adjusted based on specific college choices and inflation</li>
+                        <li>• Consider additional funding sources (scholarships, grants, loans)</li>
+                        <li>• Review and adjust savings strategy annually</li>
+                    </ul>
+                </div>
+            `;
+
+            overviewDiv.innerHTML = html;
+          }
+
+          // Add event listeners to update the overview when values change
+          document.addEventListener("DOMContentLoaded", function () {
+            // Initial update
+            updateCollegePlanningOverview();
+
+            // Update when dependents count changes
+            document
+              .getElementById("dependents")
+              ?.addEventListener("input", updateCollegePlanningOverview);
+
+            // Update when any college planning values change
+            document.addEventListener("input", function (e) {
+              if (
+                e.target.matches(".present-value, .goal-amount") ||
+                e.target.id.startsWith("dependentName") ||
+                e.target.id.startsWith("dependentDOB")
+              ) {
+                updateCollegePlanningOverview();
+              }
+            });
+          });
+        </script>
+
         <div id="assetResults">
           <h3>Assets Summary</h3>
           <table>
@@ -2812,7 +2947,6 @@
           FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
         </p>
         <div class="buttons">
-          <button onclick="resetWizard()">Start Over</button>
           <button onclick="showRetirementPlanning()">Next</button>
         </div>
       </div>
@@ -2907,8 +3041,154 @@
           </table>
         </div>
 
+        <p style="text-align: center; font-size: 0.9em">
+          FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
+        </p>
         <div class="buttons">
           <button onclick="showStep(6)">Previous</button>
+          <button onclick="showHealthCareAndLegacyOverview()">Next</button>
+        </div>
+      </div>
+
+      <!-- Health Care and Legacy Overview Page -->
+      <div class="step" id="step8">
+        <h2>Health Care and Legacy Overview</h2>
+
+        <!-- Health Care Overview Section -->
+        <div
+          class="health-care-overview"
+          style="
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bdb76b;
+            font-size: 0.9em;
+          "
+        >
+          <h3>Health Care Overview</h3>
+
+          <!-- Required Long Term Care Section -->
+          <div class="long-term-care-section" style="margin-bottom: 20px">
+            <h4 style="color: #bdb76b; margin-bottom: 10px">
+              Required Long Term Care
+            </h4>
+            <table style="width: 100%; border-collapse: collapse">
+              <tr>
+                <td>Required projected Long Term care:</td>
+                <td><span id="requiredLongTermCare">0.00</span></td>
+              </tr>
+              <tr>
+                <td>GAP:</td>
+                <td>
+                  <span id="longTermCareGap" style="color: #ff5555">0.00</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Health Care Expenses Section -->
+          <div class="health-care-expenses-section">
+            <h4 style="color: #bdb76b; margin-bottom: 10px">
+              Health Care Expenses
+            </h4>
+            <table style="width: 100%; border-collapse: collapse">
+              <tr>
+                <td>Required Health Expenses at retirement:</td>
+                <td><span id="requiredHealthExpenses">0.00</span></td>
+              </tr>
+              <tr>
+                <td>GAP:</td>
+                <td>
+                  <span id="healthExpensesGap" style="color: #ff5555"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Summary Notes -->
+          <div
+            style="
+              margin-top: 15px;
+              padding: 10px;
+              background: #2a2a2a;
+              border-radius: 4px;
+            "
+          >
+            <h4 style="margin-top: 0">Summary Notes:</h4>
+            <ul style="list-style-type: none; padding-left: 10px">
+              <li>
+                • Health care costs are based on current estimates and may
+                change
+              </li>
+              <li>
+                • Consider Medicare coverage options and supplemental insurance
+              </li>
+              <li>• Review long-term care insurance options</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Legacy Overview Section -->
+        <div
+          class="legacy-overview"
+          style="
+            margin-bottom: 20px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bdb76b;
+            font-size: 0.9em;
+          "
+        >
+          <h3>Legacy Overview</h3>
+
+          <!-- Legacy Goals Section -->
+          <div class="legacy-goals-section">
+            <h4 style="color: #bdb76b; margin-bottom: 10px">
+              Legacy Goals Analysis
+            </h4>
+            <table style="width: 100%; border-collapse: collapse">
+              <tr>
+                <td>Goal Amount:</td>
+                <td><span id="legacyGoalAmount">0.00</span></td>
+              </tr>
+              <tr>
+                <td>Projected Real estate investment:</td>
+                <td><span id="projectedRealEstate">0.00</span></td>
+              </tr>
+              <tr>
+                <td>GAP:</td>
+                <td><span id="legacyGap" style="color: #ff5555">0.00</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Summary Notes -->
+          <div
+            style="
+              margin-top: 15px;
+              padding: 10px;
+              background: #2a2a2a;
+              border-radius: 4px;
+            "
+          >
+            <h4 style="margin-top: 0">Summary Notes:</h4>
+            <ul style="list-style-type: none; padding-left: 10px">
+              <li>• Review estate planning documents regularly</li>
+              <li>• Consider tax implications of inheritance</li>
+              <li>• Discuss legacy plans with financial advisor</li>
+            </ul>
+          </div>
+        </div>
+
+        <p style="text-align: center; font-size: 0.9em">
+          FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
+        </p>
+
+        <div class="buttons">
           <button onclick="resetWizard()">Start Over</button>
         </div>
       </div>
@@ -2951,6 +3231,9 @@
       }
 
       function showStep(step) {
+        // Update current step
+        currentStep = step;
+
         // Hide all steps first
         document
           .querySelectorAll(".step")
@@ -3962,9 +4245,9 @@
         // Clear all calculated values
         document
           .querySelectorAll(
-            ".projected-value, .future-value, .total-value, .calculated-age"
+            ".projected-value, .future-value, .total-value, .calculated-age, #requiredLongTermCare, #longTermCareGap, #requiredHealthExpenses, #healthExpensesGap, #legacyGoalAmount, #projectedRealEstate, #legacyGap"
           )
-          .forEach((span) => (span.textContent = "0"));
+          .forEach((span) => (span.textContent = "0.00"));
 
         // Reset form defaults
         document.getElementById("maritalStatus").value = "Single";
@@ -4018,14 +4301,24 @@
 
         // Reset totals
         financialData.totals = {
-          presentValue: 0,
+          userPresentValue: 0,
+          spousePresentValue: 0,
           projectedValue: 0,
+          userAnnualContribution: 0,
+          spouseAnnualContribution: 0,
           goalAmount: 0,
           goalProjected: 0,
         };
 
         // Clear localStorage
-        localStorage.removeItem("financialData");
+        localStorage.clear();
+
+        // Reset all step counters
+        currentStep = 1;
+        currentSubStep2 = 1;
+        currentSubStep3 = 1;
+        currentSubStep4 = 1;
+        currentSubStep5 = 1;
 
         // Return to first step
         showStep(1);
@@ -4105,7 +4398,7 @@
         let age = 0;
         if (dobInput) {
           const [month, year] = dobInput.split("/").map(Number);
-          const currentDate = new Date(2025, 2, 26);
+          const currentDate = new Date();
           const birthDate = new Date(year, month - 1);
           age = currentDate.getFullYear() - birthDate.getFullYear();
           if (
@@ -4120,24 +4413,207 @@
         const yearsToCollege = Math.max(0, 18 - age);
         const rate = rateInput / 100;
 
-        // Updated formula with start-of-year compounding
-        const futureValuePrincipal =
-          presentValue * (1 + rate) * Math.pow(1 + rate, yearsToCollege - 1);
-        const futureValueContributions =
-          contribution *
-          ((Math.pow(1 + rate, yearsToCollege) - 1) / rate) *
-          (1 + rate);
-        const projectedValue = futureValuePrincipal + futureValueContributions;
+        // Calculate projected value
+        let projectedValue = presentValue;
+        if (yearsToCollege > 0) {
+          const futureValuePrincipal =
+            presentValue * Math.pow(1 + rate, yearsToCollege);
+          const futureValueContributions =
+            contribution * ((Math.pow(1 + rate, yearsToCollege) - 1) / rate);
+          projectedValue = futureValuePrincipal + futureValueContributions;
+        }
 
-        projectedSpan.textContent = projectedValue.toFixed(2);
+        // Update projected value display
+        if (projectedSpan) {
+          projectedSpan.textContent = projectedValue.toFixed(2);
+        }
+
+        // Store in financial data
+        if (!financialData.assets.college) {
+          financialData.assets.college = {};
+        }
+
+        financialData.assets.college[`child${child}`] = {
+          presentValue: presentValue,
+          annualContribution: contribution,
+          rateOfReturn: rateInput,
+          projectedValue: projectedValue,
+          yearsToCollege: yearsToCollege,
+        };
+
+        // Save to localStorage
+        saveFinancialData();
+
+        // Update the overview
+        setTimeout(updateCollegePlanningOverview, 100);
       }
 
-      // Hook render function to updateDependentsSection
-      const originalUpdateDependents = updateDependentsSection;
-      updateDependentsSection = function () {
-        originalUpdateDependents();
-        renderCollege529Rows();
-      };
+      function updateCollegePlanningOverview() {
+        const dependentsCount =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const overviewDiv = document.getElementById("collegePlanningOverview");
+
+        if (dependentsCount === 0) {
+          overviewDiv.innerHTML =
+            "<p>No dependents added for college planning.</p>";
+          return;
+        }
+
+        let html =
+          '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+        html += `
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Dependent</th>
+                    <th style="text-align: center;">Years Until College</th>
+                    <th style="text-align: right;">Goal Amount ($)</th>
+                    <th style="text-align: right;">Current Savings ($)</th>
+                    <th style="text-align: right;">Projected Amount ($)</th>
+                    <th style="text-align: right;">Gap Amount ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+
+        for (let i = 1; i <= dependentsCount; i++) {
+          const name =
+            document.getElementById(`dependentName${i}`)?.value || `Child ${i}`;
+          const collegeData = financialData.assets.college[`child${i}`] || {};
+          const goalAmount =
+            parseFloat(
+              document.querySelector(
+                `.goal-amount[data-metric="college-child${i}"]`
+              )?.value
+            ) || 0;
+
+          const presentValue = collegeData.presentValue || 0;
+          const projectedValue = collegeData.projectedValue || 0;
+          const yearsUntilCollege = collegeData.yearsToCollege || 0;
+
+          // Calculate gap
+          const gap = goalAmount - projectedValue;
+          const gapColor = gap > 0 ? "#ff5555" : "#4CAF50";
+
+          html += `
+                <tr>
+                    <td style="text-align: left;">${name}</td>
+                    <td style="text-align: center;">${yearsUntilCollege}</td>
+                    <td style="text-align: right;">${goalAmount.toLocaleString(
+                      "en-US",
+                      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                    )}</td>
+                    <td style="text-align: right;">${presentValue.toLocaleString(
+                      "en-US",
+                      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                    )}</td>
+                    <td style="text-align: right;">${projectedValue.toLocaleString(
+                      "en-US",
+                      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                    )}</td>
+                    <td style="text-align: right; color: ${gapColor};">${Math.abs(
+            gap
+          ).toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}</td>
+                </tr>
+            `;
+        }
+
+        html += "</tbody></table>";
+
+        // Add summary section
+        html += `
+            <div style="margin-top: 15px; padding: 10px; background: #2a2a2a; border-radius: 4px;">
+                <h4 style="margin-top: 0;">Summary Notes:</h4>
+                <ul style="list-style-type: none; padding-left: 10px;">
+                    <li>• Goal amounts should be adjusted based on specific college choices and inflation</li>
+                    <li>• Consider additional funding sources (scholarships, grants, loans)</li>
+                    <li>• Review and adjust savings strategy annually</li>
+                </ul>
+            </div>
+        `;
+
+        overviewDiv.innerHTML = html;
+      }
+
+      // Add function to restore college planning values
+      function restoreCollegePlanningValues() {
+        if (!financialData.assets.college) return;
+
+        Object.keys(financialData.assets.college).forEach((childKey) => {
+          const childNum = childKey.replace("child", "");
+          const data = financialData.assets.college[childKey];
+
+          const row = document.querySelector(`tr[data-child="${childNum}"]`);
+          if (row) {
+            const presentValueInput = row.querySelector(".present-value");
+            const contributionInput = row.querySelector(".annual-contribution");
+            const rateInput = row.querySelector(".rate-of-return");
+            const projectedSpan = row.querySelector(".projected-value");
+
+            if (presentValueInput) presentValueInput.value = data.presentValue;
+            if (contributionInput)
+              contributionInput.value = data.annualContribution;
+            if (rateInput) rateInput.value = data.rateOfReturn;
+            if (projectedSpan)
+              projectedSpan.textContent = data.projectedValue.toFixed(2);
+          }
+        });
+      }
+
+      // Update the college planning rows generation
+      function renderCollegePlanningRows() {
+        const count =
+          parseInt(document.getElementById("dependents").value) || 0;
+        const tbody = document.getElementById("collegePlanningBody");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+
+        for (let i = 1; i <= count; i++) {
+          const name =
+            document.getElementById(`dependentName${i}`)?.value || `Child ${i}`;
+          const yearsUntilCollege = calculateYearsUntilCollege(i);
+
+          const tr = document.createElement("tr");
+          tr.setAttribute("data-child", i);
+          tr.innerHTML = `
+            <td>${name}</td>
+            <td style="text-align: center;">${yearsUntilCollege}</td>
+            <td>
+                <input type="number" class="present-value" data-metric="529-child${i}" data-child="${i}" min="0" step="0.01" oninput="updateCollegeProjectedValue(this)">
+            </td>
+            <td>
+                <input type="number" class="annual-contribution" data-metric="529-child${i}" data-child="${i}" min="0" step="0.01" oninput="updateCollegeProjectedValue(this)">
+            </td>
+            <td>
+                <input type="number" class="rate-of-return" data-metric="529-child${i}" data-child="${i}" min="0" step="0.01" value="4" oninput="updateCollegeProjectedValue(this)">
+            </td>
+            <td>
+                <span class="projected-value" data-metric="529-child${i}" data-child="${i}">0.00</span>
+            </td>
+        `;
+          tbody.appendChild(tr);
+        }
+
+        // Restore saved values after generating rows
+        restoreCollegePlanningValues();
+      }
+
+      // Add restoration to navigation buttons
+      document.addEventListener("DOMContentLoaded", function () {
+        const subStepButtons = document.querySelectorAll(
+          'button[onclick*="SubStep"]'
+        );
+        subStepButtons.forEach((button) => {
+          const originalOnClick = button.onclick;
+          button.onclick = function (e) {
+            if (originalOnClick) originalOnClick.call(this, e);
+            setTimeout(restoreCollegePlanningValues, 100); // Small delay to ensure DOM is ready
+          };
+        });
+      });
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -4218,105 +4694,110 @@
           parseInt(document.getElementById("retirementPlanUntil").value) || 85;
         const retirementAge =
           parseInt(document.getElementById("userRetirementAge").value) || 65;
+        const currentAge =
+          parseInt(document.getElementById("userAge").textContent) || 0;
 
         if (monthlyExpensesSpan && retirementIncomeInput && projectedSpan) {
-          // Get the monthly amount from either the input value or the expenses span
+          // Keep the existing value if it exists and is valid
+          const existingValue = parseFloat(retirementIncomeInput.value);
           const monthlyAmount =
-            parseFloat(retirementIncomeInput.value) ||
-            parseFloat(monthlyExpensesSpan.textContent) ||
-            0;
+            !isNaN(existingValue) && existingValue > 0
+              ? existingValue
+              : parseFloat(monthlyExpensesSpan.textContent) || 0;
 
-          // Calculate years and total
-          const years = Math.max(0, planUntil - retirementAge);
-          const total = monthlyAmount * 12 * years;
+          // Only update the input value if it's empty or invalid
+          if (
+            !retirementIncomeInput.value ||
+            isNaN(parseFloat(retirementIncomeInput.value))
+          ) {
+            retirementIncomeInput.value = monthlyAmount.toFixed(2);
+          }
 
-          // Update the input and projected values
-          retirementIncomeInput.value = monthlyAmount.toFixed(2);
+          // Calculate years between retirement age and plan until age
+          const yearsInRetirement = Math.max(0, planUntil - retirementAge);
+
+          // Calculate total needed for retirement period
+          const total = monthlyAmount * 12 * yearsInRetirement;
           projectedSpan.textContent = total.toFixed(2);
+
+          // Update retirement age message if it exists
+          const retirementAgeMessage = document.getElementById(
+            "retirementAgeMessage"
+          );
+          if (retirementAgeMessage) {
+            const yearsUntilRetirement = Math.max(
+              0,
+              retirementAge - currentAge
+            );
+            retirementAgeMessage.textContent = `Your retirement age is ${retirementAge}, remaining years till retirement: ${yearsUntilRetirement}`;
+          }
 
           // Update financial data store
           if (financialData.goals && financialData.goals.retirement) {
             financialData.goals.retirement.monthlyIncome = monthlyAmount;
             financialData.goals.retirement.projectedAmount = total;
+            financialData.goals.retirement.retirementAge = retirementAge;
             financialData.goals.retirement.planUntil = planUntil;
             saveFinancialData();
           }
 
-          // Trigger recalculation of totals
-          calculateTotals();
+          // Update all projected values that depend on retirement age
+          document
+            .querySelectorAll(
+              ".rate-of-return, .user-present-value, .spouse-present-value"
+            )
+            .forEach((input) => {
+              updateProjectedValue(input, "projected");
+            });
         }
       }
 
-      // Function to restore and manage retirement values
-      function restoreRetirementValues() {
-        // Always get the latest monthly expenses projected value
-        const monthlyExpensesSpan = document.querySelector(
-          '.projected-value[data-metric="monthly-expenses"]'
-        );
-        const planUntilSelect = document.getElementById("retirementPlanUntil");
-
-        // Get saved plan until value from localStorage
-        const savedPlanUntil = localStorage.getItem("retirement-plan-until");
-        if (savedPlanUntil && planUntilSelect) {
-          planUntilSelect.value = savedPlanUntil;
-        }
-
-        // Update retirement values based on current monthly expenses
-        updateRetirementProjectedValue();
-      }
-
-      // Set up event listeners when document loads
+      // Add event listeners for retirement age and plan until changes
       document.addEventListener("DOMContentLoaded", function () {
-        // Initial restoration of values
-        restoreRetirementValues();
-
-        // Get input elements
+        const userRetirementAgeInput =
+          document.getElementById("userRetirementAge");
         const planUntilSelect = document.getElementById("retirementPlanUntil");
-        const retirementIncomeInput = document.querySelector(
-          '.goal-amount[data-metric="retirement-income"]'
-        );
 
-        // Add listener for retirement plan until changes
+        if (userRetirementAgeInput) {
+          userRetirementAgeInput.addEventListener("input", function () {
+            // Store the retirement age in localStorage
+            localStorage.setItem("retirementAge", this.value);
+            updateRetirementProjectedValue();
+          });
+        }
+
         if (planUntilSelect) {
           planUntilSelect.addEventListener("change", function () {
-            localStorage.setItem("retirement-plan-until", this.value);
-            // Immediately update the projected value
-            updateRetirementProjectedValue();
-            // Force a recalculation of all totals
-            calculateTotals();
-          });
-        }
-
-        // Add listener for retirement income input changes
-        if (retirementIncomeInput) {
-          retirementIncomeInput.addEventListener("input", function () {
-            localStorage.setItem("retirement-monthly-amount", this.value);
             updateRetirementProjectedValue();
           });
         }
 
-        // Add listener for monthly expenses changes
-        const monthlyExpensesInputs = document.querySelectorAll(
-          '[data-metric="monthly-expenses"]'
-        );
-        monthlyExpensesInputs.forEach((input) => {
-          input.addEventListener("input", function () {
-            setTimeout(updateRetirementProjectedValue, 100);
-          });
-        });
+        // Initial update
+        updateRetirementProjectedValue();
       });
 
-      // Add restoration to navigation buttons and step changes
-      document.querySelectorAll("button").forEach((button) => {
-        if (
-          button.onclick?.toString().includes("nextSubStep") ||
-          button.onclick?.toString().includes("prevSubStep") ||
-          button.onclick?.toString().includes("nextStep") ||
-          button.onclick?.toString().includes("prevStep")
-        ) {
-          button.addEventListener("click", restoreRetirementValues);
+      // Update getYearsToRetirement to use the stored retirement age
+      function getYearsToRetirement() {
+        const userAge = calculateAge("user");
+        const userRetirementAge =
+          parseInt(localStorage.getItem("retirementAge")) ||
+          parseInt(document.getElementById("userRetirementAge").value) ||
+          65;
+
+        const userYearsToRetirement = Math.max(0, userRetirementAge - userAge);
+
+        // Show error message if years is 0
+        const retirementError = document.getElementById("retirementError");
+        if (retirementError) {
+          if (userYearsToRetirement === 0 && currentStep === 2) {
+            retirementError.style.display = "block";
+          } else {
+            retirementError.style.display = "none";
+          }
         }
-      });
+
+        return userYearsToRetirement;
+      }
     </script>
     <script>
       function updateLongTermCareAmount() {
@@ -5308,101 +5789,226 @@
             )?.value
           ) || 0;
 
-        // Calculate 401k projected amount (4% of projected value)
+        // Calculate 401k projected amount (4% annual withdrawal rate, divided by 12 for monthly)
         const projected401k =
-          (parseFloat(
+          parseFloat(
             document.querySelector('.projected-value[data-metric="401k"]')
               ?.textContent
-          ) || 0) * 0.04;
+          ) || 0;
+        const monthly401k = (projected401k * 0.04) / 12; // Convert annual 4% to monthly
         document.getElementById("projected401k").textContent =
-          projected401k.toFixed(2);
+          monthly401k.toFixed(2);
 
         // Calculate IRA projected amount
         const projectedIRA =
-          (parseFloat(
+          parseFloat(
             document.querySelector(
               '.projected-value[data-metric="traditional"]'
             )?.textContent
-          ) || 0) * 0.04;
+          ) || 0;
+        const monthlyIRA = (projectedIRA * 0.04) / 12; // Convert annual 4% to monthly
         document.getElementById("projectedIRA").textContent =
-          projectedIRA.toFixed(2);
+          monthlyIRA.toFixed(2);
 
         // Calculate Roth IRA projected amount
         const projectedRothIRA =
-          (parseFloat(
+          parseFloat(
             document.querySelector('.projected-value[data-metric="roth"]')
               ?.textContent
-          ) || 0) * 0.04;
+          ) || 0;
+        const monthlyRothIRA = (projectedRothIRA * 0.04) / 12; // Convert annual 4% to monthly
         document.getElementById("projectedRothIRA").textContent =
-          projectedRothIRA.toFixed(2);
+          monthlyRothIRA.toFixed(2);
 
-        // Calculate Annuity projected amount
+        // Calculate Annuity projected amount ($3,500 annual per $100k)
         const annuityValue =
           parseFloat(
             document.querySelector('.projected-value[data-metric="annuity"]')
               ?.textContent
           ) || 0;
-        const projectedAnnuity = (annuityValue / 100000) * 3500; // $3,500 per 100k
+        const monthlyAnnuity = ((annuityValue / 100000) * 3500) / 12; // Convert to monthly
         document.getElementById("projectedAnnuity").textContent =
-          projectedAnnuity.toFixed(2);
+          monthlyAnnuity.toFixed(2);
 
-        // Calculate Rental Income (80% of annual rental income / 12)
+        // SSA is already monthly ($30,000 annual / 12)
+        const monthlySSA = 2500; // $30,000 / 12
+        document.getElementById("projectedSSA").textContent = "30,000.00"; // Keep annual display
+
+        // Calculate Rental Income (80% of projected value for maintenance costs)
         const rentalIncome =
           parseFloat(
             document.querySelector('.projected-value[data-metric="rental"]')
               ?.textContent
           ) || 0;
-        const projectedRental = (rentalIncome * 0.8) / 12;
+        const monthlyRental = (rentalIncome * 0.8) / 12; // Convert to monthly after maintenance
         document.getElementById("projectedRental").textContent =
-          projectedRental.toFixed(2);
+          monthlyRental.toFixed(2);
 
-        // Calculate Business Revenue
+        // Calculate Business Revenue (monthly)
         const businessRevenue =
           parseFloat(
             document.querySelector('.projected-value[data-metric="business"]')
               ?.textContent
           ) || 0;
-        const projectedBusiness = businessRevenue / 12;
+        const monthlyBusiness = businessRevenue / 12;
         document.getElementById("projectedBusiness").textContent =
-          projectedBusiness.toFixed(2);
+          monthlyBusiness.toFixed(2);
 
         // Calculate total projected monthly income
-        const totalProjected =
-          projected401k +
-          projectedIRA +
-          projectedRothIRA +
-          projectedAnnuity +
-          30000 / 12 +
-          projectedRental +
-          projectedBusiness;
+        const totalMonthly =
+          monthly401k +
+          monthlyIRA +
+          monthlyRothIRA +
+          monthlyAnnuity +
+          monthlySSA +
+          monthlyRental +
+          monthlyBusiness;
         document.getElementById("projectedTotal").textContent =
-          totalProjected.toFixed(2);
+          totalMonthly.toFixed(2);
 
         // Update GAP Analysis
         const gapAnalysisDiv = document.getElementById("gapAnalysis");
-        if (requiredMonthlyIncome > totalProjected) {
-          const shortfall = requiredMonthlyIncome - totalProjected;
+        if (requiredMonthlyIncome > totalMonthly) {
+          const shortfall = requiredMonthlyIncome - totalMonthly;
           gapAnalysisDiv.innerHTML = `
-            <p style="color: #ff5555;">Required Monthly Income > Projected Payouts Amount:</p>
-            <ul style="list-style-type: none; padding-left: 20px;">
-              <li>• Difference Amount is a shortfall of $${shortfall.toFixed(
-                2
-              )}</li>
-              <li>• Additional savings needed to adjust tax payments per Tax rate at retirement age</li>
-            </ul>
-          `;
+                <p style="color: #ff5555;">Required Monthly Income > Projected Payouts Amount:</p>
+                <ul style="list-style-type: none; padding-left: 20px;">
+                    <li>• Difference Amount is a shortfall of $${shortfall.toFixed(
+                      2
+                    )}</li>
+                    <li>• Additional savings needed to adjust tax payments per Tax rate at retirement age</li>
+                </ul>
+            `;
         } else {
-          const surplus = totalProjected - requiredMonthlyIncome;
+          const surplus = totalMonthly - requiredMonthlyIncome;
           gapAnalysisDiv.innerHTML = `
-            <p style="color: #4CAF50;">Required Monthly Income < Projected Payouts Amount:</p>
-            <ul style="list-style-type: none; padding-left: 20px;">
-              <li>• Difference Amount is a surplus of $${surplus.toFixed(
-                2
-              )}</li>
-              <li>• Surplus savings might be adjusted towards tax payments per Tax rate at retirement age</li>
-            </ul>
-          `;
+                <p style="color: #4CAF50;">Projected Payouts Amount > Required Monthly Income:</p>
+                <ul style="list-style-type: none; padding-left: 20px;">
+                    <li>• Difference Amount is a surplus of $${surplus.toFixed(
+                      2
+                    )}</li>
+                    <li>• Surplus savings might be adjusted towards tax payments per Tax rate at retirement age</li>
+                </ul>
+            `;
         }
+      }
+
+      function showHealthCareAndLegacyOverview() {
+        // Calculate health care and legacy values
+        calculateHealthCareAndLegacyOverview();
+        // Show health care and legacy overview step
+        showStep(8);
+      }
+
+      function calculateHealthCareAndLegacyOverview() {
+        // Get marital status
+        const maritalStatus = document.getElementById("maritalStatus").value;
+
+        // Calculate Long Term Care values
+        const requiredLongTermCare =
+          maritalStatus === "Married" ? 480000 : 240000;
+        const currentLongTermCare =
+          parseFloat(
+            document.querySelector(
+              '.user-present-value[data-metric="longTermCare"]'
+            )?.value || 0
+          ) +
+          (maritalStatus === "Married"
+            ? parseFloat(
+                document.querySelector(
+                  '.spouse-present-value[data-metric="longTermCare"]'
+                )?.value || 0
+              )
+            : 0);
+        const longTermCareGap = requiredLongTermCare - currentLongTermCare;
+
+        // Update Long Term Care display
+        document.getElementById("requiredLongTermCare").textContent =
+          requiredLongTermCare.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        const longTermCareGapElement =
+          document.getElementById("longTermCareGap");
+        longTermCareGapElement.textContent = Math.abs(
+          longTermCareGap
+        ).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        longTermCareGapElement.style.color =
+          longTermCareGap > 0 ? "#ff5555" : "#4CAF50";
+
+        // Calculate Health Care Expenses values
+        const requiredHealthExpenses =
+          maritalStatus === "Married" ? 320000 : 160000;
+        const projectedHSA = parseFloat(
+          document.querySelector('.projected-value[data-metric="hsa"]')
+            ?.textContent || 0
+        );
+        const healthExpensesGap = requiredHealthExpenses - projectedHSA;
+
+        // Update Health Care Expenses display
+        document.getElementById("requiredHealthExpenses").textContent =
+          requiredHealthExpenses.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        const healthExpensesGapElement =
+          document.getElementById("healthExpensesGap");
+        healthExpensesGapElement.textContent = Math.abs(
+          healthExpensesGap
+        ).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+        healthExpensesGapElement.style.color =
+          healthExpensesGap > 0 ? "#ff5555" : "#4CAF50";
+
+        // Calculate Legacy values
+        const legacyGoalAmount = parseFloat(
+          document.querySelector('.goal-amount[data-metric="legacyAssets"]')
+            ?.value || 0
+        );
+
+        // Calculate projected real estate value (sum of all real estate investments)
+        const realEstateMetrics = [
+          "primaryHome",
+          "rentals",
+          "land",
+          "inheritance",
+          "realEstateForeign",
+        ];
+        let projectedRealEstate = 0;
+        realEstateMetrics.forEach((metric) => {
+          projectedRealEstate += parseFloat(
+            document.querySelector(`.projected-value[data-metric="${metric}"]`)
+              ?.textContent || 0
+          );
+        });
+
+        const legacyGap = legacyGoalAmount - projectedRealEstate;
+
+        // Update Legacy display
+        document.getElementById("legacyGoalAmount").textContent =
+          legacyGoalAmount.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        document.getElementById("projectedRealEstate").textContent =
+          projectedRealEstate.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        const legacyGapElement = document.getElementById("legacyGap");
+        legacyGapElement.textContent = Math.abs(legacyGap).toLocaleString(
+          "en-US",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }
+        );
+        legacyGapElement.style.color = legacyGap > 0 ? "#ff5555" : "#4CAF50";
       }
     </script>
   </body>
