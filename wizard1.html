@@ -345,7 +345,9 @@
         <a href="#" onclick="navigateToStep(3); return false;">Debt</a>
         <a href="#" onclick="navigateToStep(4); return false;">Assets</a>
         <a href="#" onclick="navigateToStep(5); return false;">Goals</a>
-        <a href="#" onclick="navigateToStep(6); return false;">Results</a>
+        <a href="#" onclick="calculateAndShowResults(); return false;"
+          >Results</a
+        >
       </div>
       <!-- Step 1: Personal Info -->
       <div class="step" id="step1">
@@ -563,7 +565,7 @@
                     oninput="updateCashFlowProjectedValue(this)"
                     step="0.01"
                     type="number"
-                    placeholder="1"
+                    placeholder="0"
                   />
                 </td>
                 <td class="spouse-column">
@@ -574,6 +576,7 @@
                     oninput="updateCashFlowProjectedValue(this)"
                     step="0.01"
                     type="number"
+                    placeholder="0"
                   />
                 </td>
                 <td>
@@ -603,7 +606,7 @@
                     oninput="updateCashFlowProjectedValue(this)"
                     step="0.01"
                     type="number"
-                    placeholder="1"
+                    placeholder="0"
                   />
                 </td>
                 <td class="spouse-column">
@@ -644,7 +647,7 @@
                     oninput="updateCashFlowProjectedValue(this)"
                     step="0.01"
                     type="number"
-                    placeholder="1"
+                    placeholder="0"
                   />
                 </td>
                 <td class="spouse-column">
@@ -1396,7 +1399,7 @@
         </div>
         <!-- Sub-Step 4.3: Stocks | Business | Income -->
         <div class="sub-step" id="subStep4-3">
-          <h3>Step 4.3: Stocks | Business | Income (USA)</h3>
+          <h3>Step 4.3: Non Real Estate Investments</h3>
           <table id="stocksBusinessIncomeTable">
             <thead>
               <tr>
@@ -1465,65 +1468,6 @@
                 </td>
                 <td>
                   <span class="projected-value" data-metric="stocks">0.00</span>
-                </td>
-              </tr>
-              <tr>
-                <td>Income from Business per annum</td>
-                <td>
-                  <input
-                    class="user-present-value"
-                    data-metric="business"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td class="spouse-column">
-                  <input
-                    class="spouse-present-value"
-                    data-metric="business"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td>
-                  <input
-                    class="rate-of-return"
-                    data-metric="business"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    placeholder="7"
-                    step="0.1"
-                    type="number"
-                  />
-                </td>
-                <td>
-                  <input
-                    class="user-annual-contribution"
-                    data-metric="business"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td class="spouse-column">
-                  <input
-                    class="spouse-annual-contribution"
-                    data-metric="business"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td>
-                  <span class="projected-value" data-metric="business"
-                    >0.00</span
-                  >
                 </td>
               </tr>
               <tr>
@@ -1643,7 +1587,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Cash in Bank + Emergency Fund</td>
+                <td>Cash in Bank</td>
                 <td>
                   <input
                     class="user-present-value"
@@ -1953,7 +1897,7 @@
         </div>
         <!-- Sub-Step 4.5: College Planning / Estate Planning -->
         <div class="sub-step" id="subStep4-5">
-          <h3>Step 4.5: College Planning / Estate Planning</h3>
+          <h3>College fund Savings</h3>
           <style>
             #collegeEstateTable input {
               width: 100%;
@@ -3189,6 +3133,7 @@
         </p>
 
         <div class="buttons">
+          <button onclick="showStep(7)">Previous</button>
           <button onclick="resetWizard()">Start Over</button>
         </div>
       </div>
@@ -3214,6 +3159,13 @@
 
       function navigateToStep(step) {
         updateAllProjectedValues();
+
+        // If trying to navigate to results (step 6), calculate first
+        if (step === 6) {
+          calculateAndShowResults();
+          return;
+        }
+
         currentStep = step;
 
         // Reset sub-step counters when navigating to a new step
@@ -3616,7 +3568,16 @@
               ? parseFloat(spousePresentValueInput.value) || 0
               : 0;
           const totalPresentValue = userPresentValue + spousePresentValue;
-          const rateOfReturn = parseFloat(rateInput.value) || 7; // Default to 7% if not provided
+
+          // Set default rates based on metric
+          let defaultRate = 7; // Default for stocks
+          if (metric === "cds") {
+            defaultRate = 2; // Default for CDs
+          } else if (metric === "cash") {
+            defaultRate = 0.1; // Default for Cash in Bank
+          }
+
+          const rateOfReturn = parseFloat(rateInput.value) || defaultRate;
           const userAnnualContribution =
             parseFloat(userContributionInput.value) || 0;
           const spouseAnnualContribution =
@@ -4066,22 +4027,73 @@
           const emergencyFund3 = monthlyTotal * 3;
           const emergencyFund6 = monthlyTotal * 6;
 
-          // Get current emergency fund amount
-          const userEmergencyFund =
+          // Get current emergency fund amount by summing up all liquid assets from step 4.3
+          const userStocks =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="stocks"]'
+              )?.value
+            ) || 0;
+          const userAlternatives =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="alternatives"]'
+              )?.value
+            ) || 0;
+          const userCDs =
+            parseFloat(
+              document.querySelector('.user-present-value[data-metric="cds"]')
+                ?.value
+            ) || 0;
+          const userCash =
             parseFloat(
               document.querySelector('.user-present-value[data-metric="cash"]')
                 ?.value
             ) || 0;
-          const spouseEmergencyFund =
-            parseFloat(
-              document.querySelector(
-                '.spouse-present-value[data-metric="cash"]'
-              )?.value
-            ) || 0;
-          const currentEmergencyFund =
+
+          const spouseStocks =
             maritalStatus === "Married"
-              ? userEmergencyFund + spouseEmergencyFund
-              : userEmergencyFund;
+              ? parseFloat(
+                  document.querySelector(
+                    '.spouse-present-value[data-metric="stocks"]'
+                  )?.value
+                ) || 0
+              : 0;
+          const spouseAlternatives =
+            maritalStatus === "Married"
+              ? parseFloat(
+                  document.querySelector(
+                    '.spouse-present-value[data-metric="alternatives"]'
+                  )?.value
+                ) || 0
+              : 0;
+          const spouseCDs =
+            maritalStatus === "Married"
+              ? parseFloat(
+                  document.querySelector(
+                    '.spouse-present-value[data-metric="cds"]'
+                  )?.value
+                ) || 0
+              : 0;
+          const spouseCash =
+            maritalStatus === "Married"
+              ? parseFloat(
+                  document.querySelector(
+                    '.spouse-present-value[data-metric="cash"]'
+                  )?.value
+                ) || 0
+              : 0;
+
+          const currentEmergencyFund =
+            userStocks +
+            userAlternatives +
+            userCDs +
+            userCash +
+            spouseStocks +
+            spouseAlternatives +
+            spouseCDs +
+            spouseCash +
+            totalMonthlyIncome; // Add monthly income to emergency fund
 
           // Update Emergency Fund Overview section
           document.getElementById("resultEmergencyFund3").textContent =
@@ -4138,16 +4150,24 @@
           // Get current life insurance coverage
           const lifeWorkCoverage =
             parseFloat(
-              document.querySelector('.present-value[data-metric="lifeWork"]')
-                ?.value
+              document.querySelector(
+                '.user-present-value[data-metric="lifeWork"]'
+              )?.value
             ) || 0;
           const lifeOutsideCoverage =
             parseFloat(
               document.querySelector(
-                '.present-value[data-metric="lifeOutside"]'
+                '.user-present-value[data-metric="lifeOutside"]'
               )?.value
             ) || 0;
-          const currentLifeInsurance = lifeWorkCoverage + lifeOutsideCoverage;
+          const disabilityCoverage =
+            parseFloat(
+              document.querySelector(
+                '.user-present-value[data-metric="disability"]'
+              )?.value
+            ) || 0;
+          const currentLifeInsurance =
+            lifeWorkCoverage + lifeOutsideCoverage + disabilityCoverage;
 
           // Calculate coverage gap
           const coverageGap = householdCoverageNeeded - currentLifeInsurance;
@@ -4157,8 +4177,16 @@
             householdCoverageNeeded.toFixed(2);
           document.getElementById("resultCurrentLifeInsurance").textContent =
             currentLifeInsurance.toFixed(2);
-          document.getElementById("resultCoverageGap").textContent =
-            coverageGap.toFixed(2);
+
+          const coverageGapElement =
+            document.getElementById("resultCoverageGap");
+          if (coverageGap <= 0) {
+            coverageGapElement.textContent = "Recommended Coverage Achieved";
+            coverageGapElement.style.color = "#4CAF50"; // Green color
+          } else {
+            coverageGapElement.textContent = coverageGap.toFixed(2);
+            coverageGapElement.style.color = "#ff5555"; // Red color
+          }
 
           // Handle spouse coverage if married
           if (maritalStatus === "Married") {
@@ -4171,7 +4199,7 @@
             const spouseCoverageNeeded =
               (spouseMonthlyTotal > 0 ? spouseMonthlyTotal : 1000) * 12 * 10;
 
-            // Get spouse's current coverage
+            // Get spouse's current coverage including all insurance types
             const spouseLifeWorkCoverage =
               parseFloat(
                 document.querySelector(
@@ -4184,8 +4212,16 @@
                   '.spouse-present-value[data-metric="lifeOutside"]'
                 )?.value
               ) || 0;
+            const spouseDisabilityCoverage =
+              parseFloat(
+                document.querySelector(
+                  '.spouse-present-value[data-metric="disability"]'
+                )?.value
+              ) || 0;
             const spouseCurrentCoverage =
-              spouseLifeWorkCoverage + spouseLifeOutsideCoverage;
+              spouseLifeWorkCoverage +
+              spouseLifeOutsideCoverage +
+              spouseDisabilityCoverage;
 
             // Calculate spouse coverage gap
             const spouseCoverageGap =
@@ -4196,8 +4232,19 @@
               spouseCoverageNeeded.toFixed(2);
             document.getElementById("resultSpouseCurrentCoverage").textContent =
               spouseCurrentCoverage.toFixed(2);
-            document.getElementById("resultSpouseCoverageGap").textContent =
-              spouseCoverageGap.toFixed(2);
+
+            const spouseCoverageGapElement = document.getElementById(
+              "resultSpouseCoverageGap"
+            );
+            if (spouseCoverageGap <= 0) {
+              spouseCoverageGapElement.textContent =
+                "Recommended Coverage Achieved";
+              spouseCoverageGapElement.style.color = "#4CAF50"; // Green color
+            } else {
+              spouseCoverageGapElement.textContent =
+                spouseCoverageGap.toFixed(2);
+              spouseCoverageGapElement.style.color = "#ff5555"; // Red color
+            }
           } else {
             document.getElementById("spouseCoverageSection").style.display =
               "none";
@@ -5089,20 +5136,19 @@
 
         if (!projectedSpan) return;
 
-        const userPresentValue =
-          parseFloat(userPresentValueInput?.value) ||
-          parseFloat(userPresentValueInput?.placeholder) ||
-          0;
+        // Only use the actual input value, ignore placeholder if the field is empty
+        const userPresentValue = userPresentValueInput?.value
+          ? parseFloat(userPresentValueInput.value)
+          : 0;
         const spousePresentValue =
-          maritalStatus === "Married"
-            ? parseFloat(spousePresentValueInput?.value) ||
-              parseFloat(spousePresentValueInput?.placeholder) ||
-              0
+          maritalStatus === "Married" && spousePresentValueInput?.value
+            ? parseFloat(spousePresentValueInput.value)
             : 0;
-        const inflationRate =
-          parseFloat(inflationRateInput?.value) ||
-          parseFloat(inflationRateInput?.placeholder) ||
-          0;
+
+        // For inflation rate, use placeholder if no value is entered
+        const inflationRate = inflationRateInput?.value
+          ? parseFloat(inflationRateInput.value)
+          : parseFloat(inflationRateInput?.placeholder) || 0;
 
         const rate = inflationRate / 100;
         const totalPresentValue = userPresentValue + spousePresentValue;
@@ -5832,7 +5878,8 @@
 
         // SSA is already monthly ($30,000 annual / 12)
         const monthlySSA = 2500; // $30,000 / 12
-        document.getElementById("projectedSSA").textContent = "30,000.00"; // Keep annual display
+        document.getElementById("projectedSSA").textContent =
+          monthlySSA.toFixed(2); // Show monthly amount instead of annual
 
         // Calculate Rental Income (80% of projected value for maintenance costs)
         const rentalIncome =
@@ -6009,6 +6056,27 @@
           }
         );
         legacyGapElement.style.color = legacyGap > 0 ? "#ff5555" : "#4CAF50";
+      }
+    </script>
+    <script>
+      function calculateAndShowResults() {
+        // First try to calculate results
+        try {
+          // Validate required fields first
+          if (!validateRequiredFields()) {
+            alert("Please fill in all required fields before viewing results.");
+            return;
+          }
+
+          // If validation passes, calculate results and show step 6
+          calculateResults();
+        } catch (error) {
+          console.error("Error calculating results:", error);
+          alert(
+            "Please complete all required sections before viewing results."
+          );
+          return;
+        }
       }
     </script>
   </body>
