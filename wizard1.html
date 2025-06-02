@@ -178,6 +178,71 @@
         margin-bottom: 10px;
       }
 
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .modal-content {
+        background-color: #000000;
+        margin: 5% auto;
+        padding: 20px;
+        border: 2px solid #bdb76b;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 800px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .close {
+        color: #bdb76b;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close:hover {
+        color: #a9a357;
+      }
+
+      .ssa-tables {
+        margin-top: 20px;
+      }
+
+      .ssa-info-table {
+        width: 100%;
+        margin: 15px 0;
+        border-collapse: collapse;
+      }
+
+      .ssa-info-table th,
+      .ssa-info-table td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #bdb76b;
+      }
+
+      .ssa-info-table th {
+        background-color: #bdb76b;
+        color: #000000;
+      }
+
+      .modal h2,
+      .modal h3 {
+        color: #bdb76b;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
       .spouse-column {
         display: none;
       }
@@ -452,6 +517,35 @@
             </td>
           </tr>
         </table>
+
+        <!-- Will & Trust Section -->
+        <div class="will-trust-section">
+          <h3>Will & Trust Information</h3>
+          <table>
+            <tr>
+              <td>Do you have Will & Trust?</td>
+              <td>
+                <select
+                  id="willTrustStatus"
+                  onchange="toggleWillTrustFunding()"
+                >
+                  <option value="NO">NO</option>
+                  <option value="YES">YES</option>
+                </select>
+              </td>
+            </tr>
+            <tr id="willTrustFundingRow" style="display: none">
+              <td>Funding Status</td>
+              <td>
+                <select id="willTrustFunding">
+                  <option value="Funded">Funded</option>
+                  <option value="Not Funded">Not Funded</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+
         <!-- Spouse Section (Hidden by Default) -->
         <div class="spouse-section" id="spouseSection" style="display: none">
           <h3>Spouse Information</h3>
@@ -489,10 +583,6 @@
         </div>
         <!-- Dependents Section (Dynamically Generated) -->
         <div class="dependents-section" id="dependentsSection"></div>
-        <p style="font-size: 0.9em; text-align: center">
-          The system will estimate education costs based on the average for a
-          4-year college degree.
-        </p>
         <div class="buttons">
           <button onclick="nextStep(2)">Next</button>
         </div>
@@ -834,6 +924,24 @@
             style="color: #bdb76b; font-weight: bold"
           ></p>
           <script>
+            // Modal functions
+            function openSSAModal(event) {
+              event.preventDefault();
+              document.getElementById("ssaModal").style.display = "block";
+            }
+
+            function closeSSAModal() {
+              document.getElementById("ssaModal").style.display = "none";
+            }
+
+            // Close modal when clicking outside of it
+            window.onclick = function (event) {
+              const modal = document.getElementById("ssaModal");
+              if (event.target === modal) {
+                modal.style.display = "none";
+              }
+            };
+
             function updateRetirementAgeMessage() {
               const userRetirementAge = parseInt(
                 document.getElementById("userRetirementAge")?.value || "65"
@@ -1174,10 +1282,257 @@
                   >
                 </td>
               </tr>
+              <tr>
+                <td>Roth IRA | Roth 401K</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="roth">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  SSA Income: Primary Insurance Amount(PIA) at Full Retirement
+                  Age (FRA)
+                  <a href="#" onclick="openSSAModal(event)"
+                    >Refer to this link for more details</a
+                  >
+
+                  <!-- SSA Modal -->
+                  <div id="ssaModal" class="modal">
+                    <div class="modal-content">
+                      <span class="close" onclick="closeSSAModal()"
+                        >&times;</span
+                      >
+                      <h2>Social Security Benefits Table</h2>
+                      <div class="ssa-tables">
+                        <h3>Born on or after 1960</h3>
+                        <table class="ssa-info-table">
+                          <tr>
+                            <th>Claiming Age</th>
+                            <th>% of PIA</th>
+                            <th>% Change vs FRA</th>
+                          </tr>
+                          <tr>
+                            <td>62</td>
+                            <td>70.00%</td>
+                            <td>-30.00%</td>
+                          </tr>
+                          <tr>
+                            <td>63</td>
+                            <td>75.00%</td>
+                            <td>-25.00%</td>
+                          </tr>
+                          <tr>
+                            <td>64</td>
+                            <td>80.00%</td>
+                            <td>-20.00%</td>
+                          </tr>
+                          <tr>
+                            <td>65</td>
+                            <td>86.66%</td>
+                            <td>-13.34%</td>
+                          </tr>
+                          <tr>
+                            <td>66</td>
+                            <td>93.33%</td>
+                            <td>-6.67%</td>
+                          </tr>
+                          <tr>
+                            <td>67 (FRA)</td>
+                            <td>100.00%</td>
+                            <td>0.00%</td>
+                          </tr>
+                          <tr>
+                            <td>68</td>
+                            <td>108.00%</td>
+                            <td>8.00%</td>
+                          </tr>
+                          <tr>
+                            <td>69</td>
+                            <td>116.00%</td>
+                            <td>16.00%</td>
+                          </tr>
+                          <tr>
+                            <td>70</td>
+                            <td>124.00%</td>
+                            <td>24.00%</td>
+                          </tr>
+                        </table>
+
+                        <h3>Born before 1960</h3>
+                        <table class="ssa-info-table">
+                          <tr>
+                            <th>Claiming Age</th>
+                            <th>% of PIA</th>
+                            <th>% Change vs FRA</th>
+                          </tr>
+                          <tr>
+                            <td>62</td>
+                            <td>70.83%</td>
+                            <td>-29.17%</td>
+                          </tr>
+                          <tr>
+                            <td>63</td>
+                            <td>75.83%</td>
+                            <td>-24.17%</td>
+                          </tr>
+                          <tr>
+                            <td>64</td>
+                            <td>80.83%</td>
+                            <td>-19.17%</td>
+                          </tr>
+                          <tr>
+                            <td>65</td>
+                            <td>86.67%</td>
+                            <td>-13.33%</td>
+                          </tr>
+                          <tr>
+                            <td>66</td>
+                            <td>93.33%</td>
+                            <td>-6.67%</td>
+                          </tr>
+                          <tr>
+                            <td>66 & 10 months</td>
+                            <td>100.00%</td>
+                            <td>No reduction</td>
+                          </tr>
+                          <tr>
+                            <td>67</td>
+                            <td>101.33%</td>
+                            <td>1.33%</td>
+                          </tr>
+                          <tr>
+                            <td>68</td>
+                            <td>109.33%</td>
+                            <td>9.33%</td>
+                          </tr>
+                          <tr>
+                            <td>69</td>
+                            <td>117.33%</td>
+                            <td>17.33%</td>
+                          </tr>
+                          <tr>
+                            <td>70</td>
+                            <td>125.33%</td>
+                            <td>25.33%</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="ssaPia"
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="ssaPia"
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="ssaPia"
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                    disabled
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="ssaPia"
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                    disabled
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="ssaPia"
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                    disabled
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="ssaPia">0.00</span>
+                </td>
+              </tr>
             </tbody>
           </table>
           <div class="buttons">
-            <button onclick="prevStep(3)">Previous</button>
+            <button onclick="prevSubStep(1, 4)">Previous</button>
             <button onclick="nextSubStep(2, 4)">Next</button>
           </div>
         </div>
@@ -1660,6 +2015,7 @@
                 <th>User Present Value ($)</th>
                 <th class="spouse-column">Spouse Present Value ($)</th>
                 <th>Rate of Return (%)</th>
+                <th>Purpose</th>
                 <th>User Annual Contribution ($)</th>
                 <th class="spouse-column">Spouse Annual Contribution ($)</th>
                 <th>Projected Value @ Retirement ($)</th>
@@ -1754,6 +2110,20 @@
                   />
                 </td>
                 <td>
+                  <select
+                    class="purpose"
+                    data-metric="cashValue"
+                    onchange="updateFinancialDataStore(this)"
+                  >
+                    <option value="">Select Purpose</option>
+                    <option value="emergency">Emergency Fund</option>
+                    <option value="college">College Fund</option>
+                    <option value="retirement">Retirement Payout</option>
+                    <option value="longterm">Long Term care</option>
+                    <option value="legacy">Legacy overview</option>
+                  </select>
+                </td>
+                <td>
                   <input
                     class="user-annual-contribution"
                     data-metric="cashValue"
@@ -1832,7 +2202,7 @@
                 <td>-</td>
               </tr>
               <tr>
-                <td>Health Savings Account (HSA)</td>
+                <td>HSA</td>
                 <td>
                   <input
                     class="user-present-value"
@@ -1864,6 +2234,7 @@
                     type="number"
                   />
                 </td>
+                <td>-</td>
                 <td>
                   <input
                     class="user-annual-contribution"
@@ -2512,6 +2883,10 @@
               <td><strong>City & State:</strong></td>
               <td><span id="resultLocation">-</span></td>
             </tr>
+            <tr id="willTrustRow">
+              <td><strong>Will & Trust:</strong></td>
+              <td><span id="resultWillTrust">-</span></td>
+            </tr>
             <tr id="spouseInfoSection" style="display: none">
               <td colspan="2">
                 <strong>Spouse Information</strong>
@@ -2781,8 +3156,34 @@
                   )?.value
                 ) || 0;
 
-              const presentValue = collegeData.presentValue || 0;
-              const projectedValue = collegeData.projectedValue || 0;
+              // Get Cash Value Life Insurance amount if it's designated for college and this is the first child
+              let additionalCollegeFunds = 0;
+              if (i === 1) {
+                // Only for the first child
+                const cashValuePurpose = document.querySelector(
+                  '.purpose[data-metric="cashValue"]'
+                )?.value;
+                if (cashValuePurpose === "college") {
+                  const userCashValue =
+                    parseFloat(
+                      document.querySelector(
+                        '.user-present-value[data-metric="cashValue"]'
+                      )?.value
+                    ) || 0;
+                  const spouseCashValue =
+                    parseFloat(
+                      document.querySelector(
+                        '.spouse-present-value[data-metric="cashValue"]'
+                      )?.value
+                    ) || 0;
+                  additionalCollegeFunds = userCashValue + spouseCashValue;
+                }
+              }
+
+              const presentValue =
+                (collegeData.presentValue || 0) + additionalCollegeFunds;
+              const projectedValue =
+                (collegeData.projectedValue || 0) + additionalCollegeFunds;
               const yearsUntilCollege = collegeData.yearsToCollege || 0;
 
               // Calculate gap
@@ -3430,6 +3831,19 @@
         }
       }
 
+      function toggleWillTrustFunding() {
+        const willTrustStatus =
+          document.getElementById("willTrustStatus").value;
+        const fundingRow = document.getElementById("willTrustFundingRow");
+
+        if (willTrustStatus === "YES") {
+          fundingRow.style.display = "table-row";
+        } else {
+          fundingRow.style.display = "none";
+          document.getElementById("willTrustFunding").value = "Not Funded";
+        }
+      }
+
       function updateDependentsSection() {
         const dependentsCount =
           parseInt(document.getElementById("dependents").value) || 0;
@@ -3866,6 +4280,17 @@
           document.getElementById("resultLocation").textContent =
             document.getElementById("cityState").value || "-";
 
+          // Update Will & Trust Information
+          const willTrustStatus =
+            document.getElementById("willTrustStatus").value;
+          const willTrustFunding =
+            willTrustStatus === "YES"
+              ? ` (${document.getElementById("willTrustFunding").value})`
+              : "";
+          document.getElementById(
+            "resultWillTrust"
+          ).textContent = `${willTrustStatus}${willTrustFunding}`;
+
           // Handle spouse information
           const maritalStatus = document.getElementById("maritalStatus").value;
           const spouseInfoSection =
@@ -4034,12 +4459,6 @@
                 '.user-present-value[data-metric="stocks"]'
               )?.value
             ) || 0;
-          const userAlternatives =
-            parseFloat(
-              document.querySelector(
-                '.user-present-value[data-metric="alternatives"]'
-              )?.value
-            ) || 0;
           const userCDs =
             parseFloat(
               document.querySelector('.user-present-value[data-metric="cds"]')
@@ -4056,14 +4475,6 @@
               ? parseFloat(
                   document.querySelector(
                     '.spouse-present-value[data-metric="stocks"]'
-                  )?.value
-                ) || 0
-              : 0;
-          const spouseAlternatives =
-            maritalStatus === "Married"
-              ? parseFloat(
-                  document.querySelector(
-                    '.spouse-present-value[data-metric="alternatives"]'
                   )?.value
                 ) || 0
               : 0;
@@ -4086,14 +4497,11 @@
 
           const currentEmergencyFund =
             userStocks +
-            userAlternatives +
             userCDs +
             userCash +
             spouseStocks +
-            spouseAlternatives +
             spouseCDs +
-            spouseCash +
-            totalMonthlyIncome; // Add monthly income to emergency fund
+            spouseCash;
 
           // Update Emergency Fund Overview section
           document.getElementById("resultEmergencyFund3").textContent =
@@ -4284,91 +4692,8 @@
       }
 
       function resetWizard() {
-        // Clear all input fields
-        document
-          .querySelectorAll("input, select")
-          .forEach((input) => (input.value = ""));
-
-        // Clear all calculated values
-        document
-          .querySelectorAll(
-            ".projected-value, .future-value, .total-value, .calculated-age, #requiredLongTermCare, #longTermCareGap, #requiredHealthExpenses, #healthExpensesGap, #legacyGoalAmount, #projectedRealEstate, #legacyGap"
-          )
-          .forEach((span) => (span.textContent = "0.00"));
-
-        // Reset form defaults
-        document.getElementById("maritalStatus").value = "Single";
-        document.getElementById("dependents").value = "0";
-        document.getElementById("userRetirementAge").value = "65";
-        document.getElementById("spouseRetirementAge").value = "65";
-
-        // Reset UI state
-        toggleSpouseSection();
-        updateDependentsSection();
-
-        // Clear financial data store
-        Object.keys(financialData.assets).forEach((category) => {
-          Object.keys(financialData.assets[category]).forEach((subcategory) => {
-            financialData.assets[category][subcategory] = {
-              presentValue: 0,
-              projectedValue: 0,
-              annualContribution: 0,
-            };
-            if (category === "realEstate") {
-              financialData.assets[category][subcategory].mortgageBalance = 0;
-            }
-          });
-        });
-
-        // Reset goals
-        financialData.goals = {
-          college: {},
-          wedding: {},
-          retirement: {
-            monthlyIncome: 0,
-            projectedAmount: 0,
-            planUntil: 85,
-          },
-          healthcare: {
-            outOfPocket: 160000,
-            longTermCare: 240000,
-          },
-          lifeGoals: {
-            travel: { amount: 0 },
-            vacationHome: { amount: 0 },
-            charity: { amount: 0 },
-            other: { amount: 0 },
-          },
-          legacy: {
-            kidsFund: { amount: 0 },
-            legacyAssets: { amount: 0 },
-            familySupport: { amount: 0 },
-          },
-        };
-
-        // Reset totals
-        financialData.totals = {
-          userPresentValue: 0,
-          spousePresentValue: 0,
-          projectedValue: 0,
-          userAnnualContribution: 0,
-          spouseAnnualContribution: 0,
-          goalAmount: 0,
-          goalProjected: 0,
-        };
-
-        // Clear localStorage
-        localStorage.clear();
-
-        // Reset all step counters
-        currentStep = 1;
-        currentSubStep2 = 1;
-        currentSubStep3 = 1;
-        currentSubStep4 = 1;
-        currentSubStep5 = 1;
-
-        // Return to first step
-        showStep(1);
+        // Force a complete page reload from the server (true parameter forces bypass of cache)
+        location.reload(true);
       }
 
       // Initialize the wizard on page load
@@ -4533,8 +4858,34 @@
               )?.value
             ) || 0;
 
-          const presentValue = collegeData.presentValue || 0;
-          const projectedValue = collegeData.projectedValue || 0;
+          // Get Cash Value Life Insurance amount if it's designated for college and this is the first child
+          let additionalCollegeFunds = 0;
+          if (i === 1) {
+            // Only for the first child
+            const cashValuePurpose = document.querySelector(
+              '.purpose[data-metric="cashValue"]'
+            )?.value;
+            if (cashValuePurpose === "college") {
+              const userCashValue =
+                parseFloat(
+                  document.querySelector(
+                    '.user-present-value[data-metric="cashValue"]'
+                  )?.value
+                ) || 0;
+              const spouseCashValue =
+                parseFloat(
+                  document.querySelector(
+                    '.spouse-present-value[data-metric="cashValue"]'
+                  )?.value
+                ) || 0;
+              additionalCollegeFunds = userCashValue + spouseCashValue;
+            }
+          }
+
+          const presentValue =
+            (collegeData.presentValue || 0) + additionalCollegeFunds;
+          const projectedValue =
+            (collegeData.projectedValue || 0) + additionalCollegeFunds;
           const yearsUntilCollege = collegeData.yearsToCollege || 0;
 
           // Calculate gap
@@ -5391,6 +5742,13 @@
               userAnnualContribution: 0,
               spouseAnnualContribution: 0,
             },
+            ssaPia: {
+              userPresentValue: 0,
+              spousePresentValue: 0,
+              projectedValue: 0,
+              userAnnualContribution: 0,
+              spouseAnnualContribution: 0,
+            },
           },
           realEstate: {
             primaryHome: {
@@ -5472,6 +5830,7 @@
               projectedValue: 0,
               userAnnualContribution: 0,
               spouseAnnualContribution: 0,
+              purpose: "",
             },
             disability: {
               userPresentValue: 0,
@@ -5622,10 +5981,99 @@
         const spouseContributionInput = row.querySelector(
           ".spouse-annual-contribution"
         );
+        const purposeSelect = row.querySelector(".purpose");
         const projectedSpan =
           row.querySelector(".projected-value") ||
           row.querySelector(".future-value");
 
+        // Handle Cash Value Life Insurance purpose changes
+        if (metric === "cashValue" && input.classList.contains("purpose")) {
+          const purpose = input.value;
+          const totalPresentValue =
+            parseFloat(userPresentValueInput?.value) || 0;
+
+          // Handle the present value distribution based on purpose
+          if (purpose === "emergency") {
+            // For emergency fund: add present value to the current emergency fund
+            const emergencyFundInput = document.querySelector(
+              '.goal-amount[data-metric="emergency-fund"]'
+            );
+            if (emergencyFundInput) {
+              const currentValue = parseFloat(emergencyFundInput.value) || 0;
+              emergencyFundInput.value = (
+                currentValue + totalPresentValue
+              ).toFixed(2);
+              emergencyFundInput.dispatchEvent(new Event("input"));
+            }
+          } else if (purpose === "college") {
+            // For college fund: add present value to the first kid in college planning results
+            const collegeResultsTable = document.getElementById(
+              "collegeResultsTable"
+            );
+            if (collegeResultsTable) {
+              const firstKidInput = collegeResultsTable.querySelector(
+                '.goal-amount[data-metric="college-1"]'
+              );
+              if (firstKidInput) {
+                const currentValue = parseFloat(firstKidInput.value) || 0;
+                firstKidInput.value = (
+                  currentValue + totalPresentValue
+                ).toFixed(2);
+                firstKidInput.dispatchEvent(new Event("input"));
+              }
+            }
+          } else if (purpose === "retirement") {
+            // For retirement payout: Add as a new row with specific details
+            const retirementTable = document.getElementById(
+              "retirementResultsTable"
+            );
+            if (retirementTable) {
+              // Create new row for Cash Value payout
+              const newRow = document.createElement("tr");
+              newRow.innerHTML = `
+                <td>PRODUCT - Cash Value payout from Whole life</td>
+                <td>Non Guaranteed</td>
+                <td>Non Taxable</td>
+                <td>${(totalPresentValue * 0.04).toFixed(2)}</td>
+              `;
+              retirementTable.querySelector("tbody").appendChild(newRow);
+
+              // Update financial data store for retirement
+              if (!financialData.goals.retirement.cashValuePayout) {
+                financialData.goals.retirement.cashValuePayout = {
+                  product: "Cash Value payout from Whole life",
+                  incomeType: "Non Guaranteed",
+                  taxStatus: "Non Taxable",
+                  projectedAmount: totalPresentValue * 0.04,
+                };
+              }
+            }
+          } else if (purpose === "longterm") {
+            // For long term care: add present value to the Required projected Long Term care
+            const longTermCareInput = document.querySelector(
+              '.goal-amount[data-metric="longterm-care"]'
+            );
+            if (longTermCareInput) {
+              longTermCareInput.value = totalPresentValue;
+              longTermCareInput.dispatchEvent(new Event("input"));
+            }
+          } else if (purpose === "legacy") {
+            // For legacy overview: create a new row in legacy results called Projected Non-Real estate investment
+            const legacyGoalsTable =
+              document.getElementById("legacyGoalsTable");
+            if (legacyGoalsTable) {
+              const legacyInput = document.querySelector(
+                '.goal-amount[data-metric="legacy-assets"]'
+              );
+              if (legacyInput) {
+                legacyInput.value = totalPresentValue;
+                legacyInput.dispatchEvent(new Event("input"));
+              }
+            }
+          }
+        }
+
+        // Get values for financial data store update
         const userPresentValue = parseFloat(userPresentValueInput?.value) || 0;
         const spousePresentValue =
           maritalStatus === "Married"
@@ -5637,6 +6085,7 @@
           maritalStatus === "Married"
             ? parseFloat(spouseContributionInput?.value) || 0
             : 0;
+        const purpose = purposeSelect?.value || "";
         const projectedValue = projectedSpan
           ? parseFloat(projectedSpan.textContent) || 0
           : userPresentValue + spousePresentValue;
@@ -5652,6 +6101,15 @@
             userPresentValue: userPresentValue,
             spousePresentValue: spousePresentValue,
             projectedValue: userPresentValue + spousePresentValue,
+          };
+        } else if (category === "insurance" && subcategory === "cashValue") {
+          financialData.assets[category][subcategory] = {
+            userPresentValue: userPresentValue,
+            spousePresentValue: spousePresentValue,
+            projectedValue: projectedValue,
+            userAnnualContribution: userAnnualContribution,
+            spouseAnnualContribution: spouseAnnualContribution,
+            purpose: purpose,
           };
         } else {
           financialData.assets[category][subcategory] = {
@@ -5794,6 +6252,8 @@
                 input.textContent = asset.projectedValue.toFixed(2);
               } else if (input.classList.contains("annual-contribution")) {
                 input.value = asset.annualContribution;
+              } else if (input.classList.contains("purpose")) {
+                input.value = asset.purpose || "";
               }
             });
           });
@@ -6077,6 +6537,55 @@
           );
           return;
         }
+      }
+    </script>
+    <script>
+      function updateSSAPiaValue(input) {
+        const metric = input.getAttribute("data-metric");
+        const row = input.closest("tr");
+        const userPresentValueInput = row.querySelector(".user-present-value");
+        const spousePresentValueInput = row.querySelector(
+          ".spouse-present-value"
+        );
+        const projectedSpan = row.querySelector(".projected-value");
+        const maritalStatus = document.getElementById("maritalStatus").value;
+
+        if (!projectedSpan) return;
+
+        const userPresentValue = parseFloat(userPresentValueInput?.value) || 0;
+        const spousePresentValue =
+          maritalStatus === "Married"
+            ? parseFloat(spousePresentValueInput?.value) || 0
+            : 0;
+        const totalPresentValue = userPresentValue + spousePresentValue;
+
+        // Set projected value equal to present value
+        projectedSpan.textContent = totalPresentValue.toFixed(2);
+
+        // Update financial data store
+        if (!financialData.assets.retirement) {
+          console.warn("Retirement category not found in financial data store");
+          return;
+        }
+
+        if (!financialData.assets.retirement.ssaPia) {
+          console.warn("SSA PIA subcategory not found in retirement");
+          return;
+        }
+
+        financialData.assets.retirement.ssaPia = {
+          userPresentValue: userPresentValue,
+          spousePresentValue: spousePresentValue,
+          projectedValue: totalPresentValue,
+          userAnnualContribution: 0,
+          spouseAnnualContribution: 0,
+        };
+
+        // Save to local storage
+        saveFinancialData();
+
+        // Update totals display
+        updateTotalsDisplay();
       }
     </script>
   </body>
