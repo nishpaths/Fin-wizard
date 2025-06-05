@@ -1167,63 +1167,6 @@
                 </td>
               </tr>
               <tr>
-                <td>Roth IRA | Roth 401K</td>
-                <td>
-                  <input
-                    class="user-present-value"
-                    data-metric="roth"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td class="spouse-column">
-                  <input
-                    class="spouse-present-value"
-                    data-metric="roth"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td>
-                  <input
-                    class="rate-of-return"
-                    data-metric="roth"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    placeholder="6"
-                    step="0.1"
-                    type="number"
-                  />
-                </td>
-                <td>
-                  <input
-                    class="user-annual-contribution"
-                    data-metric="roth"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td class="spouse-column">
-                  <input
-                    class="spouse-annual-contribution"
-                    data-metric="roth"
-                    min="0"
-                    oninput="updateProjectedValue(this, 'projected')"
-                    step="0.01"
-                    type="number"
-                  />
-                </td>
-                <td>
-                  <span class="projected-value" data-metric="roth">0.00</span>
-                </td>
-              </tr>
-              <tr>
                 <td>Pension | ESPP | Annuities</td>
                 <td>
                   <input
@@ -1354,6 +1297,33 @@
                         >&times;</span
                       >
                       <h2>Social Security Benefits Table</h2>
+                      <p></p>
+                        1) Born on or after 1960, 67 is Full retirement Age
+                        (FRA). Any claiming Age before is Early retirement, Any
+                        claiming age after 67 is delayed retirement. 
+                      </p>
+                      <p>
+                        2) Born
+                        before 1960, 66 &10 mths is Full retirement Age (FRA).
+                        Any claiming Age before FRA is Early retirement, Any
+                        claiming age after FRAis delayed retirement. 
+                      </p>
+                      <p>
+                        3) PIA -
+                        Your highest 35 years of indexed earnings.
+                      </p> 
+                      <p>
+                        4) For more
+                        details on FRA and PIA, login to your account at
+                        <a href="https://www.ssa.gov/myaccount/" target="_blank">https://www.ssa.gov/myaccount</a> Once Logged In: Click on
+                        “View Your Social Security Statement.” You’ll see a page
+                        showing: Your Estimated Benefits at: Age 62 (early
+                        retirement) Full Retirement Age (FRA) – this is your PIA
+                        Age 70 (delayed retirement) The amount shown next to “At
+                        your full retirement age (X)” is your PIA
+                      </p>
+                    </p>
+
                       <div class="ssa-tables">
                         <h3>Born on or after 1960</h3>
                         <table class="ssa-info-table">
@@ -3505,6 +3475,10 @@
                 <td><span id="projectedRealEstate">0.00</span></td>
               </tr>
               <tr>
+                <td>Projected Non-Real estate investment:</td>
+                <td><span id="projectedNonRealEstate">0.00</span></td>
+              </tr>
+              <tr>
                 <td>GAP:</td>
                 <td><span id="legacyGap" style="color: #ff5555">0.00</span></td>
               </tr>
@@ -3895,6 +3869,7 @@
         const metric = input.getAttribute("data-metric");
         const years = getYearsToRetirement();
         const maritalStatus = document.getElementById("maritalStatus").value;
+        const table = input.closest("table");
 
         const projectedSpan = document.querySelector(
           `.${
@@ -3907,10 +3882,7 @@
         }
 
         // For Retirement Planning table
-        if (
-          input.closest("table") &&
-          input.closest("table").id === "retirementTable"
-        ) {
+        if (table && table.id === "retirementTable") {
           const userPresentValueInput = document.querySelector(
             `#retirementTable .user-present-value[data-metric="${metric}"]`
           );
@@ -6028,13 +6000,26 @@
               "retirementResultsTable"
             );
             if (retirementTable) {
+              // Remove existing cash value payout row if it exists
+              const existingRow = Array.from(
+                retirementTable.querySelectorAll("tr")
+              ).find(
+                (row) =>
+                  row.cells[0]?.textContent ===
+                  "PRODUCT - Cash Value payout from Whole life"
+              );
+              if (existingRow) {
+                existingRow.remove();
+              }
+
               // Create new row for Cash Value payout
               const newRow = document.createElement("tr");
+              const projectedAmount = totalPresentValue * 0.04;
               newRow.innerHTML = `
                 <td>PRODUCT - Cash Value payout from Whole life</td>
                 <td>Non Guaranteed</td>
                 <td>Non Taxable</td>
-                <td>${(totalPresentValue * 0.04).toFixed(2)}</td>
+                <td>${projectedAmount.toFixed(2)}</td>
               `;
               retirementTable.querySelector("tbody").appendChild(newRow);
 
@@ -6044,7 +6029,7 @@
                   product: "Cash Value payout from Whole life",
                   incomeType: "Non Guaranteed",
                   taxStatus: "Non Taxable",
-                  projectedAmount: totalPresentValue * 0.04,
+                  projectedAmount: projectedAmount,
                 };
               }
             }
@@ -6054,7 +6039,10 @@
               '.goal-amount[data-metric="longterm-care"]'
             );
             if (longTermCareInput) {
-              longTermCareInput.value = totalPresentValue;
+              const currentValue = parseFloat(longTermCareInput.value) || 0;
+              longTermCareInput.value = (
+                currentValue + totalPresentValue
+              ).toFixed(2);
               longTermCareInput.dispatchEvent(new Event("input"));
             }
           } else if (purpose === "legacy") {
@@ -6062,13 +6050,32 @@
             const legacyGoalsTable =
               document.getElementById("legacyGoalsTable");
             if (legacyGoalsTable) {
-              const legacyInput = document.querySelector(
-                '.goal-amount[data-metric="legacy-assets"]'
+              // Remove existing non-real estate investment row if it exists
+              const existingRow = Array.from(
+                legacyGoalsTable.querySelectorAll("tr")
+              ).find(
+                (row) =>
+                  row.cells[0]?.textContent ===
+                  "Projected Non-Real estate investment"
               );
-              if (legacyInput) {
-                legacyInput.value = totalPresentValue;
-                legacyInput.dispatchEvent(new Event("input"));
+              if (existingRow) {
+                existingRow.remove();
               }
+
+              // Create new row for Non-Real estate investment
+              const newRow = document.createElement("tr");
+              newRow.innerHTML = `
+                <td>Projected Non-Real estate investment</td>
+                <td>${totalPresentValue.toFixed(2)}</td>
+              `;
+              legacyGoalsTable.querySelector("tbody").appendChild(newRow);
+
+              // Update financial data store for legacy
+              if (!financialData.goals.legacy) {
+                financialData.goals.legacy = {};
+              }
+              financialData.goals.legacy.nonRealEstateInvestment =
+                totalPresentValue;
             }
           }
         }
@@ -6494,7 +6501,16 @@
           );
         });
 
-        const legacyGap = legacyGoalAmount - projectedRealEstate;
+        // Get non-real estate investment value from financial data store
+        const nonRealEstateInvestment =
+          financialData.goals.legacy?.nonRealEstateInvestment || 0;
+
+        // Calculate total projected assets (real estate + non-real estate investments)
+        const totalProjectedAssets =
+          projectedRealEstate + nonRealEstateInvestment;
+
+        // Calculate the gap between goal amount and total projected assets
+        const legacyGap = legacyGoalAmount - totalProjectedAssets;
 
         // Update Legacy display
         document.getElementById("legacyGoalAmount").textContent =
@@ -6504,6 +6520,11 @@
           });
         document.getElementById("projectedRealEstate").textContent =
           projectedRealEstate.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        document.getElementById("projectedNonRealEstate").textContent =
+          nonRealEstateInvestment.toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           });
