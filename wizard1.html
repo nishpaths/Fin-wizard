@@ -2237,36 +2237,7 @@
             });
           });
         </script>
-<div id="assetResults">
-<h3>Assets Summary</h3>
-<table>
-<tr>
-<td>Total Present Value ($):</td>
-<td><span class="total-value" id="totalPresent">0.00</span></td>
-</tr>
-<tr>
-<td>Total Projected Value ($):</td>
-<td><span class="total-value" id="totalProjected">0.00</span></td>
-</tr>
-</table>
-</div>
-<div id="goalResults">
-<h3>Goals Summary</h3>
-<table>
-<tr>
-<td>Total Goal Amount ($):</td>
-<td>
-<span class="total-value" id="totalGoalAmount">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Total Projected Goal Amount ($):</td>
-<td>
-<span class="total-value" id="totalGoalProjected">0.00</span>
-</td>
-</tr>
-</table>
-</div>
+
 <p style="text-align: center; font-size: 0.9em">
           FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
         </p>
@@ -5171,8 +5142,7 @@
         // Update data store totals
         financialData.totals = totals;
 
-        // Update UI
-        updateTotalsDisplay();
+        
       }
 
       function updateTotalsDisplay() {
