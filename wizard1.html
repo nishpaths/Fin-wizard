@@ -557,7 +557,6 @@
 <h2>Step 2: Cash Flow Analysis</h2>
 <!-- Sub-Step 2.1: Monthly Income & Expenses -->
 <div class="sub-step active" id="subStep2-1">
-<h3>Step 2.1: Monthly Income &amp; Expenses</h3>
 <table id="cashFlowTable">
 <thead>
 <tr>
@@ -659,6 +658,7 @@
 <tr>
 <th>Metric</th>
 <th>Amount ($)</th>
+<th>Monthly Payment ($)</th>
 </tr>
 </thead>
 <tbody>
@@ -667,11 +667,17 @@
 <td>
 <input class="debt-amount" data-metric="mortgage-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
 </td>
+<td>
+<input class="monthly-payment" data-metric="mortgage-payment" min="0" step="0.01" type="number"/>
+</td>
 </tr>
 <tr>
 <td>Credit Card Debt</td>
 <td>
 <input class="debt-amount" data-metric="credit-card-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
+</td>
+<td>
+<input class="monthly-payment" data-metric="credit-card-payment" min="0" step="0.01" type="number"/>
 </td>
 </tr>
 <tr>
@@ -679,17 +685,26 @@
 <td>
 <input class="debt-amount" data-metric="car-loan-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
 </td>
+<td>
+<input class="monthly-payment" data-metric="car-loan-payment" min="0" step="0.01" type="number"/>
+</td>
 </tr>
 <tr>
 <td>Student Loan Debt</td>
 <td>
 <input class="debt-amount" data-metric="student-loan-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
 </td>
+<td>
+<input class="monthly-payment" data-metric="student-loan-payment" min="0" step="0.01" type="number"/>
+</td>
 </tr>
 <tr>
 <td>Any other Debt (Sum)</td>
 <td>
 <input class="debt-amount" data-metric="other-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
+</td>
+<td>
+<input class="monthly-payment" data-metric="other-debt-payment" min="0" step="0.01" type="number"/>
 </td>
 </tr>
 </tbody>
@@ -707,6 +722,12 @@
 <td><strong>Total Debt:</strong></td>
 <td>
 <span class="total-value" id="totalDebtAmount">0.00</span>
+</td>
+</tr>
+<tr>
+<td><strong>Total Monthly Payments:</strong></td>
+<td>
+<span class="total-value" id="totalMonthlyPayment">0.00</span>
 </td>
 </tr>
 <tr>
@@ -4528,12 +4549,42 @@
         // Update debt overview
         updateDebtOverview();
       }
+      
+      // Handle monthly payment updates
+      function updateMonthlyPayment(input) {
+        const metric = input.getAttribute("data-metric");
+        const amount = parseFloat(input.value) || 0;
+        
+        // Store the monthly payment in localStorage
+        localStorage.setItem(`monthly-${metric}`, amount);
+        
+        // Update any related calculations
+        updateDebtOverview();
+      }
+      
+      // Add event listeners for monthly payment inputs when the page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.monthly-payment').forEach(input => {
+          const metric = input.getAttribute('data-metric');
+          const savedValue = localStorage.getItem(`monthly-${metric}`);
+          if (savedValue) {
+            input.value = savedValue;
+          }
+          input.addEventListener('input', function() {
+            updateMonthlyPayment(this);
+          });
+        });
+      });
 
       function updateDebtOverview() {
-        // Get all debt amounts
+        // Get all debt amounts and monthly payments
         const creditCardDebt =
           parseFloat(
             document.querySelector('[data-metric="credit-card-debt"]')?.value
+          ) || 0;
+        const creditCardPayment =
+          parseFloat(
+            document.querySelector('[data-metric="credit-card-payment"]')?.value
           ) || 0;
         const carLoanDebt =
           parseFloat(
@@ -4553,16 +4604,23 @@
           ) || 0;
 
         // Calculate total debt
-        const totalDebt =
-          creditCardDebt +
-          carLoanDebt +
-          mortgageDebt +
-          studentLoanDebt +
-          otherDebt;
+        // Calculate total monthly payments
+        const mortgagePayment = parseFloat(document.querySelector('[data-metric="mortgage-payment"]')?.value) || 0;
+        const carLoanPayment = parseFloat(document.querySelector('[data-metric="car-loan-payment"]')?.value) || 0;
+        const studentLoanPayment = parseFloat(document.querySelector('[data-metric="student-loan-payment"]')?.value) || 0;
+        const otherDebtPayment = parseFloat(document.querySelector('[data-metric="other-debt-payment"]')?.value) || 0;
+        
+        const totalDebt = mortgageDebt + creditCardDebt + carLoanDebt + studentLoanDebt + otherDebt;
+        const totalMonthlyPayments = mortgagePayment + creditCardPayment + carLoanPayment + studentLoanPayment + otherDebtPayment;
 
-        // Update total debt display
-        document.getElementById("totalDebtAmount").textContent =
-          totalDebt.toFixed(2);
+        // Update the total debt and monthly payments display
+        document.getElementById("totalDebtAmount").textContent = totalDebt.toFixed(2);
+        
+        // Update the monthly payment display if it exists
+        const totalMonthlyElement = document.getElementById("totalMonthlyPayment");
+        if (totalMonthlyElement) {
+          totalMonthlyElement.textContent = totalMonthlyPayments.toFixed(2);
+        }
         document.getElementById("resultTotalDebt").textContent =
           totalDebt.toFixed(2);
 
