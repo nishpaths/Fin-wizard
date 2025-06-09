@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Financial Needs Analysis Wizard</title>
-<style>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Financial Needs Analysis Wizard</title>
+    <style>
       body {
         font-family: Arial, sans-serif;
         background-color: #000000;
@@ -76,11 +75,11 @@
       }
 
       .sub-step {
-        display: none;
+        display: none !important;
       }
 
       .sub-step.active {
-        display: block;
+        display: block !important;
       }
 
       h2 {
@@ -391,1086 +390,604 @@
         color: #4caf50;
       }
     </style>
-<!-- html2pdf.js library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script></head>
-<body>
-<div class="wizard-container">
-<!-- Header -->
-<div class="header">
-<h1>Financial Needs Analysis Wizard</h1>
-<p>
+    <!-- html2pdf.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="wizard-container">
+      <!-- Header -->
+      <div class="header">
+        <h1>Financial Needs Analysis Wizard</h1>
+        <p>
           Strategic Diversification based on Suitability, Affordability, and
           Long-Term Planning
         </p>
-</div>
-<!-- Wizard Tabs -->
-<div class="wizard-tabs">
-<a class="active" href="#" onclick="navigateToStep(1); return false;">Personal Details</a>
-<a href="#" onclick="navigateToStep(2); return false;">Cash Flow</a>
-<a href="#" onclick="navigateToStep(3); return false;">Debt</a>
-<a href="#" onclick="navigateToStep(4); return false;">Assets</a>
-<a href="#" onclick="navigateToStep(5); return false;">Goals</a>
-<a href="#" onclick="calculateAndShowResults(); return false;">Results</a>
-</div>
-<!-- Step 1: Personal Info -->
-<div class="step" id="step1">
-<h2>Step 1: Tell Us About Yourself</h2>
-<table id="personalInfoTable">
-<tr>
-<th>Field</th>
-<th>User</th>
-</tr>
-<tr>
-<td>Name</td>
-<td>
-<input id="userName" placeholder="Enter your name" type="text"/>
-</td>
-</tr>
-<tr>
-<td>Date of Birth (mm/yyyy)</td>
-<td>
-<input id="userDOB" oninput="calculateAge('user')" placeholder="mm/yyyy" type="text"/>
-</td>
-</tr>
-<tr>
-<td>Current Age</td>
-<td><span class="calculated-age" id="userAge">0</span></td>
-</tr>
-<tr>
-<td>Retirement Age</td>
-<td>
-<input id="userRetirementAge" min="0" oninput="updateAllProjectedValues()" placeholder="Enter retirement age" step="1" type="number" value="65"/>
-</td>
-</tr>
-<tr>
-<td>Marital Status</td>
-<td>
-<select id="maritalStatus" onchange="toggleSpouseSection()">
-<option value="Single">Single</option>
-<option value="Married">Married</option>
-<option value="Divorced">Divorced</option>
-<option value="Widowed">Widowed</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>Immigration Status</td>
-<td>
-<select id="userImmigrationStatus">
-<option value="Citizen">Citizen</option>
-<option value="GC">Green Card (GC)</option>
-<option value="Immigrant Visa">Immigrant Visa</option>
-<option value="EAD">EAD</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>Employment Status</td>
-<td>
-<select id="userEmploymentStatus">
-<option value="Employee">Employee</option>
-<option value="Business/Self-Employment">
+      </div>
+      <!-- Wizard Tabs -->
+      <div class="wizard-tabs">
+        <a class="active" href="#" onclick="navigateToStep(1); return false;"
+          >Personal Details</a
+        >
+        <a href="#" onclick="navigateToStep(2); return false;">Cash Flow</a>
+        <a href="#" onclick="navigateToStep(3); return false;">Debt</a>
+        <a href="#" onclick="navigateToStep(4); return false;">Assets</a>
+        <a href="#" onclick="navigateToStep(5); return false;">Goals</a>
+        <a href="#" onclick="calculateAndShowResults(); return false;"
+          >Results</a
+        >
+      </div>
+      <!-- Step 1: Personal Info -->
+      <div class="step" id="step1">
+        <h2>Step 1: Tell Us About Yourself</h2>
+        <table id="personalInfoTable">
+          <tr>
+            <th>Field</th>
+            <th>User</th>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>
+              <input id="userName" placeholder="Enter your name" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>Date of Birth (mm/yyyy)</td>
+            <td>
+              <input
+                id="userDOB"
+                oninput="calculateAge('user')"
+                placeholder="mm/yyyy"
+                type="text"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Current Age</td>
+            <td><span class="calculated-age" id="userAge">0</span></td>
+          </tr>
+          <tr>
+            <td>Retirement Age</td>
+            <td>
+              <input
+                id="userRetirementAge"
+                min="0"
+                oninput="updateAllProjectedValues()"
+                placeholder="Enter retirement age"
+                step="1"
+                type="number"
+                value="65"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>Marital Status</td>
+            <td>
+              <select id="maritalStatus" onchange="toggleSpouseSection()">
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Immigration Status</td>
+            <td>
+              <select id="userImmigrationStatus">
+                <option value="Citizen">Citizen</option>
+                <option value="GC">Green Card (GC)</option>
+                <option value="Immigrant Visa">Immigrant Visa</option>
+                <option value="EAD">EAD</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Employment Status</td>
+            <td>
+              <select id="userEmploymentStatus">
+                <option value="Employee">Employee</option>
+                <option value="Business/Self-Employment">
                   Business/Self-Employment
                 </option>
-<option value="Unemployed">Unemployed</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>Email</td>
-<td>
-<input id="email" placeholder="example@email.com" type="text"/>
-</td>
-</tr>
-<tr>
-<td>City &amp; State</td>
-<td>
-<input id="cityState" placeholder="Seattle, WA" type="text"/>
-</td>
-</tr>
-<tr>
-<td>Number of Dependents</td>
-<td>
-<input id="dependents" min="0" oninput="updateDependentsSection()" placeholder="Enter number of dependents" step="1" type="number"/>
-</td>
-</tr>
-</table>
-<!-- Will & Trust Section -->
-<div class="will-trust-section">
-<h3>Will &amp; Trust Information</h3>
-<table>
-<tr>
-<td>Do you have Will &amp; Trust?</td>
-<td>
-<select id="willTrustStatus" onchange="toggleWillTrustFunding()">
-<option value="NO">NO</option>
-<option value="YES">YES</option>
-</select>
-</td>
-</tr>
-<tr id="willTrustFundingRow" style="display: none">
-<td>Funding Status</td>
-<td>
-<select id="willTrustFunding">
-<option value="Funded">Funded</option>
-<option value="Not Funded">Not Funded</option>
-</select>
-</td>
-</tr>
-</table>
-</div>
-<!-- Spouse Section (Hidden by Default) -->
-<div class="spouse-section" id="spouseSection" style="display: none">
-<h3>Spouse Information</h3>
-<table>
-<tr>
-<th>Field</th>
-<th>Spouse</th>
-</tr>
-<tr>
-<td>Name</td>
-<td>
-<input id="spouseName" placeholder="Enter spouse's name" type="text"/>
-</td>
-</tr>
-<tr>
-<td>Date of Birth (mm/yyyy)</td>
-<td>
-<input id="spouseDOB" oninput="calculateAge('spouse')" placeholder="mm/yyyy" type="text"/>
-</td>
-</tr>
-<tr>
-<td>Current Age</td>
-<td><span class="calculated-age" id="spouseAge">0</span></td>
-</tr>
-</table>
-</div>
-<!-- Dependents Section (Dynamically Generated) -->
-<div class="dependents-section" id="dependentsSection"></div>
-<div class="buttons">
-<button onclick="nextStep(2)">Next</button>
-</div>
-</div>
-<!-- Step 2: Cash Flow -->
-<div class="step" id="step2">
-<h2>Step 2: Cash Flow Analysis</h2>
-<!-- Sub-Step 2.1: Monthly Income & Expenses -->
-<div class="sub-step active" id="subStep2-1">
-<table id="cashFlowTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>User Present Value ($)</th>
-<th class="spouse-column">Spouse Present Value ($)</th>
-<th>Inflation Rate (%)</th>
-<th>Projected Value @ Retirement ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Monthly Income (Wages)</td>
-<td>
-<input class="user-present-value" data-metric="monthly-income" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="monthly-income" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td>
-<input class="inflation-rate" data-metric="monthly-income" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="monthly-income">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Monthly Income - Business</td>
-<td>
-<input class="user-present-value" data-metric="monthly-business" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="monthly-business" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td>
-<input class="inflation-rate" data-metric="monthly-business" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="monthly-business">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Monthly Income - Rental</td>
-<td>
-<input class="user-present-value" data-metric="monthly-rental" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="monthly-rental" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td>
-<input class="inflation-rate" data-metric="monthly-rental" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="monthly-rental">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Monthly Expenses w/o Mortgage</td>
-<td>
-<input class="user-present-value" data-metric="monthly-expenses" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="monthly-expenses" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="0" step="0.01" type="number"/>
-</td>
-<td>
-<input class="inflation-rate" data-metric="monthly-expenses" min="0" oninput="updateCashFlowProjectedValue(this)" placeholder="3" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="monthly-expenses">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Monthly Mortgage Expense</td>
-<td>
-<input class="user-present-value" data-metric="monthly-mortgage" min="0" oninput="updateCashFlowProjectedValue(this)" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="monthly-mortgage" min="0" oninput="updateCashFlowProjectedValue(this)" step="0.01" type="number"/>
-</td>
-<td>-</td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevStep(1)">Previous</button>
-<button onclick="nextStep(3)">Next</button>
-</div>
-</div>
-</div>
-<!-- Step 3: Debt -->
-<div class="step" id="step3">
-<h2>Step 3: Your Debt</h2>
-<!-- Sub-Step 3.1: Debt Analysis -->
-<div class="sub-step" id="subStep3-1">
-<h3>Step 3.1: Debt Analysis</h3>
-<table id="debtAnalysisTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>Amount ($)</th>
-<th>Monthly Payment ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Mortgage Debt (Sum)</td>
-<td>
-<input class="debt-amount" data-metric="mortgage-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
-</td>
-<td>
-<input class="monthly-payment" data-metric="mortgage-payment" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Credit Card Debt</td>
-<td>
-<input class="debt-amount" data-metric="credit-card-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
-</td>
-<td>
-<input class="monthly-payment" data-metric="credit-card-payment" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Car Loan Debt</td>
-<td>
-<input class="debt-amount" data-metric="car-loan-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
-</td>
-<td>
-<input class="monthly-payment" data-metric="car-loan-payment" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Student Loan Debt</td>
-<td>
-<input class="debt-amount" data-metric="student-loan-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
-</td>
-<td>
-<input class="monthly-payment" data-metric="student-loan-payment" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Any other Debt (Sum)</td>
-<td>
-<input class="debt-amount" data-metric="other-debt" min="0" oninput="updateDebtAmount(this)" step="0.01" type="number"/>
-</td>
-<td>
-<input class="monthly-payment" data-metric="other-debt-payment" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevStep(2)">Previous</button>
-<button onclick="nextStep(4)">Next</button>
-</div>
-</div>
-<!-- Add this inside the debt step, after the debtAnalysisTable -->
-<div class="debt-overview">
-<h3>Debt Overview &amp; Recommendations</h3>
-<table>
-<tr>
-<td><strong>Total Debt:</strong></td>
-<td>
-<span class="total-value" id="totalDebtAmount">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Total Monthly Payments:</strong></td>
-<td>
-<span class="total-value" id="totalMonthlyPayment">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Priority Focus:</strong></td>
-<td><span id="debtPriorityFocus">-</span></td>
-</tr>
-<tr>
-<td colspan="2">
-<div id="debtRecommendations"></div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<!-- Step 4: Assets -->
-<div class="step" id="step4">
-<h2>Step 4: Your Assets</h2>
-<div class="error-message" id="retirementError" style="display: none">
-          Please complete Step 1 with a valid Date of Birth to calculate
-          projected values.
+                <option value="Unemployed">Unemployed</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td>
+              <input id="email" placeholder="example@email.com" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>City &amp; State</td>
+            <td>
+              <input id="cityState" placeholder="Seattle, WA" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>Number of Dependents</td>
+            <td>
+              <input
+                id="dependents"
+                min="0"
+                oninput="updateDependentsSection()"
+                placeholder="Enter number of dependents"
+                step="1"
+                type="number"
+              />
+            </td>
+          </tr>
+        </table>
+        <!-- Will & Trust Section -->
+        <div class="will-trust-section">
+          <h3>Will &amp; Trust Information</h3>
+          <table>
+            <tr>
+              <td>Do you have Will &amp; Trust?</td>
+              <td>
+                <select
+                  id="willTrustStatus"
+                  onchange="toggleWillTrustFunding()"
+                >
+                  <option value="NO">NO</option>
+                  <option value="YES">YES</option>
+                </select>
+              </td>
+            </tr>
+            <tr id="willTrustFundingRow" style="display: none">
+              <td>Funding Status</td>
+              <td>
+                <select id="willTrustFunding">
+                  <option value="Funded">Funded</option>
+                  <option value="Not Funded">Not Funded</option>
+                </select>
+              </td>
+            </tr>
+          </table>
         </div>
-<!-- Sub-Step 4.1: Retirement Planning -->
-<div class="sub-step" id="subStep4-1">
-<h3>Step 4.1: Retirement Planning (USA)</h3>
-<p id="retirementAgeMessage" style="color: #bdb76b; font-weight: bold"></p>
-<script>
-            // Modal functions
-            function openSSAModal(event) {
-              event.preventDefault();
-              document.getElementById("ssaModal").style.display = "block";
-            }
-
-            function closeSSAModal() {
-              document.getElementById("ssaModal").style.display = "none";
-            }
-
-            // Close modal when clicking outside of it
-            window.onclick = function (event) {
-              const modal = document.getElementById("ssaModal");
-              if (event.target === modal) {
-                modal.style.display = "none";
-              }
-            };
-
-            function updateRetirementAgeMessage() {
-              const userRetirementAge = parseInt(
-                document.getElementById("userRetirementAge")?.value || "65"
-              );
-              const userAge = parseInt(
-                document.getElementById("userAge")?.textContent || "0"
-              );
-              const yearsLeft = userRetirementAge - userAge;
-
-              let message =
-                `Your retirement age is ${userRetirementAge}, remaining years till retirement: ${
-                  yearsLeft >= 0 ? yearsLeft : 0
-                }` +
-                " " +
-                "(" +
-                "add up spouse's retirement values in present and annual contributions " +
-                ")";
-
-              const msgEl = document.getElementById("retirementAgeMessage");
-              if (msgEl) msgEl.textContent = message;
-            }
-
-            // Run the function initially and whenever related inputs change
-            document.addEventListener(
-              "DOMContentLoaded",
-              updateRetirementAgeMessage
-            );
-            document
-              .getElementById("userRetirementAge")
-              ?.addEventListener("input", updateRetirementAgeMessage);
-            document
-              .getElementById("userDOB")
-              ?.addEventListener("input", () => {
-                setTimeout(updateRetirementAgeMessage, 300); // allow age to update
-              });
-          </script>
-<table id="retirementTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>User Present Value ($)</th>
-<th class="spouse-column">Spouse Present Value ($)</th>
-<th>Rate of Return (%)</th>
-<th>User Annual Contribution ($)</th>
-<th class="spouse-column">Spouse Annual Contribution ($)</th>
-<th>Projected Value @ Retirement ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Current 401K | 403B</td>
-<td>
-<input class="user-present-value" data-metric="401k" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="401k" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="401k" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="6" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="401k" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="401k" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="401k">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Previous 401K | Rollover 401K</td>
-<td>
-<input class="user-present-value" data-metric="rollover" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="rollover" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="rollover" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="6" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="rollover" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="rollover" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="rollover">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Traditional IRA | SEP-IRA</td>
-<td>
-<input class="user-present-value" data-metric="traditional" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="traditional" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="traditional" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="6" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="traditional" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="traditional" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="traditional">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Pension | ESPP | Annuities</td>
-<td>
-<input class="user-present-value" data-metric="pension" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="pension" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="pension" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="6" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="pension" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="pension" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="pension">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Roth IRA | Roth 401K</td>
-<td>
-<input class="user-present-value" data-metric="roth" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="roth" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="roth" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="6" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="roth" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="roth" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="roth">0.00</span>
-</td>
-</tr>
-<tr>
-<td>
-                  SSA Income: Primary Insurance Amount(PIA) at Full Retirement
-                  Age (FRA)
-                  <a href="#" onclick="openSSAModal(event)">Refer to this link for more details</a>
-<!-- SSA Modal -->
-<div class="modal" id="ssaModal">
-<div class="modal-content">
-<span class="close" onclick="closeSSAModal()">×</span>
-<h2>Social Security Benefits Table</h2>
-<p></p>
-                        1) Born on or after 1960, 67 is Full retirement Age
-                        (FRA). Any claiming Age before is Early retirement, Any
-                        claiming age after 67 is delayed retirement. 
-                      
-<p>
-                        2) Born
-                        before 1960, 66 &amp;10 mths is Full retirement Age (FRA).
-                        Any claiming Age before FRA is Early retirement, Any
-                        claiming age after FRAis delayed retirement. 
-                      </p>
-<p>
-                        3) PIA -
-                        Your highest 35 years of indexed earnings.
-                      </p>
-<p>
-                        4) For more
-                        details on FRA and PIA, login to your account at
-                        <a href="https://www.ssa.gov/myaccount/" target="_blank">https://www.ssa.gov/myaccount</a> Once Logged In: Click on
-                        “View Your Social Security Statement.” You’ll see a page
-                        showing: Your Estimated Benefits at: Age 62 (early
-                        retirement) Full Retirement Age (FRA) – this is your PIA
-                        Age 70 (delayed retirement) The amount shown next to “At
-                        your full retirement age (X)” is your PIA
-                      </p>
-<div class="ssa-tables">
-<h3>Born on or after 1960</h3>
-<table class="ssa-info-table">
-<tr>
-<th>Claiming Age</th>
-<th>% of PIA</th>
-<th>% Change vs FRA</th>
-</tr>
-<tr>
-<td>62</td>
-<td>70.00%</td>
-<td>-30.00%</td>
-</tr>
-<tr>
-<td>63</td>
-<td>75.00%</td>
-<td>-25.00%</td>
-</tr>
-<tr>
-<td>64</td>
-<td>80.00%</td>
-<td>-20.00%</td>
-</tr>
-<tr>
-<td>65</td>
-<td>86.66%</td>
-<td>-13.34%</td>
-</tr>
-<tr>
-<td>66</td>
-<td>93.33%</td>
-<td>-6.67%</td>
-</tr>
-<tr>
-<td>67 (FRA)</td>
-<td>100.00%</td>
-<td>0.00%</td>
-</tr>
-<tr>
-<td>68</td>
-<td>108.00%</td>
-<td>8.00%</td>
-</tr>
-<tr>
-<td>69</td>
-<td>116.00%</td>
-<td>16.00%</td>
-</tr>
-<tr>
-<td>70</td>
-<td>124.00%</td>
-<td>24.00%</td>
-</tr>
-</table>
-<h3>Born before 1960</h3>
-<table class="ssa-info-table">
-<tr>
-<th>Claiming Age</th>
-<th>% of PIA</th>
-<th>% Change vs FRA</th>
-</tr>
-<tr>
-<td>62</td>
-<td>70.83%</td>
-<td>-29.17%</td>
-</tr>
-<tr>
-<td>63</td>
-<td>75.83%</td>
-<td>-24.17%</td>
-</tr>
-<tr>
-<td>64</td>
-<td>80.83%</td>
-<td>-19.17%</td>
-</tr>
-<tr>
-<td>65</td>
-<td>86.67%</td>
-<td>-13.33%</td>
-</tr>
-<tr>
-<td>66</td>
-<td>93.33%</td>
-<td>-6.67%</td>
-</tr>
-<tr>
-<td>66 &amp; 10 months</td>
-<td>100.00%</td>
-<td>No reduction</td>
-</tr>
-<tr>
-<td>67</td>
-<td>101.33%</td>
-<td>1.33%</td>
-</tr>
-<tr>
-<td>68</td>
-<td>109.33%</td>
-<td>9.33%</td>
-</tr>
-<tr>
-<td>69</td>
-<td>117.33%</td>
-<td>17.33%</td>
-</tr>
-<tr>
-<td>70</td>
-<td>125.33%</td>
-<td>25.33%</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</td>
-<td>
-<input class="user-present-value" data-metric="ssaPia" min="0" oninput="updateSSAPiaValue(this)" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="ssaPia" min="0" oninput="updateSSAPiaValue(this)" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="ssaPia" disabled="" min="0" oninput="updateSSAPiaValue(this)" placeholder="0" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="ssaPia" disabled="" min="0" oninput="updateSSAPiaValue(this)" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="ssaPia" disabled="" min="0" oninput="updateSSAPiaValue(this)" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="ssaPia">0.00</span>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(1, 4)">Previous</button>
-<button onclick="nextSubStep(2, 4)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 4.2: Real Estate Investments -->
-<div class="sub-step" id="subStep4-2">
-<h3>Step 4.2: Real Estate Investments (USA)</h3>
-<table id="realEstateTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>User Present Value ($)</th>
-<th class="spouse-column">Spouse Present Value ($)</th>
-<th>Remaining Mortgage ($)</th>
-<th>Rate of Return (%)</th>
-<th>Projected Value @ Retirement ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Primary Home</td>
-<td>
-<input class="user-present-value" data-metric="primaryHome" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="primaryHome" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="mortgage-balance" data-metric="primaryHome" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="primaryHome" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="2.5" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="primaryHome">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Rental Properties</td>
-<td>
-<input class="user-present-value" data-metric="rentals" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="rentals" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="mortgage-balance" data-metric="rentals" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="rentals" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="2.5" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="rentals">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Real Estate Land Parcels</td>
-<td>
-<input class="user-present-value" data-metric="land" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="land" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="mortgage-balance" data-metric="land" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="land" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="2.5" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="land">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Inheritance in the USA</td>
-<td>
-<input class="user-present-value" data-metric="inheritance" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="inheritance" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="mortgage-balance" data-metric="inheritance" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="inheritance" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="2.5" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="inheritance">0.00</span>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(1, 4)">Previous</button>
-<button onclick="nextSubStep(3, 4)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 4.3: Stocks | Business | Income -->
-<div class="sub-step" id="subStep4-3">
-<h3>Step 4.3: Non Real Estate Investments</h3>
-<table id="stocksBusinessIncomeTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>User Present Value ($)</th>
-<th class="spouse-column">Spouse Present Value ($)</th>
-<th>Rate of Return (%)</th>
-<th>User Annual Contribution ($)</th>
-<th class="spouse-column">Spouse Annual Contribution ($)</th>
-<th>Projected Value @ Retirement ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Stocks | MFs | Bonds | ETFs</td>
-<td>
-<input class="user-present-value" data-metric="stocks" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="stocks" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="stocks" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="7" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="stocks" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="stocks" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="stocks">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Alternative Investments</td>
-<td>
-<input class="user-present-value" data-metric="alternatives" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="alternatives" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="alternatives" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="7" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="alternatives" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="alternatives" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="alternatives">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Certificate of Deposits (CDs)</td>
-<td>
-<input class="user-present-value" data-metric="cds" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="cds" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="cds" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="2" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="cds" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="cds" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="cds">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Cash in Bank</td>
-<td>
-<input class="user-present-value" data-metric="cash" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="cash" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="cash" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="0.1" step="0.1" type="number"/>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="cash" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="cash" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="cash">0.00</span>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(2, 4)">Previous</button>
-<button onclick="nextSubStep(4, 4)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 4.4: Family Protection & Insurance -->
-<div class="sub-step" id="subStep4-4">
-<h3>Step 4.4: Family Protection &amp; Insurance</h3>
-<table id="familyProtectionTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>User Present Value ($)</th>
-<th class="spouse-column">Spouse Present Value ($)</th>
-<th>Rate of Return (%)</th>
-<th>Purpose</th>
-<th>User Annual Contribution ($)</th>
-<th class="spouse-column">Spouse Annual Contribution ($)</th>
-<th>Projected Value @ Retirement ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Life Insurance at Work</td>
-<td>
-<input class="user-present-value" data-metric="lifeWork" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="lifeWork" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>-</td>
-<td>-</td>
-<td class="spouse-column">-</td>
-<td>-</td>
-</tr>
-<tr>
-<td>Life Insurance Outside Work</td>
-<td>
-<input class="user-present-value" data-metric="lifeOutside" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="lifeOutside" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>-</td>
-<td>-</td>
-<td class="spouse-column">-</td>
-<td>-</td>
-</tr>
-<tr>
-<td>Cash Value Life Insurance</td>
-<td>
-<input class="user-present-value" data-metric="cashValue" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="cashValue" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="cashValue" min="0" oninput="updateProjectedValue(this, 'future')" placeholder="6.65" step="0.1" type="number"/>
-</td>
-<td>
-<select class="purpose" data-metric="cashValue" onchange="updateFinancialDataStore(this)">
-<option value="">Select Purpose</option>
-<option value="emergency">Emergency Fund</option>
-<option value="college">College Fund</option>
-<option value="retirement">Retirement Payout</option>
-<option value="longterm">Long Term care</option>
-<option value="legacy">Legacy overview</option>
-</select>
-</td>
-<td>
-<input class="user-annual-contribution" data-metric="cashValue" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="cashValue" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="future-value" data-metric="cashValue">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Disability Insurance</td>
-<td>
-<input class="user-present-value" data-metric="disability" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="disability" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>-</td>
-<td>-</td>
-<td class="spouse-column">-</td>
-<td>-</td>
-</tr>
-<tr>
-<td>Long Term Care Insurance</td>
-<td>
-<input class="user-present-value" data-metric="longTermCare" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="longTermCare" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>-</td>
-<td>-</td>
-<td class="spouse-column">-</td>
-<td>-</td>
-</tr>
-<tr>
-<td>HSA</td>
-<td>
-<input class="user-present-value" data-metric="hsa" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="hsa" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="hsa" min="0" oninput="updateProjectedValue(this, 'future')" placeholder="4" step="0.1" type="number"/>
-</td>
-<td>-</td>
-<td>
-<input class="user-annual-contribution" data-metric="hsa" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-annual-contribution" data-metric="hsa" min="0" oninput="updateProjectedValue(this, 'future')" step="0.01" type="number"/>
-</td>
-<td>
-<span class="future-value" data-metric="hsa">0.00</span>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(3, 4)">Previous</button>
-<button onclick="nextSubStep(5, 4)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 4.5: College Planning / Estate Planning -->
-<div class="sub-step" id="subStep4-5">
-<h3>College fund Savings</h3>
-<style>
-            #collegeEstateTable input {
-              width: 100%;
-              box-sizing: border-box;
-            }
-            #collegeEstateTable .projected-value {
-              display: block;
-              text-align: right;
-              padding-right: 10px;
-            }
-            #collegeEstateTable th:last-child {
-              text-align: right;
-              padding-right: 10px;
-            }
-          </style>
-<table id="collegeEstateTable">
-<thead>
-<tr>
-<th>Dependent Name</th>
-<th>Years Until College</th>
-<th>Present Value ($)</th>
-<th>Annual Contribution ($)</th>
-<th>Rate of Return (%)</th>
-<th>Projected Value ($)</th>
-</tr>
-</thead>
-<tbody id="collegePlanningBody">
-<!-- Rows will be inserted dynamically -->
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(4, 4)">Previous</button>
-<button onclick="nextSubStep(6, 4)">Next</button>
-</div>
-<script>
+        <!-- Spouse Section (Hidden by Default) -->
+        <div class="spouse-section" id="spouseSection" style="display: none">
+          <h3>Spouse Information</h3>
+          <table>
+            <tr>
+              <th>Field</th>
+              <th>Spouse</th>
+            </tr>
+            <tr>
+              <td>Name</td>
+              <td>
+                <input
+                  id="spouseName"
+                  placeholder="Enter spouse's name"
+                  type="text"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Date of Birth (mm/yyyy)</td>
+              <td>
+                <input
+                  id="spouseDOB"
+                  oninput="calculateAge('spouse')"
+                  placeholder="mm/yyyy"
+                  type="text"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Current Age</td>
+              <td><span class="calculated-age" id="spouseAge">0</span></td>
+            </tr>
+          </table>
+        </div>
+        <!-- Dependents Section (Dynamically Generated) -->
+        <div class="dependents-section" id="dependentsSection"></div>
+        <div class="buttons">
+          <button onclick="nextStep(2)">Next</button>
+        </div>
+      </div>
+      <!-- Step 2: Cash Flow -->
+      <div class="step" id="step2">
+        <h2>Step 2: Cash Flow Analysis</h2>
+        <!-- Sub-Step 2.1: Monthly Income & Expenses -->
+        <div class="sub-step active" id="subStep2-1">
+          <table id="cashFlowTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse Present Value ($)</th>
+                <th>Inflation Rate (%)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Monthly Income (Wages)</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-income"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-income"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-income"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-income"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Income - Business</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-business"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-business"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-business"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-business"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Income - Rental</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-rental"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-rental"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-rental"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-rental"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Expenses w/o Mortgage</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-expenses"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-expenses"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="inflation-rate"
+                    data-metric="monthly-expenses"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    placeholder="3"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="monthly-expenses"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Monthly Mortgage Expense</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="monthly-mortgage"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="monthly-mortgage"
+                    min="0"
+                    oninput="updateCashFlowProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevStep(1)">Previous</button>
+            <button onclick="nextStep(3)">Next</button>
+          </div>
+        </div>
+      </div>
+      <!-- Step 3: Debt -->
+      <div class="step" id="step3">
+        <h2>Step 3: Your Debt</h2>
+        <!-- Sub-Step 3.1: Debt Analysis -->
+        <div class="sub-step" id="subStep3-1">
+          <h3>Step 3.1: Debt Analysis</h3>
+          <table id="debtAnalysisTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+                <th>Monthly Payment ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mortgage Debt (Sum)</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="mortgage-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="monthly-payment"
+                    data-metric="mortgage-payment"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Credit Card Debt</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="credit-card-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="monthly-payment"
+                    data-metric="credit-card-payment"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Car Loan Debt</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="car-loan-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="monthly-payment"
+                    data-metric="car-loan-payment"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Student Loan Debt</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="student-loan-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="monthly-payment"
+                    data-metric="student-loan-payment"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Any other Debt (Sum)</td>
+                <td>
+                  <input
+                    class="debt-amount"
+                    data-metric="other-debt"
+                    min="0"
+                    oninput="updateDebtAmount(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="monthly-payment"
+                    data-metric="other-debt-payment"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevStep(2)">Previous</button>
+            <button onclick="nextStep(4)">Next</button>
+          </div>
+        </div>
+        <!-- Add this inside the debt step, after the debtAnalysisTable -->
+        <div class="debt-overview">
+          <h3>Debt Overview &amp; Recommendations</h3>
+          <table>
+            <tr>
+              <td><strong>Total Debt:</strong></td>
+              <td>
+                <span class="total-value" id="totalDebtAmount">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Total Monthly Payments:</strong></td>
+              <td>
+                <span class="total-value" id="totalMonthlyPayment">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Priority Focus:</strong></td>
+              <td><span id="debtPriorityFocus">-</span></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <div id="debtRecommendations"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <!-- Step 4: Assets -->
+      <div class="step" id="step4">
+        <h2>Step 4: Assets</h2>
+        <!-- Sub-Step 4.1: College Fund Savings -->
+        <div class="sub-step" id="subStep4-1">
+          <h3>Step 4.1: College Fund Savings</h3>
+          <table id="collegeFundTable">
+            <thead>
+              <tr>
+                <th>Child Name</th>
+                <th>Years Until College</th>
+                <th>Present Value ($)</th>
+                <th>Annual Contribution ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value ($)</th>
+              </tr>
+            </thead>
+            <tbody id="collegePlanningBody">
+              <!-- Rows will be inserted dynamically -->
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevStep(3)">Previous</button>
+            <button onclick="nextSubStep(2, 4)">Next</button>
+          </div>
+          <script>
             function renderCollegePlanningRows() {
               const count =
                 parseInt(document.getElementById("dependents").value) || 0;
@@ -1486,6 +1003,7 @@
                 const yearsUntilCollege = calculateYearsUntilCollege(i);
 
                 const tr = document.createElement("tr");
+                tr.setAttribute("data-child", i);
                 tr.innerHTML = `
                   <td>${name}</td>
                   <td style="text-align: center;">${yearsUntilCollege}</td>
@@ -1513,8 +1031,9 @@
                            data-metric="529-child${i}" 
                            data-child="${i}" 
                            min="0" 
-                           step="0.01" 
-                           placeholder="4"
+                           max="100"
+                           step="0.1" 
+                           placeholder="4.0"
                            oninput="updateCollegeProjectedValue(this)">
                   </td>
                   <td>
@@ -1601,9 +1120,7 @@
               const futureValuePrincipal =
                 presentValue * Math.pow(1 + rate, years);
               const futureValueContributions =
-                annualContribution *
-                ((Math.pow(1 + rate, years) - 1) / rate) *
-                (1 + rate);
+                (annualContribution * (Math.pow(1 + rate, years) - 1)) / rate;
               return futureValuePrincipal + futureValueContributions;
             }
 
@@ -1625,498 +1142,1966 @@
               });
             });
           </script>
-</div>
-<!-- Sub-Step 4.6: Foreign Assets -->
-<div class="sub-step" id="subStep4-6">
-<h3>Step 4.6: Foreign Assets (Outside USA)</h3>
-<table id="foreignAssetsTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>User Present Value ($)</th>
-<th class="spouse-column">Spouse Present Value ($)</th>
-<th>Rate of Return (%)</th>
-<th>Projected Value @ Retirement ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Real Estate Properties</td>
-<td>
-<input class="user-present-value" data-metric="realEstateForeign" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="realEstateForeign" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="realEstateForeign" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="2.5" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="realEstateForeign">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Bank Accounts</td>
-<td>
-<input class="user-present-value" data-metric="bankForeign" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="bankForeign" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="bankForeign" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="0" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="bankForeign">0.00</span>
-</td>
-</tr>
-<tr>
-<td>Inheritance</td>
-<td>
-<input class="user-present-value" data-metric="inheritanceForeign" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td class="spouse-column">
-<input class="spouse-present-value" data-metric="inheritanceForeign" min="0" oninput="updateProjectedValue(this, 'projected')" step="0.01" type="number"/>
-</td>
-<td>
-<input class="rate-of-return" data-metric="inheritanceForeign" min="0" oninput="updateProjectedValue(this, 'projected')" placeholder="0" step="0.1" type="number"/>
-</td>
-<td>
-<span class="projected-value" data-metric="inheritanceForeign">0.00</span>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(5, 4)">Previous</button>
-<button onclick="nextStep(5)">Next</button>
-</div>
-</div>
-</div>
-<!-- Step 5: Goals -->
-<div class="step" id="step5">
-<h2>Step 5: Your Financial Goals</h2>
-<!-- Sub-Step 5.1: Kids College Planning -->
-<div class="sub-step" id="subStep5-1">
-<h3>Step 5.1: Kids College Planning</h3>
-<table id="collegePlanningTable">
-<thead>
-<tr>
-<th>Child</th>
-<th>Amount ($)</th>
-</tr>
-</thead>
-<tbody id="collegePlanningTableBody">
-<!-- Rows will be added dynamically -->
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(1, 5)">Previous</button>
-<button onclick="nextSubStep(2, 5)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 5.2: Kids Wedding Planning -->
-<div class="sub-step" id="subStep5-2">
-<h3>Step 5.2: Kids Wedding Planning</h3>
-<table id="weddingPlanningTable">
-<thead>
-<tr>
-<th>Child</th>
-<th>Amount ($)</th>
-</tr>
-</thead>
-<tbody id="weddingPlanningTableBody">
-<!-- Rows will be added dynamically -->
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(1, 5)">Previous</button>
-<button onclick="nextSubStep(3, 5)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 5.3: Retirement Planning -->
-<div class="sub-step" id="subStep5-3">
-<h3>Step 5.3: Retirement Planning</h3>
-<table id="retirementGoalsTable">
-<thead>
-<tr>
-<th>
+        </div>
+        <!-- Sub-Step 4.2: Family Protection & Insurance -->
+        <div class="sub-step" id="subStep4-2">
+          <h3>Step 4.2: Family Protection &amp; Insurance</h3>
+          <table id="familyProtectionTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse Present Value ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Purpose</th>
+                <th>User Annual Contribution ($)</th>
+                <th class="spouse-column">Spouse Annual Contribution ($)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Life Insurance at Work</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="lifeWork"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="lifeWork"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td class="spouse-column">-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Life Insurance Outside Work</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="lifeOutside"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="lifeOutside"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td class="spouse-column">-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Cash Value Life Insurance</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    placeholder="6.65"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <select
+                    class="purpose"
+                    data-metric="cashValue"
+                    onchange="updateFinancialDataStore(this)"
+                  >
+                    <option value="">Select Purpose</option>
+                    <option value="emergency">Emergency Fund</option>
+                    <option value="college">College Fund</option>
+                    <option value="retirement">Retirement Payout</option>
+                    <option value="longterm">Long Term care</option>
+                    <option value="legacy">Legacy overview</option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="cashValue"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="future-value" data-metric="cashValue">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Disability Insurance</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="disability"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="disability"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td class="spouse-column">-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Long Term Care Insurance</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="longTermCare"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="longTermCare"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td class="spouse-column">-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>HSA</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    placeholder="4"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>-</td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="hsa"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'future')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="future-value" data-metric="hsa">0.00</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(1, 4)">Previous</button>
+            <button onclick="nextSubStep(3, 4)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.3: Retirement Planning -->
+        <div class="sub-step" id="subStep4-3">
+          <h3>Step 4.3: Retirement Planning</h3>
+          <p id="retirementAgeMessage"></p>
+          <script>
+            // Modal functions
+            function openSSAModal(event) {
+              event.preventDefault();
+              document.getElementById("ssaModal").style.display = "block";
+            }
+
+            function closeSSAModal() {
+              document.getElementById("ssaModal").style.display = "none";
+            }
+
+            // Close modal when clicking outside of it
+            window.onclick = function (event) {
+              const modal = document.getElementById("ssaModal");
+              if (event.target === modal) {
+                modal.style.display = "none";
+              }
+            };
+
+            function updateRetirementAgeMessage() {
+              const userRetirementAge = parseInt(
+                document.getElementById("userRetirementAge")?.value || "65"
+              );
+              const userAge = parseInt(
+                document.getElementById("userAge")?.textContent || "0"
+              );
+              const yearsLeft = userRetirementAge - userAge;
+
+              let message =
+                `Your retirement age is ${userRetirementAge}, remaining years till retirement: ${
+                  yearsLeft >= 0 ? yearsLeft : 0
+                }` +
+                " " +
+                "(" +
+                "add up spouse's retirement values in present and annual contributions " +
+                ")";
+
+              const msgEl = document.getElementById("retirementAgeMessage");
+              if (msgEl) msgEl.textContent = message;
+            }
+
+            // Run the function initially and whenever related inputs change
+            document.addEventListener(
+              "DOMContentLoaded",
+              updateRetirementAgeMessage
+            );
+            document
+              .getElementById("userRetirementAge")
+              ?.addEventListener("input", updateRetirementAgeMessage);
+            document
+              .getElementById("userDOB")
+              ?.addEventListener("input", () => {
+                setTimeout(updateRetirementAgeMessage, 300); // allow age to update
+              });
+          </script>
+          <table id="retirementTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse Present Value ($)</th>
+                <th>User Annual Contribution ($)</th>
+                <th class="spouse-column">Spouse Annual Contribution ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Current 401K | 403B</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="401k"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="401k">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Previous 401K | Rollover 401K</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="rollover"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="rollover"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Traditional IRA | SEP-IRA</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="traditional"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="traditional"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Pension | ESPP | Annuities</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="pension"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="pension"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Roth IRA | Roth 401K</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="roth"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="6"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="roth">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  SSA Income: Primary Insurance Amount(PIA) at Full Retirement
+                  Age (FRA)
+                  <a href="#" onclick="openSSAModal(event)"
+                    >Refer to this link for more details</a
+                  >
+                  <!-- SSA Modal -->
+                  <div class="modal" id="ssaModal">
+                    <div class="modal-content">
+                      <span class="close" onclick="closeSSAModal()">×</span>
+                      <h2>Social Security Benefits Table</h2>
+                      <p></p>
+                      1) Born on or after 1960, 67 is Full retirement Age (FRA).
+                      Any claiming Age before is Early retirement, Any claiming
+                      age after 67 is delayed retirement.
+
+                      <p>
+                        2) Born before 1960, 66 &amp;10 mths is Full retirement
+                        Age (FRA). Any claiming Age before FRA is Early
+                        retirement, Any claiming age after FRAis delayed
+                        retirement.
+                      </p>
+                      <p>3) PIA - Your highest 35 years of indexed earnings.</p>
+                      <p>
+                        4) For more details on FRA and PIA, login to your
+                        account at
+                        <a href="https://www.ssa.gov/myaccount/" target="_blank"
+                          >https://www.ssa.gov/myaccount</a
+                        >
+                        Once Logged In: Click on "View Your Social Security
+                        Statement." You'll see a page showing: Your Estimated
+                        Benefits at: Age 62 (early retirement) Full Retirement
+                        Age (FRA) – this is your PIA Age 70 (delayed retirement)
+                        The amount shown next to "At your full retirement age
+                        (X)" is your PIA
+                      </p>
+                      <div class="ssa-tables">
+                        <h3>Born on or after 1960</h3>
+                        <table class="ssa-info-table">
+                          <tr>
+                            <th>Claiming Age</th>
+                            <th>% of PIA</th>
+                            <th>% Change vs FRA</th>
+                          </tr>
+                          <tr>
+                            <td>62</td>
+                            <td>70.00%</td>
+                            <td>-30.00%</td>
+                          </tr>
+                          <tr>
+                            <td>63</td>
+                            <td>75.00%</td>
+                            <td>-25.00%</td>
+                          </tr>
+                          <tr>
+                            <td>64</td>
+                            <td>80.00%</td>
+                            <td>-20.00%</td>
+                          </tr>
+                          <tr>
+                            <td>65</td>
+                            <td>86.66%</td>
+                            <td>-13.34%</td>
+                          </tr>
+                          <tr>
+                            <td>66</td>
+                            <td>93.33%</td>
+                            <td>-6.67%</td>
+                          </tr>
+                          <tr>
+                            <td>67 (FRA)</td>
+                            <td>100.00%</td>
+                            <td>0.00%</td>
+                          </tr>
+                          <tr>
+                            <td>68</td>
+                            <td>108.00%</td>
+                            <td>8.00%</td>
+                          </tr>
+                          <tr>
+                            <td>69</td>
+                            <td>116.00%</td>
+                            <td>16.00%</td>
+                          </tr>
+                          <tr>
+                            <td>70</td>
+                            <td>124.00%</td>
+                            <td>24.00%</td>
+                          </tr>
+                        </table>
+                        <h3>Born before 1960</h3>
+                        <table class="ssa-info-table">
+                          <tr>
+                            <th>Claiming Age</th>
+                            <th>% of PIA</th>
+                            <th>% Change vs FRA</th>
+                          </tr>
+                          <tr>
+                            <td>62</td>
+                            <td>70.83%</td>
+                            <td>-29.17%</td>
+                          </tr>
+                          <tr>
+                            <td>63</td>
+                            <td>75.83%</td>
+                            <td>-24.17%</td>
+                          </tr>
+                          <tr>
+                            <td>64</td>
+                            <td>80.83%</td>
+                            <td>-19.17%</td>
+                          </tr>
+                          <tr>
+                            <td>65</td>
+                            <td>86.67%</td>
+                            <td>-13.33%</td>
+                          </tr>
+                          <tr>
+                            <td>66</td>
+                            <td>93.33%</td>
+                            <td>-6.67%</td>
+                          </tr>
+                          <tr>
+                            <td>66 &amp; 10 months</td>
+                            <td>100.00%</td>
+                            <td>No reduction</td>
+                          </tr>
+                          <tr>
+                            <td>67</td>
+                            <td>101.33%</td>
+                            <td>1.33%</td>
+                          </tr>
+                          <tr>
+                            <td>68</td>
+                            <td>109.33%</td>
+                            <td>9.33%</td>
+                          </tr>
+                          <tr>
+                            <td>69</td>
+                            <td>117.33%</td>
+                            <td>17.33%</td>
+                          </tr>
+                          <tr>
+                            <td>70</td>
+                            <td>125.33%</td>
+                            <td>25.33%</td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="ssaPia"
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="ssaPia"
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="ssaPia"
+                    disabled=""
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="ssaPia"
+                    disabled=""
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="ssaPia"
+                    disabled=""
+                    min="0"
+                    oninput="updateSSAPiaValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="ssaPia">0.00</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(2, 4)">Previous</button>
+            <button onclick="nextSubStep(4, 4)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.4: Real Estate Investments -->
+        <div class="sub-step" id="subStep4-4">
+          <h3>Step 4.4: Real Estate Investments (USA)</h3>
+          <table id="realEstateTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse Present Value ($)</th>
+                <th>Remaining Mortgage ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primary Home</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="primaryHome"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="primaryHome"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="primaryHome"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="primaryHome"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="primaryHome"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Rental Properties</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="rentals"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="rentals"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="rentals"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="rentals"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="rentals"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Real Estate Land Parcels</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="land"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="land"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="land"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="land"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="land">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Inheritance in the USA</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="inheritance"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="inheritance"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="mortgage-balance"
+                    data-metric="inheritance"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="inheritance"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="inheritance"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(3, 4)">Previous</button>
+            <button onclick="nextSubStep(5, 4)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.5: Non-Real Estate Investments -->
+        <div class="sub-step" id="subStep4-5">
+          <h3>Step 4.5: Non-Real Estate Investments</h3>
+          <table id="stocksBusinessIncomeTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse Present Value ($)</th>
+                <th>User Annual Contribution ($)</th>
+                <th class="spouse-column">Spouse Annual Contribution ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Stocks | MFs | Bonds | ETFs</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="stocks"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="7"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="stocks">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Alternative Investments</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="alternatives"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="7"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="alternatives"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Certificate of Deposits (CDs)</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="cds"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="cds">0.00</span>
+                </td>
+              </tr>
+              <tr>
+                <td>Cash in Bank</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="user-annual-contribution"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-annual-contribution"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="cash"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="0.1"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="cash">0.00</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(4, 4)">Previous</button>
+            <button onclick="nextSubStep(6, 4)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 4.6: Foreign Assets -->
+        <div class="sub-step" id="subStep4-6">
+          <h3>Step 4.6: Foreign Assets</h3>
+          <table id="foreignAssetsTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>User Present Value ($)</th>
+                <th class="spouse-column">Spouse Present Value ($)</th>
+                <th>Rate of Return (%)</th>
+                <th>Projected Value @ Retirement ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Real Estate Properties</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="realEstateForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="realEstateForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="realEstateForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="2.5"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="realEstateForeign"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Bank Accounts</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="bankForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="bankForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="bankForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="bankForeign"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Inheritance</td>
+                <td>
+                  <input
+                    class="user-present-value"
+                    data-metric="inheritanceForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td class="spouse-column">
+                  <input
+                    class="spouse-present-value"
+                    data-metric="inheritanceForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="rate-of-return"
+                    data-metric="inheritanceForeign"
+                    min="0"
+                    oninput="updateProjectedValue(this, 'projected')"
+                    placeholder="0"
+                    step="0.1"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="inheritanceForeign"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(5, 4)">Previous</button>
+            <button onclick="nextStep(5)">Next</button>
+          </div>
+        </div>
+      </div>
+      <!-- Step 5: Goals -->
+      <div class="step" id="step5">
+        <h2>Step 5: Your Financial Goals</h2>
+        <!-- Sub-Step 5.1: Kids College Planning -->
+        <div class="sub-step" id="subStep5-1">
+          <h3>Step 5.1: Kids College Planning</h3>
+          <table id="collegePlanningTable">
+            <thead>
+              <tr>
+                <th>Child</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody id="collegePlanningTableBody">
+              <!-- Rows will be added dynamically -->
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(1, 5)">Previous</button>
+            <button onclick="nextSubStep(2, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.2: Kids Wedding Planning -->
+        <div class="sub-step" id="subStep5-2">
+          <h3>Step 5.2: Kids Wedding Planning</h3>
+          <table id="weddingPlanningTable">
+            <thead>
+              <tr>
+                <th>Child</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody id="weddingPlanningTableBody">
+              <!-- Rows will be added dynamically -->
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(1, 5)">Previous</button>
+            <button onclick="nextSubStep(3, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.3: Retirement Planning -->
+        <div class="sub-step" id="subStep5-3">
+          <h3>Step 5.3: Retirement Planning</h3>
+          <table id="retirementGoalsTable">
+            <thead>
+              <tr>
+                <th>
                   MONTHLY INCOME NEEDED IN TODAY'S DOLLARS (PRE-TAX) (INCLUDE
                   LIVING EXPENSES + PROPERTY TAXES + CARS + INSURANCES + FOOD +
                   UTILITIES + CLOTHING + HOME REPAIRS ETC.,)
                 </th>
-<th>Amount ($)</th>
-<th>Retirement Plan Until</th>
-<th>Projected Amount ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Monthly Income Needed</td>
-<td>
-<input class="goal-amount" data-metric="retirement-income" min="0" oninput="updateGoalProjectedValue(this)" step="0.01" type="number"/>
-</td>
-<td>
-<select id="retirementPlanUntil" onchange="updateRetirementProjectedValue()">
-<option value="85">85</option>
-<option value="90">90</option>
-<option value="95">95</option>
-</select>
-</td>
-<td>
-<span class="projected-value" data-metric="retirement-income">0.00</span>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(2, 5)">Previous</button>
-<button onclick="nextSubStep(4, 5)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 5.4: Health Care and Long Term Care -->
-<div class="sub-step" id="subStep5-4">
-<h3>Step 5.4: Health Care and Long Term Care @ Age of Retirement</h3>
-<table id="healthCareTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>Amount ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Health Care Out-of-Pocket</td>
-<td colspan="3">
-<span id="healthCareOutOfPocketAmount">$160,000</span>
-</td>
-</tr>
-<tr>
-<td>
+                <th>Amount ($)</th>
+                <th>Retirement Plan Until</th>
+                <th>Projected Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Monthly Income Needed</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="retirement-income"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+                <td>
+                  <select
+                    id="retirementPlanUntil"
+                    onchange="updateRetirementProjectedValue()"
+                  >
+                    <option value="85">85</option>
+                    <option value="90">90</option>
+                    <option value="95">95</option>
+                  </select>
+                </td>
+                <td>
+                  <span class="projected-value" data-metric="retirement-income"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(2, 5)">Previous</button>
+            <button onclick="nextSubStep(4, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.4: Health Care and Long Term Care -->
+        <div class="sub-step" id="subStep5-4">
+          <h3>Step 5.4: Health Care and Long Term Care @ Age of Retirement</h3>
+          <table id="healthCareTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Health Care Out-of-Pocket</td>
+                <td colspan="3">
+                  <span id="healthCareOutOfPocketAmount">$160,000</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
                   Long Term Care | Disability
-                  <a href="https://www.carescout.com/cost-of-care">Refer to this link for more details
+                  <a href="https://www.carescout.com/cost-of-care"
+                    >Refer to this link for more details
                   </a>
-</td>
-<td><span id="longTermCareAmount">$0.00</span></td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(3, 5)">Previous</button>
-<button onclick="nextSubStep(5, 5)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 5.5: Life Goals Planning -->
-<div class="sub-step" id="subStep5-5">
-<h3>Step 5.5: Life Goals Planning</h3>
-<table id="lifeGoalsTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>Amount ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Travel Budget</td>
-<td>
-<input class="goal-amount" data-metric="travel" min="0" oninput="updateGoalProjectedValue(this)" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Vacation Home | Farm House</td>
-<td>
-<input class="goal-amount" data-metric="vacationHome" min="0" oninput="updateGoalProjectedValue(this)" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Charity Foundation</td>
-<td>
-<input class="goal-amount" data-metric="charity" min="0" oninput="updateGoalProjectedValue(this)" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Other Life Goals</td>
-<td>
-<input class="goal-amount" data-metric="otherGoals" min="0" oninput="updateGoalProjectedValue(this)" step="0.01" type="number"/>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(4, 5)">Previous</button>
-<button onclick="nextSubStep(6, 5)">Next</button>
-</div>
-</div>
-<!-- Sub-Step 5.6: Legacy Planning -->
-<div class="sub-step" id="subStep5-6">
-<h3>Step 5.6: Legacy Planning</h3>
-<table id="legacyPlanningTable">
-<thead>
-<tr>
-<th>Metric</th>
-<th>Amount ($)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Fund for Kids Home/Business</td>
-<td>
-<input class="goal-amount" data-metric="kidsFund" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Legacy Asset for Kids</td>
-<td>
-<input class="goal-amount" data-metric="legacyAssets" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-<tr>
-<td>Family Support</td>
-<td>
-<input class="goal-amount" data-metric="familySupport" min="0" step="0.01" type="number"/>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="buttons">
-<button onclick="prevSubStep(5, 5)">Previous</button>
-<button onclick="calculateResults();" type="button">
+                </td>
+                <td><span id="longTermCareAmount">$0.00</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(3, 5)">Previous</button>
+            <button onclick="nextSubStep(5, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.5: Life Goals Planning -->
+        <div class="sub-step" id="subStep5-5">
+          <h3>Step 5.5: Life Goals Planning</h3>
+          <table id="lifeGoalsTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Travel Budget</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="travel"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Vacation Home | Farm House</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="vacationHome"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Charity Foundation</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="charity"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Other Life Goals</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="otherGoals"
+                    min="0"
+                    oninput="updateGoalProjectedValue(this)"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(4, 5)">Previous</button>
+            <button onclick="nextSubStep(6, 5)">Next</button>
+          </div>
+        </div>
+        <!-- Sub-Step 5.6: Legacy Planning -->
+        <div class="sub-step" id="subStep5-6">
+          <h3>Step 5.6: Legacy Planning</h3>
+          <table id="legacyPlanningTable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Amount ($)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Fund for Kids Home/Business</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="kidsFund"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Legacy Asset for Kids</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="legacyAssets"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Family Support</td>
+                <td>
+                  <input
+                    class="goal-amount"
+                    data-metric="familySupport"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <button onclick="prevSubStep(5, 5)">Previous</button>
+            <button onclick="calculateResults();" type="button">
               Submit &amp; View Results
             </button>
-</div>
-</div>
-</div>
-<!-- Results Page -->
-<div class="step" id="step6">
-<h2>Your Financial Analysis Results</h2>
-<!-- Personal Overview Section -->
-<div id="personalOverview">
-<h3>Personal Overview</h3>
-<table>
-<tr>
-<td><strong>Name:</strong></td>
-<td><span id="resultName">-</span></td>
-</tr>
-<tr>
-<td><strong>Age:</strong></td>
-<td><span id="resultAge">-</span> years</td>
-</tr>
-<tr>
-<td><strong>Retirement Age:</strong></td>
-<td><span id="resultRetirementAge">-</span> years</td>
-</tr>
-<tr>
-<td><strong>Years Until Retirement:</strong></td>
-<td><span id="resultYearsToRetirement">-</span> years</td>
-</tr>
-<tr>
-<td><strong>Marital Status:</strong></td>
-<td><span id="resultMaritalStatus">-</span></td>
-</tr>
-<tr>
-<td><strong>City &amp; State:</strong></td>
-<td><span id="resultLocation">-</span></td>
-</tr>
-<tr id="willTrustRow">
-<td><strong>Will &amp; Trust:</strong></td>
-<td><span id="resultWillTrust">-</span></td>
-</tr>
-<tr id="spouseInfoSection" style="display: none">
-<td colspan="2">
-<strong>Spouse Information</strong>
-<table style="margin-left: 20px">
-<tr>
-<td><strong>Name:</strong></td>
-<td><span id="resultSpouseName">-</span></td>
-</tr>
-<tr>
-<td><strong>Age:</strong></td>
-<td><span id="resultSpouseAge">-</span> years</td>
-</tr>
-</table>
-</td>
-</tr>
-<tr id="dependentsInfoSection" style="display: none">
-<td colspan="2">
-<strong>Dependents Information</strong>
-<table id="resultDependentsTable" style="margin-left: 20px">
-<!-- Dependent rows will be added dynamically -->
-</table>
-</td>
-</tr>
-</table>
-</div>
-<!-- Cash Flow Overview Section -->
-<div id="cashFlowOverview" style="
+          </div>
+        </div>
+      </div>
+      <!-- Results Page -->
+      <div class="step" id="step6">
+        <h2>Your Financial Analysis Results</h2>
+        <!-- Personal Overview Section -->
+        <div id="personalOverview">
+          <h3>Personal Overview</h3>
+          <table>
+            <tr>
+              <td><strong>Name:</strong></td>
+              <td><span id="resultName">-</span></td>
+            </tr>
+            <tr>
+              <td><strong>Age:</strong></td>
+              <td><span id="resultAge">-</span> years</td>
+            </tr>
+            <tr>
+              <td><strong>Retirement Age:</strong></td>
+              <td><span id="resultRetirementAge">-</span> years</td>
+            </tr>
+            <tr>
+              <td><strong>Years Until Retirement:</strong></td>
+              <td><span id="resultYearsToRetirement">-</span> years</td>
+            </tr>
+            <tr>
+              <td><strong>Marital Status:</strong></td>
+              <td><span id="resultMaritalStatus">-</span></td>
+            </tr>
+            <tr>
+              <td><strong>City &amp; State:</strong></td>
+              <td><span id="resultLocation">-</span></td>
+            </tr>
+            <tr id="willTrustRow">
+              <td><strong>Will &amp; Trust:</strong></td>
+              <td><span id="resultWillTrust">-</span></td>
+            </tr>
+            <tr id="spouseInfoSection" style="display: none">
+              <td colspan="2">
+                <strong>Spouse Information</strong>
+                <table style="margin-left: 20px">
+                  <tr>
+                    <td><strong>Name:</strong></td>
+                    <td><span id="resultSpouseName">-</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Age:</strong></td>
+                    <td><span id="resultSpouseAge">-</span> years</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr id="dependentsInfoSection" style="display: none">
+              <td colspan="2">
+                <strong>Dependents Information</strong>
+                <table id="resultDependentsTable" style="margin-left: 20px">
+                  <!-- Dependent rows will be added dynamically -->
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- Cash Flow Overview Section -->
+        <div
+          id="cashFlowOverview"
+          style="
             margin-bottom: 20px;
             background: #1a1a1a;
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #bdb76b;
             font-size: 0.9em;
-          ">
-<h3>Cash Flow Overview</h3>
-<table style="width: 100%; border-collapse: collapse">
-<tr>
-<td><strong>Monthly Income:</strong></td>
-<td>
-<span class="total-value" id="resultMonthlyIncome">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Monthly Expenses (without Mortgage):</strong></td>
-<td>
-<span class="total-value" id="resultMonthlyExpenses">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Monthly Mortgage:</strong></td>
-<td>
-<span class="total-value" id="resultMonthlyMortgage">0.00</span>
-</td>
-</tr>
-<tr style="border-top: 1px solid #bdb76b; margin-top: 10px">
-<td><strong>Cash Flow Status:</strong></td>
-<td>
-<span class="total-value" id="resultCashFlowStatus">-</span>
-</td>
-</tr>
-<tr>
-<td><strong>Amount:</strong></td>
-<td>
-<span class="total-value" id="resultCashFlowAmount">0.00</span>
-</td>
-</tr>
-</table>
-</div>
-<!-- Emergency Fund Overview Section -->
-<div id="emergencyFundOverview" style="
+          "
+        >
+          <h3>Cash Flow Overview</h3>
+          <table style="width: 100%; border-collapse: collapse">
+            <tr>
+              <td><strong>Monthly Income:</strong></td>
+              <td>
+                <span class="total-value" id="resultMonthlyIncome">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Monthly Expenses (without Mortgage):</strong></td>
+              <td>
+                <span class="total-value" id="resultMonthlyExpenses">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Monthly Mortgage:</strong></td>
+              <td>
+                <span class="total-value" id="resultMonthlyMortgage">0.00</span>
+              </td>
+            </tr>
+            <tr style="border-top: 1px solid #bdb76b; margin-top: 10px">
+              <td><strong>Cash Flow Status:</strong></td>
+              <td>
+                <span class="total-value" id="resultCashFlowStatus">-</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Amount:</strong></td>
+              <td>
+                <span class="total-value" id="resultCashFlowAmount">0.00</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- Emergency Fund Overview Section -->
+        <div
+          id="emergencyFundOverview"
+          style="
             margin-bottom: 20px;
             background: #1a1a1a;
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #bdb76b;
             font-size: 0.9em;
-          ">
-<h3>Emergency Fund Overview</h3>
-<table style="width: 100%; border-collapse: collapse">
-<tr>
-<td><strong>Recommended Emergency Fund (3 months):</strong></td>
-<td>
-<span class="total-value" id="resultEmergencyFund3">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Recommended Emergency Fund (6 months):</strong></td>
-<td>
-<span class="total-value" id="resultEmergencyFund6">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Current Emergency Fund:</strong></td>
-<td>
-<span class="total-value" id="resultCurrentEmergencyFund">0.00</span>
-</td>
-</tr>
-<tr style="border-top: 1px solid #bdb76b; margin-top: 10px">
-<td><strong>Status:</strong></td>
-<td>
-<span class="total-value" id="resultEmergencyFundStatus">-</span>
-</td>
-</tr>
-</table>
-</div>
-<!-- Protection Overview -->
-<div class="protection-overview" style="
+          "
+        >
+          <h3>Emergency Fund Overview</h3>
+          <table style="width: 100%; border-collapse: collapse">
+            <tr>
+              <td><strong>Recommended Emergency Fund (3 months):</strong></td>
+              <td>
+                <span class="total-value" id="resultEmergencyFund3">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Recommended Emergency Fund (6 months):</strong></td>
+              <td>
+                <span class="total-value" id="resultEmergencyFund6">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Current Emergency Fund:</strong></td>
+              <td>
+                <span class="total-value" id="resultCurrentEmergencyFund"
+                  >0.00</span
+                >
+              </td>
+            </tr>
+            <tr style="border-top: 1px solid #bdb76b; margin-top: 10px">
+              <td><strong>Status:</strong></td>
+              <td>
+                <span class="total-value" id="resultEmergencyFundStatus"
+                  >-</span
+                >
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- Protection Overview -->
+        <div
+          class="protection-overview"
+          style="
             margin-bottom: 20px;
             background: #1a1a1a;
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #bdb76b;
             font-size: 0.9em;
-          ">
-<h3>Protection Overview</h3>
-<table style="width: 100%; border-collapse: collapse">
-<tr>
-<td><strong>User Coverage Needed:</strong></td>
-<td>
-<span class="total-value" id="resultHouseholdCoverage">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Current Life Insurance Coverage:</strong></td>
-<td>
-<span class="total-value" id="resultCurrentLifeInsurance">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Coverage Gap:</strong></td>
-<td>
-<span class="total-value" id="resultCoverageGap">0.00</span>
-</td>
-</tr>
-<tr id="spouseCoverageSection" style="display: none">
-<td colspan="2" style="padding-top: 10px">
-<strong>Spouse Coverage</strong>
-<table style="width: 100%; margin-top: 5px">
-<tr>
-<td><strong>Coverage Needed:</strong></td>
-<td>
-<span class="total-value" id="resultSpouseCoverageNeeded">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Current Coverage:</strong></td>
-<td>
-<span class="total-value" id="resultSpouseCurrentCoverage">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Coverage Gap:</strong></td>
-<td>
-<span class="total-value" id="resultSpouseCoverageGap">0.00</span>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</div>
-<!-- Debt Summary -->
-<div class="debt-overview">
-<h3>Debt Summary</h3>
-<table>
-<tr>
-<td><strong>Total Debt:</strong></td>
-<td>
-<span class="total-value" id="resultTotalDebt">0.00</span>
-</td>
-</tr>
-<tr>
-<td><strong>Priority Focus:</strong></td>
-<td><span id="resultDebtAction">-</span></td>
-</tr>
-</table>
-<div id="resultDebtRecommendations" style="margin-top: 10px">
-<!-- Recommendations will be populated dynamically -->
-</div>
-</div>
-<!-- College Planning Overview -->
-<div class="college-planning-overview" style="
+          "
+        >
+          <h3>Protection Overview</h3>
+          <table style="width: 100%; border-collapse: collapse">
+            <tr>
+              <td><strong>User Coverage Needed:</strong></td>
+              <td>
+                <span class="total-value" id="resultHouseholdCoverage"
+                  >0.00</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Current Life Insurance Coverage:</strong></td>
+              <td>
+                <span class="total-value" id="resultCurrentLifeInsurance"
+                  >0.00</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Coverage Gap:</strong></td>
+              <td>
+                <span class="total-value" id="resultCoverageGap">0.00</span>
+              </td>
+            </tr>
+            <tr id="spouseCoverageSection" style="display: none">
+              <td colspan="2" style="padding-top: 10px">
+                <strong>Spouse Coverage</strong>
+                <table style="width: 100%; margin-top: 5px">
+                  <tr>
+                    <td><strong>Coverage Needed:</strong></td>
+                    <td>
+                      <span class="total-value" id="resultSpouseCoverageNeeded"
+                        >0.00</span
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Current Coverage:</strong></td>
+                    <td>
+                      <span class="total-value" id="resultSpouseCurrentCoverage"
+                        >0.00</span
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Coverage Gap:</strong></td>
+                    <td>
+                      <span class="total-value" id="resultSpouseCoverageGap"
+                        >0.00</span
+                      >
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- Debt Summary -->
+        <div class="debt-overview">
+          <h3>Debt Summary</h3>
+          <table>
+            <tr>
+              <td><strong>Total Debt:</strong></td>
+              <td>
+                <span class="total-value" id="resultTotalDebt">0.00</span>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Priority Focus:</strong></td>
+              <td><span id="resultDebtAction">-</span></td>
+            </tr>
+          </table>
+          <div id="resultDebtRecommendations" style="margin-top: 10px">
+            <!-- Recommendations will be populated dynamically -->
+          </div>
+        </div>
+        <!-- College Planning Overview -->
+        <div
+          class="college-planning-overview"
+          style="
             margin-bottom: 20px;
             background: #1a1a1a;
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #bdb76b;
             font-size: 0.9em;
-          ">
-<h3>College Planning Overview</h3>
-<div id="collegePlanningOverview">
-<!-- Will be populated dynamically -->
-</div>
-</div>
-<script>
+          "
+        >
+          <h3>College Planning Overview</h3>
+          <div id="collegePlanningOverview">
+            <!-- Will be populated dynamically -->
+          </div>
+        </div>
+        <script>
           function updateCollegePlanningOverview() {
             const dependentsCount =
               parseInt(document.getElementById("dependents").value) || 0;
@@ -2259,231 +3244,258 @@
           });
         </script>
 
-<p style="text-align: center; font-size: 0.9em">
+        <p style="text-align: center; font-size: 0.9em">
           FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
         </p>
-<div class="buttons">
-<button onclick="showRetirementPlanning()">Next</button>
-</div>
-</div>
-<!-- Retirement Planning Page -->
-<div class="step" id="step7">
-<h2>Retirement Planning Overview</h2>
-<div class="retirement-planning-overview" style="
+        <div class="buttons">
+          <button onclick="showRetirementPlanning()">Next</button>
+        </div>
+      </div>
+      <!-- Retirement Planning Page -->
+      <div class="step" id="step7">
+        <h2>Retirement Planning Overview</h2>
+        <div
+          class="retirement-planning-overview"
+          style="
             margin-bottom: 20px;
             background: #1a1a1a;
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #bdb76b;
             font-size: 0.9em;
-          ">
-<h3>Expected Monthly Income from Goals Retirement Planning</h3>
-<!-- GAP Analysis Section -->
-<div class="gap-analysis" style="margin-bottom: 20px">
-<h4 style="color: #bdb76b; margin-bottom: 10px">GAP Analysis</h4>
-<div id="gapAnalysis">
-<!-- Will be populated dynamically -->
-</div>
-</div>
-<!-- Projected Payouts Table -->
-<table style="width: 100%; border-collapse: collapse; margin-top: 20px">
-<thead>
-<tr>
-<th>Product</th>
-<th>Income Type</th>
-<th>Tax Status</th>
-<th>Projected Amount</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>401k/403B (4% rule)</td>
-<td>Non Guaranteed</td>
-<td>Taxable</td>
-<td><span id="projected401k">0.00</span></td>
-</tr>
-<tr>
-<td>Traditional IRA</td>
-<td>Non Guaranteed</td>
-<td>Taxable</td>
-<td><span id="projectedIRA">0.00</span></td>
-</tr>
-<tr>
-<td>Roth IRA (4% rule)</td>
-<td>Non Guaranteed</td>
-<td>No Tax</td>
-<td><span id="projectedRothIRA">0.00</span></td>
-</tr>
-<tr>
-<td>Annuity - Life Time Income</td>
-<td>Guaranteed</td>
-<td>Taxable</td>
-<td><span id="projectedAnnuity">0.00</span></td>
-</tr>
-<tr>
-<td>SSA</td>
-<td>Guaranteed</td>
-<td>Taxable</td>
-<td><span id="projectedSSA">30,000.00</span></td>
-</tr>
-<tr>
-<td>Rental Income (less 20% maintenance cost)</td>
-<td>Guaranteed</td>
-<td>Taxable</td>
-<td><span id="projectedRental">0.00</span></td>
-</tr>
-<tr>
-<td>Business Revenue</td>
-<td>Non Guaranteed</td>
-<td>Taxable</td>
-<td><span id="projectedBusiness">0.00</span></td>
-</tr>
-<tr style="border-top: 2px solid #bdb76b">
-<td colspan="3"><strong>Total</strong></td>
-<td>
-<strong><span id="projectedTotal">0.00</span></strong>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p style="text-align: center; font-size: 0.9em">
+          "
+        >
+          <h3>Expected Monthly Income from Goals Retirement Planning</h3>
+          <!-- GAP Analysis Section -->
+          <div class="gap-analysis" style="margin-bottom: 20px">
+            <h4 style="color: #bdb76b; margin-bottom: 10px">GAP Analysis</h4>
+            <div id="gapAnalysis">
+              <!-- Will be populated dynamically -->
+            </div>
+          </div>
+          <!-- Projected Payouts Table -->
+          <table
+            style="width: 100%; border-collapse: collapse; margin-top: 20px"
+          >
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Income Type</th>
+                <th>Tax Status</th>
+                <th>Projected Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>401k/403B (4% rule)</td>
+                <td>Non Guaranteed</td>
+                <td>Taxable</td>
+                <td><span id="projected401k">0.00</span></td>
+              </tr>
+              <tr>
+                <td>Traditional IRA</td>
+                <td>Non Guaranteed</td>
+                <td>Taxable</td>
+                <td><span id="projectedIRA">0.00</span></td>
+              </tr>
+              <tr>
+                <td>Roth IRA (4% rule)</td>
+                <td>Non Guaranteed</td>
+                <td>No Tax</td>
+                <td><span id="projectedRothIRA">0.00</span></td>
+              </tr>
+              <tr>
+                <td>Annuity - Life Time Income</td>
+                <td>Guaranteed</td>
+                <td>Taxable</td>
+                <td><span id="projectedAnnuity">0.00</span></td>
+              </tr>
+              <tr>
+                <td>SSA</td>
+                <td>Guaranteed</td>
+                <td>Taxable</td>
+                <td><span id="projectedSSA">30,000.00</span></td>
+              </tr>
+              <tr>
+                <td>Rental Income (less 20% maintenance cost)</td>
+                <td>Guaranteed</td>
+                <td>Taxable</td>
+                <td><span id="projectedRental">0.00</span></td>
+              </tr>
+              <tr>
+                <td>Business Revenue</td>
+                <td>Non Guaranteed</td>
+                <td>Taxable</td>
+                <td><span id="projectedBusiness">0.00</span></td>
+              </tr>
+              <tr style="border-top: 2px solid #bdb76b">
+                <td colspan="3"><strong>Total</strong></td>
+                <td>
+                  <strong><span id="projectedTotal">0.00</span></strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="text-align: center; font-size: 0.9em">
           FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
         </p>
-<div class="buttons">
-<button onclick="showStep(6)">Previous</button>
-<button onclick="showHealthCareAndLegacyOverview()">Next</button>
-</div>
-</div>
-<!-- Health Care and Legacy Overview Page -->
-<div class="step" id="step8">
-<h2>Health Care and Legacy Overview</h2>
-<!-- Health Care Overview Section -->
-<div class="health-care-overview" style="
+        <div class="buttons">
+          <button onclick="showStep(6)">Previous</button>
+          <button onclick="showHealthCareAndLegacyOverview()">Next</button>
+        </div>
+      </div>
+      <!-- Health Care and Legacy Overview Page -->
+      <div class="step" id="step8">
+        <h2>Health Care and Legacy Overview</h2>
+        <!-- Health Care Overview Section -->
+        <div
+          class="health-care-overview"
+          style="
             margin-bottom: 20px;
             background: #1a1a1a;
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #bdb76b;
             font-size: 0.9em;
-          ">
-<h3>Health Care Overview</h3>
-<!-- Required Long Term Care Section -->
-<div class="long-term-care-section" style="margin-bottom: 20px">
-<h4 style="color: #bdb76b; margin-bottom: 10px">
+          "
+        >
+          <h3>Health Care Overview</h3>
+          <!-- Required Long Term Care Section -->
+          <div class="long-term-care-section" style="margin-bottom: 20px">
+            <h4 style="color: #bdb76b; margin-bottom: 10px">
               Required Long Term Care
             </h4>
-<table style="width: 100%; border-collapse: collapse">
-<tr>
-<td>Required projected Long Term care:</td>
-<td><span id="requiredLongTermCare">0.00</span></td>
-</tr>
-<tr>
-<td>GAP:</td>
-<td>
-<span id="longTermCareGap" style="color: #ff5555">0.00</span>
-</td>
-</tr>
-</table>
-</div>
-<!-- Health Care Expenses Section -->
-<div class="health-care-expenses-section">
-<h4 style="color: #bdb76b; margin-bottom: 10px">
+            <table style="width: 100%; border-collapse: collapse">
+              <tr>
+                <td>Required projected Long Term care:</td>
+                <td><span id="requiredLongTermCare">0.00</span></td>
+              </tr>
+              <tr>
+                <td>GAP:</td>
+                <td>
+                  <span id="longTermCareGap" style="color: #ff5555">0.00</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <!-- Health Care Expenses Section -->
+          <div class="health-care-expenses-section">
+            <h4 style="color: #bdb76b; margin-bottom: 10px">
               Health Care Expenses
             </h4>
-<table style="width: 100%; border-collapse: collapse">
-<tr>
-<td>Required Health Expenses at retirement:</td>
-<td><span id="requiredHealthExpenses">0.00</span></td>
-</tr>
-<tr>
-<td>GAP:</td>
-<td>
-<span id="healthExpensesGap" style="color: #ff5555">0.00</span>
-</td>
-</tr>
-</table>
-</div>
-<!-- Summary Notes -->
-<div style="
+            <table style="width: 100%; border-collapse: collapse">
+              <tr>
+                <td>Required Health Expenses at retirement:</td>
+                <td><span id="requiredHealthExpenses">0.00</span></td>
+              </tr>
+              <tr>
+                <td>GAP:</td>
+                <td>
+                  <span id="healthExpensesGap" style="color: #ff5555"
+                    >0.00</span
+                  >
+                </td>
+              </tr>
+            </table>
+          </div>
+          <!-- Summary Notes -->
+          <div
+            style="
               margin-top: 15px;
               padding: 10px;
               background: #2a2a2a;
               border-radius: 4px;
-            ">
-<h4 style="margin-top: 0">Summary Notes:</h4>
-<ul style="list-style-type: none; padding-left: 10px">
-<li>
+            "
+          >
+            <h4 style="margin-top: 0">Summary Notes:</h4>
+            <ul style="list-style-type: none; padding-left: 10px">
+              <li>
                 • Health care costs are based on current estimates and may
                 change
               </li>
-<li>
+              <li>
                 • Consider Medicare coverage options and supplemental insurance
               </li>
-<li>• Review long-term care insurance options</li>
-</ul>
-</div>
-</div>
-<!-- Legacy Overview Section -->
-<div class="legacy-overview" style="
+              <li>• Review long-term care insurance options</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Legacy Overview Section -->
+        <div
+          class="legacy-overview"
+          style="
             margin-bottom: 20px;
             background: #1a1a1a;
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #bdb76b;
             font-size: 0.9em;
-          ">
-<h3>Legacy Overview</h3>
-<!-- Legacy Goals Section -->
-<div class="legacy-goals-section">
-<h4 style="color: #bdb76b; margin-bottom: 10px">
+          "
+        >
+          <h3>Legacy Overview</h3>
+          <!-- Legacy Goals Section -->
+          <div class="legacy-goals-section">
+            <h4 style="color: #bdb76b; margin-bottom: 10px">
               Legacy Goals Analysis
             </h4>
-<table style="width: 100%; border-collapse: collapse">
-<tr>
-<td>Goal Amount:</td>
-<td><span id="legacyGoalAmount">0.00</span></td>
-</tr>
-<tr>
-<td>Projected Real estate investment:</td>
-<td><span id="projectedRealEstate">0.00</span></td>
-</tr>
-<tr>
-<td>Projected Non-Real estate investment:</td>
-<td><span id="projectedNonRealEstate">0.00</span></td>
-</tr>
-<tr>
-<td>GAP:</td>
-<td><span id="legacyGap" style="color: #ff5555">0.00</span></td>
-</tr>
-</table>
-</div>
-<!-- Summary Notes -->
-<div style="
+            <table style="width: 100%; border-collapse: collapse">
+              <tr>
+                <td>Goal Amount:</td>
+                <td><span id="legacyGoalAmount">0.00</span></td>
+              </tr>
+              <tr>
+                <td>Projected Real estate investment:</td>
+                <td><span id="projectedRealEstate">0.00</span></td>
+              </tr>
+              <tr>
+                <td>Projected Non-Real estate investment:</td>
+                <td><span id="projectedNonRealEstate">0.00</span></td>
+              </tr>
+              <tr>
+                <td>GAP:</td>
+                <td><span id="legacyGap" style="color: #ff5555">0.00</span></td>
+              </tr>
+            </table>
+          </div>
+          <!-- Summary Notes -->
+          <div
+            style="
               margin-top: 15px;
               padding: 10px;
               background: #2a2a2a;
               border-radius: 4px;
-            ">
-<h4 style="margin-top: 0">Summary Notes:</h4>
-<ul style="list-style-type: none; padding-left: 10px">
-<li>• Review estate planning documents regularly</li>
-<li>• Consider tax implications of inheritance</li>
-<li>• Discuss legacy plans with financial advisor</li>
-</ul>
-</div>
-</div>
-<p style="text-align: center; font-size: 0.9em">
+            "
+          >
+            <h4 style="margin-top: 0">Summary Notes:</h4>
+            <ul style="list-style-type: none; padding-left: 10px">
+              <li>• Review estate planning documents regularly</li>
+              <li>• Consider tax implications of inheritance</li>
+              <li>• Discuss legacy plans with financial advisor</li>
+            </ul>
+          </div>
+        </div>
+        <p style="text-align: center; font-size: 0.9em">
           FOR EDUCATION PURPOSE ONLY. WE DO NOT PROVIDE LEGAL OR TAX ADVICE.
         </p>
-<div class="buttons">
-<button onclick="showStep(7)">Previous</button>
-<button onclick="resetWizard()">Start Over</button>
-<button onclick="generatePDF()" style="background-color: #4CAF50; color: #fff; border-radius: 4px; margin-left: 10px;">Save as PDF</button>
-</div>
-</div>
-</div>
-<script>
+        <div class="buttons">
+          <button onclick="showStep(7)">Previous</button>
+          <button onclick="resetWizard()">Start Over</button>
+          <button
+            onclick="generatePDF()"
+            style="
+              background-color: #4caf50;
+              color: #fff;
+              border-radius: 4px;
+              margin-left: 10px;
+            "
+          >
+            Save as PDF
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
       let currentStep = 1;
       let currentSubStep2 = 1; // Track the sub-step within Step 2 (Cash Flow)
       let currentSubStep3 = 1; // Track the sub-step within Step 3 (Debt)
@@ -2565,14 +3577,70 @@
         updateAllProjectedValues();
       }
 
+      function hasDependents() {
+        const dependentsSection = document.getElementById("dependentsSection");
+        return dependentsSection && dependentsSection.children.length > 0;
+      }
+
+      function isStepDependentRelated(step, subStep) {
+        const dependentSteps = {
+          4: [1], // Step 4.1 (College Fund Savings)
+          5: [1, 2], // Steps 5.1 (Kids college planning) and 5.2 (kids wedding plan)
+        };
+        return dependentSteps[step] && dependentSteps[step].includes(subStep);
+      }
+
+      function getNextValidSubStep(step, currentSubStep) {
+        let nextSubStep = currentSubStep + 1;
+        const maxSubSteps = {
+          2: totalSubSteps2,
+          3: totalSubSteps3,
+          4: totalSubSteps4,
+          5: totalSubSteps5,
+        };
+
+        while (nextSubStep <= maxSubSteps[step]) {
+          if (!isStepDependentRelated(step, nextSubStep) || hasDependents()) {
+            return nextSubStep;
+          }
+          nextSubStep++;
+        }
+        return nextSubStep;
+      }
+
+      function getPrevValidSubStep(step, currentSubStep) {
+        let prevSubStep = currentSubStep - 1;
+
+        while (prevSubStep >= 1) {
+          if (!isStepDependentRelated(step, prevSubStep) || hasDependents()) {
+            return prevSubStep;
+          }
+          prevSubStep--;
+        }
+        return prevSubStep;
+      }
+
       function showSubStep(subStep, step) {
+        // Skip dependent-related steps if there are no dependents
+        if (isStepDependentRelated(step, subStep) && !hasDependents()) {
+          const nextValid = getNextValidSubStep(step, subStep);
+          if (nextValid <= (step === 4 ? totalSubSteps4 : totalSubSteps5)) {
+            showSubStep(nextValid, step);
+            return;
+          } else {
+            nextStep(step + 1);
+            return;
+          }
+        }
+
         const stepElement = document.getElementById(`step${step}`);
         if (!stepElement) return;
 
         // Hide all sub-steps in the current step
-        stepElement
-          .querySelectorAll(".sub-step")
-          .forEach((el) => el.classList.remove("active"));
+        stepElement.querySelectorAll(".sub-step").forEach((el) => {
+          el.classList.remove("active");
+          el.style.display = "none";
+        });
 
         // Show the target sub-step
         const subStepElement = document.getElementById(
@@ -2580,6 +3648,7 @@
         );
         if (subStepElement) {
           subStepElement.classList.add("active");
+          subStepElement.style.display = "block";
 
           // Update the current sub-step counter
           if (step === 2) {
@@ -2629,44 +3698,52 @@
 
       function nextSubStep(nextSubStep, step) {
         updateAllProjectedValues();
-        if (step === 2 && nextSubStep <= totalSubSteps2) {
-          showSubStep(nextSubStep, 2);
-        } else if (step === 3 && nextSubStep <= totalSubSteps3) {
-          showSubStep(nextSubStep, 3);
-        } else if (step === 4 && nextSubStep <= totalSubSteps4) {
-          showSubStep(nextSubStep, 4);
+
+        // Get the next valid sub-step
+        const validNextSubStep = getNextValidSubStep(step, nextSubStep - 1);
+
+        if (step === 2 && validNextSubStep <= totalSubSteps2) {
+          showSubStep(validNextSubStep, 2);
+        } else if (step === 3 && validNextSubStep <= totalSubSteps3) {
+          showSubStep(validNextSubStep, 3);
+        } else if (step === 4 && validNextSubStep <= totalSubSteps4) {
+          showSubStep(validNextSubStep, 4);
           // If we're at the last sub-step of assets and trying to go next
-          if (nextSubStep > totalSubSteps4) {
+          if (validNextSubStep > totalSubSteps4) {
             nextStep(5); // Move to the Goals section
           }
-        } else if (step === 5 && nextSubStep <= totalSubSteps5) {
-          showSubStep(nextSubStep, 5);
+        } else if (step === 5 && validNextSubStep <= totalSubSteps5) {
+          showSubStep(validNextSubStep, 5);
         }
       }
 
       function prevSubStep(prevSubStep, step) {
         updateAllProjectedValues();
+
+        // Get the previous valid sub-step
+        const validPrevSubStep = getPrevValidSubStep(step, prevSubStep + 1);
+
         if (step === 2) {
-          if (prevSubStep >= 1) {
-            showSubStep(prevSubStep, 2);
+          if (validPrevSubStep >= 1) {
+            showSubStep(validPrevSubStep, 2);
           } else {
             prevStep(1);
           }
         } else if (step === 3) {
-          if (prevSubStep >= 1) {
-            showSubStep(prevSubStep, 3);
+          if (validPrevSubStep >= 1) {
+            showSubStep(validPrevSubStep, 3);
           } else {
             prevStep(2);
           }
         } else if (step === 4) {
-          if (prevSubStep >= 1) {
-            showSubStep(prevSubStep, 4);
+          if (validPrevSubStep >= 1) {
+            showSubStep(validPrevSubStep, 4);
           } else {
             prevStep(3);
           }
         } else if (step === 5) {
-          if (prevSubStep >= 1) {
-            showSubStep(prevSubStep, 5);
+          if (validPrevSubStep >= 1) {
+            showSubStep(validPrevSubStep, 5);
           } else {
             prevStep(4);
           }
@@ -3676,7 +4753,7 @@
           }
         });
     </script>
-<script>
+    <script>
       function renderCollege529Rows() {
         const dependentsCount =
           parseInt(document.getElementById("dependents").value) || 0;
@@ -3733,7 +4810,7 @@
           const futureValuePrincipal =
             presentValue * Math.pow(1 + rate, yearsToCollege);
           const futureValueContributions =
-            contribution * ((Math.pow(1 + rate, yearsToCollege) - 1) / rate);
+            (contribution * (Math.pow(1 + rate, yearsToCollege) - 1)) / rate;
           projectedValue = futureValuePrincipal + futureValueContributions;
         }
 
@@ -3955,7 +5032,7 @@
         });
       });
     </script>
-<script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         function updateCollegeTable() {
           const tableBody = document.querySelector("#collegePlanningBody");
@@ -3989,7 +5066,7 @@
           );
       });
     </script>
-<script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         const retirementAge = parseInt(
           localStorage.getItem("retirementAge") || "65"
@@ -4019,7 +5096,7 @@
         });
       });
     </script>
-<script>
+    <script>
       function updateRetirementProjectedValue() {
         const monthlyExpensesSpan = document.querySelector(
           '.projected-value[data-metric="monthly-expenses"]'
@@ -4139,7 +5216,7 @@
         return userYearsToRetirement;
       }
     </script>
-<script>
+    <script>
       function updateLongTermCareAmount() {
         const maritalStatus = document.getElementById("maritalStatus").value;
         const span = document.getElementById("longTermCareAmount");
@@ -4158,7 +5235,7 @@
         .getElementById("maritalStatus")
         .addEventListener("change", updateLongTermCareAmount);
     </script>
-<script>
+    <script>
       function updateHealthCareOutOfPocketAmount() {
         const maritalStatus = document.getElementById("maritalStatus").value;
         const span = document.getElementById("healthCareOutOfPocketAmount");
@@ -4179,7 +5256,7 @@
         .getElementById("maritalStatus")
         .addEventListener("change", updateHealthCareOutOfPocketAmount);
     </script>
-<script>
+    <script>
       const dependentNames = [];
 
       function updateDependentsSection() {
@@ -4212,7 +5289,7 @@
         dependentNames[index - 1] = name;
       }
     </script>
-<script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Initial setup
         updateDependentsSection();
@@ -4339,7 +5416,7 @@
         }
       });
     </script>
-<script>
+    <script>
       // Function to restore and manage retirement values
       function restoreRetirementValues() {
         // Get the input elements
@@ -4412,7 +5489,7 @@
         }
       });
     </script>
-<script>
+    <script>
       function updateCashFlowProjectedValue(input) {
         const metric = input.getAttribute("data-metric");
         const row = input.closest("tr");
@@ -4537,7 +5614,7 @@
         }
       });
     </script>
-<script>
+    <script>
       // Add updateDebtAmount function
       function updateDebtAmount(input) {
         const metric = input.getAttribute("data-metric");
@@ -4549,28 +5626,28 @@
         // Update debt overview
         updateDebtOverview();
       }
-      
+
       // Handle monthly payment updates
       function updateMonthlyPayment(input) {
         const metric = input.getAttribute("data-metric");
         const amount = parseFloat(input.value) || 0;
-        
+
         // Store the monthly payment in localStorage
         localStorage.setItem(`monthly-${metric}`, amount);
-        
+
         // Update any related calculations
         updateDebtOverview();
       }
-      
+
       // Add event listeners for monthly payment inputs when the page loads
-      document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.monthly-payment').forEach(input => {
-          const metric = input.getAttribute('data-metric');
+      document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".monthly-payment").forEach((input) => {
+          const metric = input.getAttribute("data-metric");
           const savedValue = localStorage.getItem(`monthly-${metric}`);
           if (savedValue) {
             input.value = savedValue;
           }
-          input.addEventListener('input', function() {
+          input.addEventListener("input", function () {
             updateMonthlyPayment(this);
           });
         });
@@ -4605,19 +5682,45 @@
 
         // Calculate total debt
         // Calculate total monthly payments
-        const mortgagePayment = parseFloat(document.querySelector('[data-metric="mortgage-payment"]')?.value) || 0;
-        const carLoanPayment = parseFloat(document.querySelector('[data-metric="car-loan-payment"]')?.value) || 0;
-        const studentLoanPayment = parseFloat(document.querySelector('[data-metric="student-loan-payment"]')?.value) || 0;
-        const otherDebtPayment = parseFloat(document.querySelector('[data-metric="other-debt-payment"]')?.value) || 0;
-        
-        const totalDebt = mortgageDebt + creditCardDebt + carLoanDebt + studentLoanDebt + otherDebt;
-        const totalMonthlyPayments = mortgagePayment + creditCardPayment + carLoanPayment + studentLoanPayment + otherDebtPayment;
+        const mortgagePayment =
+          parseFloat(
+            document.querySelector('[data-metric="mortgage-payment"]')?.value
+          ) || 0;
+        const carLoanPayment =
+          parseFloat(
+            document.querySelector('[data-metric="car-loan-payment"]')?.value
+          ) || 0;
+        const studentLoanPayment =
+          parseFloat(
+            document.querySelector('[data-metric="student-loan-payment"]')
+              ?.value
+          ) || 0;
+        const otherDebtPayment =
+          parseFloat(
+            document.querySelector('[data-metric="other-debt-payment"]')?.value
+          ) || 0;
+
+        const totalDebt =
+          mortgageDebt +
+          creditCardDebt +
+          carLoanDebt +
+          studentLoanDebt +
+          otherDebt;
+        const totalMonthlyPayments =
+          mortgagePayment +
+          creditCardPayment +
+          carLoanPayment +
+          studentLoanPayment +
+          otherDebtPayment;
 
         // Update the total debt and monthly payments display
-        document.getElementById("totalDebtAmount").textContent = totalDebt.toFixed(2);
-        
+        document.getElementById("totalDebtAmount").textContent =
+          totalDebt.toFixed(2);
+
         // Update the monthly payment display if it exists
-        const totalMonthlyElement = document.getElementById("totalMonthlyPayment");
+        const totalMonthlyElement = document.getElementById(
+          "totalMonthlyPayment"
+        );
         if (totalMonthlyElement) {
           totalMonthlyElement.textContent = totalMonthlyPayments.toFixed(2);
         }
@@ -4678,8 +5781,8 @@
       // Call updateDebtOverview when page loads
       document.addEventListener("DOMContentLoaded", updateDebtOverview);
     </script>
-<!-- Add Financial Data Store -->
-<script>
+    <!-- Add Financial Data Store -->
+    <script>
       // Central Data Store
       const financialData = {
         assets: {
@@ -5199,8 +6302,6 @@
 
         // Update data store totals
         financialData.totals = totals;
-
-        
       }
 
       function updateTotalsDisplay() {
@@ -5289,7 +6390,7 @@
         loadFinancialData();
       });
     </script>
-<script>
+    <script>
       function showRetirementPlanning() {
         // Calculate retirement planning values
         calculateRetirementPlanning();
@@ -5543,7 +6644,7 @@
         legacyGapElement.style.color = legacyGap > 0 ? "#ff5555" : "#4CAF50";
       }
     </script>
-<script>
+    <script>
       function calculateAndShowResults() {
         // First try to calculate results
         try {
@@ -5564,7 +6665,7 @@
         }
       }
     </script>
-<script>
+    <script>
       function updateSSAPiaValue(input) {
         const metric = input.getAttribute("data-metric");
         const row = input.closest("tr");
@@ -5613,109 +6714,115 @@
         updateTotalsDisplay();
       }
     </script>
-<script>
-function generatePDF() {
-    // List of result step IDs
-    const stepIds = ['step6', 'step7', 'step8'];
-    // Save original class states
-    const originalStates = {};
-    stepIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
+    <script>
+      function generatePDF() {
+        // List of result step IDs
+        const stepIds = ["step6", "step7", "step8"];
+        // Save original class states
+        const originalStates = {};
+        stepIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
             originalStates[id] = el.className;
-            el.classList.add('active');
-            el.style.display = 'block';
-        }
-    });
+            el.classList.add("active");
+            el.style.display = "block";
+          }
+        });
 
-    // Create a container for all result steps
-    const resultsContainer = document.createElement('div');
-    stepIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
+        // Create a container for all result steps
+        const resultsContainer = document.createElement("div");
+        stepIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
             const clone = el.cloneNode(true);
             // Remove navigation/buttons from PDF
-            const buttons = clone.querySelectorAll('.buttons');
-            buttons.forEach(btn => btn.remove());
+            const buttons = clone.querySelectorAll(".buttons");
+            buttons.forEach((btn) => btn.remove());
             resultsContainer.appendChild(clone);
-        }
-    });
-    resultsContainer.style.padding = '20px';
-    resultsContainer.style.backgroundColor = '#fff';
-    resultsContainer.style.color = '#000';
-    const opt = {
-        margin: 10,
-        filename: 'financial_analysis_' + new Date().toISOString().slice(0,10) + '.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(resultsContainer).save().then(() => {
-        resultsContainer.remove();
-        // Restore original states
-        stepIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el && originalStates[id] !== undefined) {
-                el.className = originalStates[id];
-                if (!el.classList.contains('active')) {
-                    el.style.display = 'none';
-                } else {
-                    el.style.display = '';
-                }
-            }
+          }
         });
-    });
-}
+        resultsContainer.style.padding = "20px";
+        resultsContainer.style.backgroundColor = "#fff";
+        resultsContainer.style.color = "#000";
+        const opt = {
+          margin: 10,
+          filename:
+            "financial_analysis_" +
+            new Date().toISOString().slice(0, 10) +
+            ".pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        };
+        html2pdf()
+          .set(opt)
+          .from(resultsContainer)
+          .save()
+          .then(() => {
+            resultsContainer.remove();
+            // Restore original states
+            stepIds.forEach((id) => {
+              const el = document.getElementById(id);
+              if (el && originalStates[id] !== undefined) {
+                el.className = originalStates[id];
+                if (!el.classList.contains("active")) {
+                  el.style.display = "none";
+                } else {
+                  el.style.display = "";
+                }
+              }
+            });
+          });
+      }
+    </script>
+    <script>
+      async function generatePDF() {
+        const stepIds = ["step6", "step7", "step8"];
+        const canvases = [];
 
-</script>
-<script>
-async function generatePDF() {
-  const stepIds = ['step6', 'step7', 'step8'];
-  const canvases = [];
+        for (const id of stepIds) {
+          const el = document.getElementById(id);
+          if (!el) {
+            console.warn("Missing element:", id);
+            continue;
+          }
 
-  for (const id of stepIds) {
-    const el = document.getElementById(id);
-    if (!el) {
-      console.warn('Missing element:', id);
-      continue;
-    }
+          const prevDisplay = el.style.display;
+          el.style.display = "block";
+          await new Promise((r) => setTimeout(r, 300));
 
-    const prevDisplay = el.style.display;
-    el.style.display = 'block';
-    await new Promise(r => setTimeout(r, 300));
+          try {
+            const canvas = await html2canvas(el, { scale: 2, useCORS: true });
+            canvases.push(canvas);
+          } catch (err) {
+            console.error("html2canvas error for", id, err);
+          }
 
-    try {
-      const canvas = await html2canvas(el, { scale: 2, useCORS: true });
-      canvases.push(canvas);
-    } catch (err) {
-      console.error('html2canvas error for', id, err);
-    }
+          el.style.display = prevDisplay;
+        }
 
-    el.style.display = prevDisplay;
-  }
+        if (canvases.length === 0) {
+          console.warn("No canvases to render.");
+          return;
+        }
 
-  if (canvases.length === 0) {
-    console.warn('No canvases to render.');
-    return;
-  }
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "pt", "a4");
+        const pageHeight = pdf.internal.pageSize.height;
+        const pageWidth = pdf.internal.pageSize.width;
 
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'pt', 'a4');
-  const pageHeight = pdf.internal.pageSize.height;
-  const pageWidth = pdf.internal.pageSize.width;
+        canvases.forEach((canvas, index) => {
+          const imgData = canvas.toDataURL("image/jpeg", 1.0);
+          const imgProps = pdf.getImageProperties(imgData);
+          const pdfWidth = pageWidth;
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-  canvases.forEach((canvas, index) => {
-    const imgData = canvas.toDataURL('image/jpeg', 1.0);
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pageWidth;
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+          if (index > 0) pdf.addPage();
+          pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+        });
 
-    if (index > 0) pdf.addPage();
-    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-  });
-
-  pdf.save('Complete_Financial_Report.pdf');
-}
-</script>
-</body>
+        pdf.save("Complete_Financial_Report.pdf");
+      }
+    </script>
+  </body>
 </html>
